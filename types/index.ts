@@ -10,6 +10,7 @@ export interface User {
   fitness_level?: 'beginner' | 'intermediate' | 'advanced';
   goals?: string[];
   avatar_url?: string;
+  weekly_goal_minutes?: number;
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;

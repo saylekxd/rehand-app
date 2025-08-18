@@ -101,30 +101,31 @@ export default function ExercisesTab() {
         </View>
       </View>
 
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoriesContainer}
-        contentContainerStyle={styles.categoriesContent}
-      >
-        {categories.map((category) => (
-          <TouchableOpacity
-            key={category}
-            style={[
-              styles.categoryButton,
-              selectedCategory === category && styles.categoryButtonActive
-            ]}
-            onPress={() => setSelectedCategory(category)}
-          >
-            <Text style={[
-              styles.categoryText,
-              selectedCategory === category && styles.categoryTextActive
-            ]}>
-              {category}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <View style={styles.categoriesContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoriesContent}
+        >
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category}
+              style={[
+                styles.categoryButton,
+                selectedCategory === category && styles.categoryButtonActive
+              ]}
+              onPress={() => setSelectedCategory(category)}
+            >
+              <Text style={[
+                styles.categoryText,
+                selectedCategory === category && styles.categoryTextActive
+              ]}>
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       <ScrollView style={styles.exercisesList} showsVerticalScrollIndicator={false}>
         {filteredExercises.map((exercise) => (
@@ -206,10 +207,10 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
   categoriesContainer: {
-    marginBottom: 24,
+    marginBottom: 16,
+    paddingHorizontal: 24,
   },
   categoriesContent: {
-    paddingHorizontal: 24,
     gap: 12,
   },
   categoryButton: {
@@ -217,6 +218,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     backgroundColor: '#E5E7EB',
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   categoryButtonActive: {
     backgroundColor: '#2563EB',
