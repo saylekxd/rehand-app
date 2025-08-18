@@ -99,20 +99,19 @@ export default function AITab() {
       </View>
 
       <View style={styles.cameraContainer}>
-        <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-          <View style={styles.cameraOverlay}>
-            {isRecording && (
-              <View style={styles.recordingIndicator}>
-                <View style={styles.recordingDot} />
-                <Text style={styles.recordingText}>Analizuję...</Text>
-              </View>
-            )}
-            
-            <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
-              <RotateCcw size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-        </CameraView>
+        <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+        <View style={styles.cameraOverlay}>
+          {isRecording && (
+            <View style={styles.recordingIndicator}>
+              <View style={styles.recordingDot} />
+              <Text style={styles.recordingText}>Analizuję...</Text>
+            </View>
+          )}
+          
+          <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
+            <RotateCcw size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.controlsContainer}>
@@ -231,12 +230,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: screenWidth - 48,
     backgroundColor: '#000',
+    position: 'relative',
   },
   camera: {
     flex: 1,
   },
   cameraOverlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'space-between',
     padding: 20,
   },

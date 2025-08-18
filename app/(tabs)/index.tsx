@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,78 +8,87 @@ import {
   Image,
   TextInput,
   SafeAreaView,
+  ActivityIndicator,
+  RefreshControl,
+  Modal,
 } from 'react-native';
-import { Search, Clock, Target, Play } from 'lucide-react-native';
-
-interface Exercise {
-  id: string;
-  title: string;
-  duration: string;
-  difficulty: 'Łatwy' | 'Średni' | 'Trudny';
-  category: string;
-  image: string;
-  description: string;
-}
-
-const exercises: Exercise[] = [
-  {
-    id: '1',
-    title: 'Rozciąganie szyi',
-    duration: '5 min',
-    difficulty: 'Łatwy',
-    category: 'Szyja',
-    image: 'https://images.pexels.com/photos/3823495/pexels-photo-3823495.jpeg?auto=compress&cs=tinysrgb&w=800',
-    description: 'Delikatne ćwiczenia rozciągające mięśnie szyi'
-  },
-  {
-    id: '2',
-    title: 'Rotacje ramion',
-    duration: '8 min',
-    difficulty: 'Średni',
-    category: 'Ramiona',
-    image: 'https://images.pexels.com/photos/3094230/pexels-photo-3094230.jpeg?auto=compress&cs=tinysrgb&w=800',
-    description: 'Ćwiczenia mobilizacyjne dla stawów ramiennych'
-  },
-  {
-    id: '3',
-    title: 'Wzmacnianie pleców',
-    duration: '12 min',
-    difficulty: 'Trudny',
-    category: 'Plecy',
-    image: 'https://images.pexels.com/photos/3757957/pexels-photo-3757957.jpeg?auto=compress&cs=tinysrgb&w=800',
-    description: 'Zaawansowane ćwiczenia wzmacniające mięśnie grzbietu'
-  },
-  {
-    id: '4',
-    title: 'Mobilizacja kolan',
-    duration: '10 min',
-    difficulty: 'Średni',
-    category: 'Kolana',
-    image: 'https://images.pexels.com/photos/3823488/pexels-photo-3823488.jpeg?auto=compress&cs=tinysrgb&w=800',
-    description: 'Ćwiczenia poprawiające ruchomość stawów kolanowych'
-  },
-];
-
-const categories = ['Wszystkie', 'Szyja', 'Ramiona', 'Plecy', 'Kolana'];
+import { Search, Clock, Target, Play, AlertCircle } from 'lucide-react-native';
+import { useExercises } from '@/hooks/useExercises';
+import { Exercise } from '@/types';
+import ExerciseDetailScreen from '@/screens/ExerciseDetailScreen';
 
 export default function ExercisesTab() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Wszystkie');
+  const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(null);
+  const { exercises, categories, loading, error, refetch, applyFilters } = useExercises();
 
-  const filteredExercises = exercises.filter(exercise => {
-    const matchesSearch = exercise.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'Wszystkie' || exercise.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Helper functions
+  const formatDuration = (minutes: number): string => {
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
+  };
 
-  const getDifficultyColor = (difficulty: string) => {
+  const translateDifficulty = (difficulty: 'easy' | 'medium' | 'hard'): string => {
     switch (difficulty) {
-      case 'Łatwy': return '#10B981';
-      case 'Średni': return '#F59E0B';
-      case 'Trudny': return '#EF4444';
+      case 'easy': return 'Łatwy';
+      case 'medium': return 'Średni';
+      case 'hard': return 'Trudny';
+      default: return difficulty;
+    }
+  };
+
+  const getDifficultyColor = (difficulty: 'easy' | 'medium' | 'hard'): string => {
+    switch (difficulty) {
+      case 'easy': return '#10B981';
+      case 'medium': return '#F59E0B';
+      case 'hard': return '#EF4444';
       default: return '#6B7280';
     }
   };
+
+  const getImageUrl = (exercise: Exercise): string => {
+    return exercise.image_url || 'https://images.pexels.com/photos/3823495/pexels-photo-3823495.jpeg?auto=compress&cs=tinysrgb&w=800';
+  };
+
+  // Apply filters when search or category changes
+  const handleFilter = useCallback(async () => {
+    await applyFilters({
+      category: selectedCategory !== 'Wszystkie' ? selectedCategory : undefined,
+      searchQuery: searchQuery.trim() || undefined,
+    });
+  }, [searchQuery, selectedCategory, applyFilters]);
+
+  useEffect(() => {
+    handleFilter();
+  }, [handleFilter]);
+
+  // Handle exercise selection
+  const handleExercisePress = (exercise: Exercise) => {
+    setSelectedExerciseId(exercise.id);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedExerciseId(null);
+  };
+
+  // Error state
+  if (error && !loading && exercises.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <AlertCircle size={48} color="#EF4444" />
+          <Text style={styles.errorTitle}>Błąd ładowania</Text>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={refetch}>
+            <Text style={styles.retryButtonText}>Spróbuj ponownie</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -127,36 +136,96 @@ export default function ExercisesTab() {
         </ScrollView>
       </View>
 
-      <ScrollView style={styles.exercisesList} showsVerticalScrollIndicator={false}>
-        {filteredExercises.map((exercise) => (
-          <TouchableOpacity key={exercise.id} style={styles.exerciseCard}>
-            <Image source={{ uri: exercise.image }} style={styles.exerciseImage} />
-            <View style={styles.exerciseContent}>
-              <View style={styles.exerciseHeader}>
-                <Text style={styles.exerciseTitle}>{exercise.title}</Text>
-                <View style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(exercise.difficulty) + '20' }]}>
-                  <Text style={[styles.difficultyText, { color: getDifficultyColor(exercise.difficulty) }]}>
-                    {exercise.difficulty}
-                  </Text>
+      <ScrollView 
+        style={styles.exercisesList} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={refetch}
+            colors={['#2563EB']}
+            tintColor="#2563EB"
+          />
+        }
+      >
+        {loading && exercises.length === 0 ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#2563EB" />
+            <Text style={styles.loadingText}>Ładowanie ćwiczeń...</Text>
+          </View>
+        ) : exercises.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Target size={48} color="#9CA3AF" />
+            <Text style={styles.emptyTitle}>Brak ćwiczeń</Text>
+            <Text style={styles.emptyText}>
+              {searchQuery || selectedCategory !== 'Wszystkie' 
+                ? 'Nie znaleziono ćwiczeń spełniających kryteria wyszukiwania'
+                : 'Obecnie brak dostępnych ćwiczeń'
+              }
+            </Text>
+          </View>
+        ) : (
+          exercises.map((exercise) => (
+            <TouchableOpacity 
+              key={exercise.id} 
+              style={styles.exerciseCard}
+              onPress={() => handleExercisePress(exercise)}
+            >
+              <Image source={{ uri: getImageUrl(exercise) }} style={styles.exerciseImage} />
+              <View style={styles.exerciseContent}>
+                <View style={styles.exerciseHeader}>
+                  <Text style={styles.exerciseTitle}>{exercise.title}</Text>
+                  <View style={[
+                    styles.difficultyBadge, 
+                    { backgroundColor: getDifficultyColor(exercise.difficulty) + '20' }
+                  ]}>
+                    <Text style={[
+                      styles.difficultyText, 
+                      { color: getDifficultyColor(exercise.difficulty) }
+                    ]}>
+                      {translateDifficulty(exercise.difficulty)}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.exerciseDescription}>{exercise.description}</Text>
+                <View style={styles.exerciseFooter}>
+                  <View style={styles.exerciseInfo}>
+                    <Clock size={16} color="#6B7280" />
+                    <Text style={styles.exerciseInfoText}>{formatDuration(exercise.duration_minutes)}</Text>
+                    <Target size={16} color="#6B7280" />
+                    <Text style={styles.exerciseInfoText}>{exercise.category}</Text>
+                  </View>
+                  <TouchableOpacity 
+                    style={styles.playButton}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleExercisePress(exercise);
+                    }}
+                  >
+                    <Play size={16} color="#FFFFFF" />
+                    <Text style={styles.playButtonText}>Zobacz</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-              <Text style={styles.exerciseDescription}>{exercise.description}</Text>
-              <View style={styles.exerciseFooter}>
-                <View style={styles.exerciseInfo}>
-                  <Clock size={16} color="#6B7280" />
-                  <Text style={styles.exerciseInfoText}>{exercise.duration}</Text>
-                  <Target size={16} color="#6B7280" />
-                  <Text style={styles.exerciseInfoText}>{exercise.category}</Text>
-                </View>
-                <TouchableOpacity style={styles.playButton}>
-                  <Play size={16} color="#FFFFFF" />
-                  <Text style={styles.playButtonText}>Start</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
+
+      {/* Exercise Detail Modal */}
+      <Modal
+        visible={selectedExerciseId !== null}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={handleCloseDetail}
+      >
+        {selectedExerciseId && (
+          <ExerciseDetailScreen 
+            exerciseId={selectedExerciseId}
+            onClose={handleCloseDetail}
+          />
+        )}
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -313,5 +382,67 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Inter-Medium',
     color: '#FFFFFF',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+    color: '#6B7280',
+    marginTop: 12,
+  },
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1F2937',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  errorText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  retryButton: {
+    backgroundColor: '#2563EB',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+    color: '#FFFFFF',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 32,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1F2937',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });
