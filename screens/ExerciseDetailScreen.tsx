@@ -36,6 +36,8 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
   const { exercise, loading, error, refetch } = useExercise(exerciseId);
   const { user } = useAuth();
   const [isStarting, setIsStarting] = useState(false);
+  const [completedSteps, setCompletedSteps] = useState<boolean[]>([]);
+  const [exerciseStarted, setExerciseStarted] = useState(false);
 
   const formatDuration = (minutes: number): string => {
     if (minutes < 60) return `${minutes} min`;

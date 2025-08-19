@@ -7,25 +7,45 @@ import {
   SafeAreaView,
   Alert,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Camera, RotateCcw, Zap, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react-native';
+import { Camera, RotateCcw, Zap, CircleCheck as CheckCircle, CircleAlert as AlertCircle, Activity, Target } from 'lucide-react-native';
+import { useAIExerciseAnalysis } from '../../lib/useAIExerciseAnalysis';
+import { ExerciseType } from '../../lib/ml/types';
+import { OverlayRenderer } from '../../lib/visualization/OverlayRenderer';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-interface AnalysisResult {
-  score: number;
-  feedback: string;
-  suggestions: string[];
-}
+// Available exercise types for selection
+const EXERCISE_OPTIONS = [
+  { type: ExerciseType.NECK_STRETCH, name: 'Rozciąganie szyi', icon: 'Activity' },
+  { type: ExerciseType.SHOULDER_ROLLS, name: 'Krążenia ramionami', icon: 'Target' },
+  { type: ExerciseType.ARM_CIRCLES, name: 'Krążenia ramionami', icon: 'Activity' },
+];
 
 export default function AITab() {
   const [facing, setFacing] = useState<CameraType>('front');
   const [permission, requestPermission] = useCameraPermissions();
-  const [isRecording, setIsRecording] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState<ExerciseType>(ExerciseType.NECK_STRETCH);
   const cameraRef = useRef<CameraView>(null);
+  
+  // Initialize AI system
+  const aiAnalysis = useAIExerciseAnalysis({
+    exerciseType: selectedExercise,
+    userProfile: {
+      level: 'beginner',
+      goals: ['rehabilitation'],
+      preferences: {
+        motivationStyle: 'encouraging',
+        responseLength: 'short',
+        language: 'pl'
+      }
+    },
+    enableLocalLLM: true,
+    enableCloudLLM: false,
+    debugMode: false
+  });
 
   if (!permission) {
     return (
@@ -59,30 +79,20 @@ export default function AITab() {
   };
 
   const startAnalysis = async () => {
-    setIsRecording(true);
-    setIsAnalyzing(true);
-    setAnalysisResult(null);
-
-    // Symulacja analizy AI (w rzeczywistej aplikacji tutaj byłaby integracja z AI)
-    setTimeout(() => {
-      const mockResult: AnalysisResult = {
-        score: Math.floor(Math.random() * 40) + 60, // 60-100
-        feedback: 'Dobra technika! Pamiętaj o równomiernym tempie ruchu.',
-        suggestions: [
-          'Utrzymuj prostą postawę',
-          'Kontroluj oddech podczas ćwiczenia',
-          'Zwiększ amplitudę ruchu'
-        ]
-      };
-      setAnalysisResult(mockResult);
-      setIsRecording(false);
-      setIsAnalyzing(false);
-    }, 3000);
+    try {
+      aiAnalysis.startSession();
+    } catch (error) {
+      Alert.alert('Błąd', 'Nie udało się uruchomić analizy AI. Sprawdź połączenie i spróbuj ponownie.');
+      console.error('AI Analysis error:', error);
+    }
   };
 
-  const stopAnalysis = () => {
-    setIsRecording(false);
-    setIsAnalyzing(false);
+  const stopAnalysis = async () => {
+    try {
+      await aiAnalysis.endSession();
+    } catch (error) {
+      console.error('Error ending session:', error);
+    }
   };
 
   const getScoreColor = (score: number) => {
@@ -91,72 +101,180 @@ export default function AITab() {
     return '#EF4444';
   };
 
+  // Map hook properties to UI expectations
+  const isAnalyzing = aiAnalysis.isProcessing;
+  const currentQuality = aiAnalysis.currentAnalysis?.mlAnalysis?.qualityScore ?? null;
+  const latestMessage = aiAnalysis.recentMessages[0]?.message ?? null;
+  
+  // Transform sessionStats to match expected sessionSummary structure
+  const sessionSummary = aiAnalysis.sessionStats ? {
+    averageQuality: aiAnalysis.sessionStats.avgQuality / 100, // Convert to 0-1 range
+    totalReps: aiAnalysis.sessionStats.repsCompleted,
+    duration: aiAnalysis.sessionStats.sessionDuration * 1000, // Convert to milliseconds
+    errors: aiAnalysis.sessionStats.errorsDetected.map((errorType: string) => ({
+      type: errorType,
+      description: `Wykryto błąd: ${errorType}`
+    }))
+  } : null;
+
+  // Placeholder for cloud insights - this would need to be implemented in the AI system
+  const cloudInsights = null; // TODO: Implement cloud insights
+
+  // Visualization data from AI system
+  const visualizationData = aiAnalysis.visualizationData;
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>AI Trener</Text>
-        <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.title}>AI Trener</Text>
+          <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
+        </View>
 
-      <View style={styles.cameraContainer}>
-        <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
-        <View style={styles.cameraOverlay}>
-          {isRecording && (
-            <View style={styles.recordingIndicator}>
-              <View style={styles.recordingDot} />
-              <Text style={styles.recordingText}>Analizuję...</Text>
-            </View>
+        {/* Exercise Selection */}
+        <View style={styles.exerciseSelection}>
+          <Text style={styles.exerciseSelectionTitle}>Wybierz ćwiczenie:</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.exerciseScrollView}>
+            {EXERCISE_OPTIONS.map((exercise) => (
+              <TouchableOpacity
+                key={exercise.type}
+                style={[
+                  styles.exerciseButton,
+                  selectedExercise === exercise.type && styles.exerciseButtonActive
+                ]}
+                onPress={() => setSelectedExercise(exercise.type)}
+              >
+                <Activity size={20} color={selectedExercise === exercise.type ? '#FFFFFF' : '#6B7280'} />
+                <Text style={[
+                  styles.exerciseButtonText,
+                  selectedExercise === exercise.type && styles.exerciseButtonTextActive
+                ]}>
+                  {exercise.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={styles.cameraContainer}>
+          <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+          
+          {/* 3D Visualization Overlay */}
+          {isAnalyzing && visualizationData && (
+            <OverlayRenderer
+              overlayState={visualizationData}
+              preferences={{
+                showLabels: true,
+                showValues: true,
+                detailLevel: 'standard',
+                animationLevel: 'normal',
+                opacity: 0.8,
+                colorScheme: 'default',
+                autoHide: false
+              }}
+            />
           )}
           
-          <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
-            <RotateCcw size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.controlsContainer}>
-        {!isRecording ? (
-          <TouchableOpacity style={styles.startButton} onPress={startAnalysis}>
-            <Zap size={24} color="#FFFFFF" />
-            <Text style={styles.startButtonText}>Rozpocznij Analizę</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.stopButton} onPress={stopAnalysis}>
-            <Text style={styles.stopButtonText}>Zatrzymaj</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {analysisResult && (
-        <View style={styles.resultsContainer}>
-          <View style={styles.scoreContainer}>
-            <Text style={styles.scoreLabel}>Wynik analizy</Text>
-            <Text style={[styles.scoreValue, { color: getScoreColor(analysisResult.score) }]}>
-              {analysisResult.score}%
-            </Text>
+          <View style={styles.cameraOverlay}>
+            {isAnalyzing && (
+              <View style={styles.recordingIndicator}>
+                <View style={styles.recordingDot} />
+                <Text style={styles.recordingText}>
+                  {isAnalyzing ? 'Analizuję...' : 'Gotowy'}
+                </Text>
+              </View>
+            )}
+            
+            {/* Real-time quality indicator */}
+            {currentQuality !== null && isAnalyzing && (
+              <View style={styles.qualityIndicator}>
+                <Text style={styles.qualityText}>
+                  Jakość: {Math.round(currentQuality)}%
+                </Text>
+              </View>
+            )}
+            
+            <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
+              <RotateCcw size={24} color="#FFFFFF" />
+            </TouchableOpacity>
           </View>
+        </View>
 
-          <View style={styles.feedbackContainer}>
-            <View style={styles.feedbackHeader}>
+        <View style={styles.controlsContainer}>
+          {!isAnalyzing ? (
+            <TouchableOpacity style={styles.startButton} onPress={startAnalysis}>
+              <Zap size={24} color="#FFFFFF" />
+              <Text style={styles.startButtonText}>Rozpocznij Analizę</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.stopButton} onPress={stopAnalysis}>
+              <Text style={styles.stopButtonText}>Zatrzymaj</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Real-time AI feedback */}
+        {latestMessage && (
+          <View style={styles.messageContainer}>
+            <View style={styles.messageHeader}>
               <CheckCircle size={20} color="#10B981" />
-              <Text style={styles.feedbackTitle}>Ocena</Text>
+              <Text style={styles.messageTitle}>Motywacja AI</Text>
             </View>
-            <Text style={styles.feedbackText}>{analysisResult.feedback}</Text>
+            <Text style={styles.messageText}>{latestMessage}</Text>
           </View>
+        )}
 
-          <View style={styles.suggestionsContainer}>
-            <View style={styles.suggestionsHeader}>
-              <AlertCircle size={20} color="#F59E0B" />
-              <Text style={styles.suggestionsTitle}>Sugestie</Text>
-            </View>
-            {analysisResult.suggestions.map((suggestion, index) => (
-              <Text key={index} style={styles.suggestionText}>
-                • {suggestion}
+        {/* Session results */}
+        {sessionSummary && (
+          <View style={styles.resultsContainer}>
+            <View style={styles.scoreContainer}>
+              <Text style={styles.scoreLabel}>Wynik sesji</Text>
+              <Text style={[styles.scoreValue, { color: getScoreColor(sessionSummary.averageQuality * 100) }]}>
+                {Math.round(sessionSummary.averageQuality * 100)}%
               </Text>
-            ))}
+            </View>
+
+            <View style={styles.statsContainer}>
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>Powtórzenia</Text>
+                <Text style={styles.statValue}>{sessionSummary.totalReps}</Text>
+              </View>
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>Czas</Text>
+                <Text style={styles.statValue}>{Math.round(sessionSummary.duration / 1000)}s</Text>
+              </View>
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>Błędy</Text>
+                <Text style={styles.statValue}>{sessionSummary.errors.length}</Text>
+              </View>
+            </View>
+
+            {sessionSummary.errors.length > 0 && (
+              <View style={styles.errorsContainer}>
+                <View style={styles.errorsHeader}>
+                  <AlertCircle size={20} color="#EF4444" />
+                  <Text style={styles.errorsTitle}>Wykryte błędy</Text>
+                </View>
+                {sessionSummary.errors.slice(0, 3).map((error: any, index: number) => (
+                  <Text key={index} style={styles.errorText}>
+                    • {error.type}: {error.description}
+                  </Text>
+                ))}
+              </View>
+            )}
+
+            {cloudInsights && (
+              <View style={styles.insightsContainer}>
+                <View style={styles.insightsHeader}>
+                  <Target size={20} color="#2563EB" />
+                  <Text style={styles.insightsTitle}>Analiza strategiczna</Text>
+                </View>
+                <Text style={styles.insightsText}>{cloudInsights}</Text>
+              </View>
+            )}
           </View>
-        </View>
-      )}
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -365,5 +483,156 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     lineHeight: 20,
     marginBottom: 4,
+  },
+  // New styles for AI integration
+  exerciseSelection: {
+    paddingHorizontal: 24,
+    marginBottom: 20,
+  },
+  exerciseSelectionTitle: {
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1F2937',
+    marginBottom: 12,
+  },
+  exerciseScrollView: {
+    flexDirection: 'row',
+  },
+  exerciseButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginRight: 12,
+    gap: 8,
+  },
+  exerciseButtonActive: {
+    backgroundColor: '#2563EB',
+  },
+  exerciseButtonText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Medium',
+    color: '#6B7280',
+  },
+  exerciseButtonTextActive: {
+    color: '#FFFFFF',
+  },
+  visualizationOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  qualityIndicator: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(37, 99, 235, 0.9)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginTop: 60,
+  },
+  qualityText: {
+    fontSize: 12,
+    fontFamily: 'Inter-Medium',
+    color: '#FFFFFF',
+  },
+  messageContainer: {
+    marginHorizontal: 24,
+    marginBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  messageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  messageTitle: {
+    fontSize: 14,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1F2937',
+  },
+  messageText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    color: '#6B7280',
+    lineHeight: 20,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+    paddingVertical: 16,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statLabel: {
+    fontSize: 12,
+    fontFamily: 'Inter-Regular',
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 18,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1F2937',
+  },
+  errorsContainer: {
+    marginBottom: 20,
+  },
+  errorsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  errorsTitle: {
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1F2937',
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    color: '#EF4444',
+    lineHeight: 20,
+    marginBottom: 4,
+  },
+  insightsContainer: {
+    backgroundColor: '#F0F7FF',
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2563EB',
+  },
+  insightsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  insightsTitle: {
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1F2937',
+  },
+  insightsText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    color: '#374151',
+    lineHeight: 20,
   },
 });
