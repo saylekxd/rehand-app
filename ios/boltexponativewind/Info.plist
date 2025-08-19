@@ -19,7 +19,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>1.0.1</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>myapp</string>
-          <string>com.anonymous.bolt-expo-nativewind</string>
+          <string>com.saykekxd.rehand</string>
         </array>
       </dict>
     </array>
@@ -49,6 +49,10 @@
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
     </array>
+    <key>NSCameraUsageDescription</key>
+    <string>Rehand uses the camera to analyze your hand exercises and provide real-time feedback on your movement and form during rehabilitation sessions.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Rehand may use your location to provide location-based exercise reminders and to connect you with nearby healthcare providers and rehabilitation centers.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
