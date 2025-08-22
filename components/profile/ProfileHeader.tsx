@@ -23,7 +23,7 @@ interface ProfileHeaderProps {
   onEditPress: () => void;
 }
 
-export default function ProfileHeader({ user, onEditPress }: ProfileHeaderProps) {
+export default function ProfileHeader({  onEditPress }: ProfileHeaderProps) {
   const getDisplayName = () => {
     if (user?.first_name && user?.last_name) {
       return `${user.first_name} ${user.last_name}`;

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,40 +8,106 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Camera, RotateCcw, Zap, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react-native';
+import { Camera, useCameraDevices, useCameraPermission, useFrameProcessor } from 'react-native-vision-camera';
+import { runOnJS } from 'react-native-reanimated';
+import { Camera as CameraIcon, RotateCcw, Zap, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react-native';
+
+// Import naszych komponentów i serwisów
+import { ExerciseSelector } from '../../components/ai/ExerciseSelector';
+import { AnalysisManager } from '../../components/ai/AnalysisManager';
+import { CloudAnalysisResponse, KeyPoint } from '../../types/ai';
+import { deviceCapabilitiesService } from '../../services/deviceCapabilities';
+import { usePoseDetection } from '../../hooks/usePoseDetection';
 
 const { width: screenWidth } = Dimensions.get('window');
 
+// Zaktualizowany interface dla wyników analizy
 interface AnalysisResult {
   score: number;
   feedback: string;
   suggestions: string[];
+  overallAssessment?: string;
+  technicalFeedback?: string;
+  motivationalMessage?: string;
 }
 
 export default function AITab() {
-  const [facing, setFacing] = useState<CameraType>('front');
-  const [permission, requestPermission] = useCameraPermissions();
+  const [selectedExercise, setSelectedExercise] = useState('neck_stretch');
+  const [showExerciseSelector, setShowExerciseSelector] = useState(false);
+  const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>('front');
+  const { hasPermission, requestPermission } = useCameraPermission();
   const [isRecording, setIsRecording] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const cameraRef = useRef<CameraView>(null);
+  const [currentRepCount, setCurrentRepCount] = useState(0);
+  const [currentQuality, setCurrentQuality] = useState(0);
+  const [deviceSupported, setDeviceSupported] = useState(true);
+  const [keyPoints, setKeyPoints] = useState<KeyPoint[]>([]);
+  
+  const devices = useCameraDevices();
+  const device = cameraPosition === 'front' ? devices.front : devices.back;
 
-  if (!permission) {
+  // Hook do pose detection
+  const { processPoseFrame } = usePoseDetection({
+    isEnabled: deviceSupported && isAnalyzing,
+    onPoseDetected: setKeyPoints
+  });
+
+  // Sprawdź możliwości urządzenia przy starcie
+  useEffect(() => {
+    checkDeviceCapabilities();
+  }, []);
+
+  /**
+   * Sprawdza czy urządzenie obsługuje pose detection
+   */
+  const checkDeviceCapabilities = async () => {
+    try {
+      const capabilities = await deviceCapabilitiesService.detectCapabilities();
+      console.log('Device capabilities:', capabilities);
+      
+      if (!capabilities.hasVisionCamera) {
+        setDeviceSupported(false);
+        Alert.alert(
+          'Nieobsługiwane urządzenie',
+          'Twoje urządzenie nie obsługuje zaawansowanej analizy ruchu. Używamy podstawowego trybu.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('Device capability check failed:', error);
+    }
+  };
+
+  // Frame processor do pose detection
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet';
+    
+    try {
+      // Użyj prawdziwego pose detection hook
+      runOnJS(processPoseFrame)(frame);
+    } catch (error) {
+      console.error('Frame processing error:', error);
+    }
+  }, [processPoseFrame]);
+
+  // Usunięto handlePoseDetectionData - teraz korzystamy z usePoseDetection hook
+
+  if (!hasPermission) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Ładowanie kamery...</Text>
+          <Text style={styles.loadingText}>Sprawdzam uprawnienia kamery...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  if (!permission.granted) {
+  if (!hasPermission) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permissionContainer}>
-          <Camera size={64} color="#6B7280" />
+          <CameraIcon size={64} color="#6B7280" />
           <Text style={styles.permissionTitle}>Dostęp do kamery</Text>
           <Text style={styles.permissionText}>
             Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym
@@ -54,35 +120,78 @@ export default function AITab() {
     );
   }
 
+  if (!device) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Ładowanie kamery...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   const toggleCameraFacing = () => {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
+    setCameraPosition(current => (current === 'back' ? 'front' : 'back'));
   };
 
   const startAnalysis = async () => {
+    if (!deviceSupported) {
+      // Fallback do starego zachowania dla nieobsługiwanych urządzeń
+      setIsRecording(true);
+      setIsAnalyzing(true);
+      setAnalysisResult(null);
+      
+      setTimeout(() => {
+        const mockResult: AnalysisResult = {
+          score: Math.floor(Math.random() * 40) + 60,
+          feedback: 'Podstawowa analiza. Upgrade urządzenia dla lepszych funkcji.',
+          suggestions: [
+            'Utrzymuj równomierne tempo',
+            'Skup się na poprawnej postawie',
+            'Kontroluj oddech'
+          ]
+        };
+        setAnalysisResult(mockResult);
+        setIsRecording(false);
+        setIsAnalyzing(false);
+      }, 3000);
+      return;
+    }
+
     setIsRecording(true);
     setIsAnalyzing(true);
     setAnalysisResult(null);
-
-    // Symulacja analizy AI (w rzeczywistej aplikacji tutaj byłaby integracja z AI)
-    setTimeout(() => {
-      const mockResult: AnalysisResult = {
-        score: Math.floor(Math.random() * 40) + 60, // 60-100
-        feedback: 'Dobra technika! Pamiętaj o równomiernym tempie ruchu.',
-        suggestions: [
-          'Utrzymuj prostą postawę',
-          'Kontroluj oddech podczas ćwiczenia',
-          'Zwiększ amplitudę ruchu'
-        ]
-      };
-      setAnalysisResult(mockResult);
-      setIsRecording(false);
-      setIsAnalyzing(false);
-    }, 3000);
+    setCurrentRepCount(0);
+    setCurrentQuality(0);
+    setShowExerciseSelector(false);
   };
 
   const stopAnalysis = () => {
     setIsRecording(false);
     setIsAnalyzing(false);
+  };
+
+  const handleAnalysisComplete = (result: CloudAnalysisResponse) => {
+    const analysisResult: AnalysisResult = {
+      score: result.score,
+      feedback: result.overallAssessment,
+      suggestions: result.suggestions,
+      overallAssessment: result.overallAssessment,
+      technicalFeedback: result.technicalFeedback,
+      motivationalMessage: result.motivationalMessage
+    };
+    
+    setAnalysisResult(analysisResult);
+    setIsRecording(false);
+    setIsAnalyzing(false);
+  };
+
+  const handleRepDetected = (repCount: number) => {
+    setCurrentRepCount(repCount);
+  };
+
+  const handleQualityUpdate = (score: number) => {
+    setCurrentQuality(score);
   };
 
   const getScoreColor = (score: number) => {
@@ -91,42 +200,101 @@ export default function AITab() {
     return '#EF4444';
   };
 
+  const toggleExerciseSelector = () => {
+    if (!isAnalyzing) {
+      setShowExerciseSelector(!showExerciseSelector);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>AI Trener</Text>
         <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
+        
+        {/* Przycisk wyboru ćwiczenia */}
+        <TouchableOpacity 
+          style={styles.exerciseButton} 
+          onPress={toggleExerciseSelector}
+          disabled={isAnalyzing}
+        >
+          <Text style={styles.exerciseButtonText}>
+            Ćwiczenie: {getExerciseName(selectedExercise)}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.cameraContainer}>
-        <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+        <Camera
+          style={styles.camera}
+          device={device}
+          isActive={true}
+          frameProcessor={deviceSupported ? frameProcessor : undefined}
+        />
+        
         <View style={styles.cameraOverlay}>
+          {/* Wskaźnik nagrywania */}
           {isRecording && (
             <View style={styles.recordingIndicator}>
               <View style={styles.recordingDot} />
-              <Text style={styles.recordingText}>Analizuję...</Text>
+              <Text style={styles.recordingText}>
+                Analizuję {selectedExercise.replace('_', ' ')}...
+              </Text>
             </View>
           )}
           
+          {/* Przycisk odwracania kamery */}
           <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
             <RotateCcw size={24} color="#FFFFFF" />
           </TouchableOpacity>
+          
+                     {/* Manager analizy AI */}
+           {deviceSupported && (
+             <AnalysisManager
+               exerciseType={selectedExercise}
+               isAnalyzing={isAnalyzing}
+               keyPoints={keyPoints}
+               onAnalysisComplete={handleAnalysisComplete}
+               onRepDetected={handleRepDetected}
+               onQualityUpdate={handleQualityUpdate}
+             />
+           )}
         </View>
       </View>
 
+      {/* Selektor ćwiczeń */}
+      <ExerciseSelector
+        selectedExercise={selectedExercise}
+        onExerciseSelect={setSelectedExercise}
+        isVisible={showExerciseSelector}
+      />
+
+      {/* Kontrolki */}
       <View style={styles.controlsContainer}>
         {!isRecording ? (
           <TouchableOpacity style={styles.startButton} onPress={startAnalysis}>
             <Zap size={24} color="#FFFFFF" />
-            <Text style={styles.startButtonText}>Rozpocznij Analizę</Text>
+            <Text style={styles.startButtonText}>
+              Rozpocznij Analizę {getExerciseName(selectedExercise)}
+            </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.stopButton} onPress={stopAnalysis}>
             <Text style={styles.stopButtonText}>Zatrzymaj</Text>
           </TouchableOpacity>
         )}
+        
+        {/* Informacje w czasie rzeczywistym */}
+        {isAnalyzing && (
+          <View style={styles.realtimeInfo}>
+            <Text style={styles.realtimeText}>
+              Powtórzenia: {currentRepCount} | Jakość: {Math.round(currentQuality)}%
+            </Text>
+          </View>
+        )}
       </View>
 
+      {/* Wyniki analizy */}
       {analysisResult && (
         <View style={styles.resultsContainer}>
           <View style={styles.scoreContainer}>
@@ -136,14 +304,38 @@ export default function AITab() {
             </Text>
           </View>
 
+          {/* Motywacyjny komunikat */}
+          {analysisResult.motivationalMessage && (
+            <View style={styles.motivationContainer}>
+              <Text style={styles.motivationText}>
+                {analysisResult.motivationalMessage}
+              </Text>
+            </View>
+          )}
+
+          {/* Ocena ogólna */}
           <View style={styles.feedbackContainer}>
             <View style={styles.feedbackHeader}>
               <CheckCircle size={20} color="#10B981" />
               <Text style={styles.feedbackTitle}>Ocena</Text>
             </View>
-            <Text style={styles.feedbackText}>{analysisResult.feedback}</Text>
+            <Text style={styles.feedbackText}>
+              {analysisResult.overallAssessment || analysisResult.feedback}
+            </Text>
           </View>
 
+          {/* Feedback techniczny */}
+          {analysisResult.technicalFeedback && (
+            <View style={styles.technicalContainer}>
+              <View style={styles.feedbackHeader}>
+                <AlertCircle size={20} color="#2563EB" />
+                <Text style={styles.feedbackTitle}>Wskazówki techniczne</Text>
+              </View>
+              <Text style={styles.feedbackText}>{analysisResult.technicalFeedback}</Text>
+            </View>
+          )}
+
+          {/* Sugestie */}
           <View style={styles.suggestionsContainer}>
             <View style={styles.suggestionsHeader}>
               <AlertCircle size={20} color="#F59E0B" />
@@ -161,6 +353,21 @@ export default function AITab() {
   );
 }
 
+/**
+ * Zwraca czytelną nazwę ćwiczenia
+ */
+const getExerciseName = (exerciseId: string): string => {
+  const names: Record<string, string> = {
+    'neck_stretch': 'Rozciąganie szyi',
+    'shoulder_raise': 'Podnoszenie ramion',
+    'arm_raise': 'Unoszenie rąk',
+    'squat': 'Przysiady',
+    'lunge': 'Wykroki'
+  };
+  
+  return names[exerciseId] || 'Nieznane ćwiczenie';
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -169,7 +376,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: 16,
   },
   title: {
     fontSize: 28,
@@ -181,6 +388,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter-Regular',
     color: '#6B7280',
+    marginBottom: 12,
+  },
+  exerciseButton: {
+    backgroundColor: '#EBF4FF',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2563EB',
+  },
+  exerciseButtonText: {
+    fontSize: 14,
+    fontFamily: 'Inter-SemiBold',
+    color: '#2563EB',
+    textAlign: 'center',
   },
   loadingContainer: {
     flex: 1,
@@ -284,7 +506,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   startButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Inter-SemiBold',
     color: '#FFFFFF',
   },
@@ -298,6 +520,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
     color: '#FFFFFF',
+  },
+  realtimeInfo: {
+    marginTop: 12,
+    backgroundColor: '#E0E7FF',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  realtimeText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Medium',
+    color: '#3730A3',
   },
   resultsContainer: {
     marginHorizontal: 24,
@@ -325,8 +559,27 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: 'Inter-SemiBold',
   },
+  motivationContainer: {
+    backgroundColor: '#F0FDF4',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  motivationText: {
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    color: '#166534',
+    textAlign: 'center',
+  },
   feedbackContainer: {
-    marginBottom: 20,
+    marginBottom: 16,
+  },
+  technicalContainer: {
+    marginBottom: 16,
+    backgroundColor: '#F0F9FF',
+    padding: 12,
+    borderRadius: 8,
   },
   feedbackHeader: {
     flexDirection: 'row',

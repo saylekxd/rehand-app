@@ -76,4 +76,7 @@ export interface OnboardingData {
   medical_conditions: string[];
   fitness_level: 'beginner' | 'intermediate' | 'advanced';
   goals: string[];
-} 
+}
+
+// Export AI-related types
+export * from './ai'; 
