@@ -38,21 +38,60 @@ export class MLAnalyzer {
   }
 
   private async initializeCoreML() {
-    // TODO: Load Core ML model from app bundle
-    // For now, use mock implementation
-    console.log('📱 Core ML model loaded (iOS)');
-    this.model = {
-      predict: this.mockPrediction.bind(this)
-    };
+    try {
+      console.log('📱 Loading Core ML model for iOS...');
+      
+      // Check if Core ML model exists in app bundle
+      const modelPath = `${require('react-native-fs').MainBundlePath}/models/exercise_analyzer.mlmodel`;
+      const modelExists = await require('react-native-fs').exists(modelPath);
+      
+      if (modelExists) {
+        // Load actual Core ML model
+        const CoreML = require('@react-native-ml-kit/core-ml');
+        this.model = await CoreML.loadModel(modelPath);
+        console.log('✅ Core ML model loaded successfully');
+      } else {
+        console.log('⚠️ Core ML model not found, using rule-based fallback');
+        this.model = {
+          predict: this.mockPrediction.bind(this)
+        };
+      }
+    } catch (error) {
+      console.log('⚠️ Core ML not available, using rule-based analysis:', error);
+      this.model = {
+        predict: this.mockPrediction.bind(this)
+      };
+    }
   }
 
   private async initializeTensorFlowLite() {
-    // TODO: Load TensorFlow Lite model
-    // For now, use mock implementation  
-    console.log('🤖 TensorFlow Lite model loaded (Android)');
-    this.model = {
-      predict: this.mockPrediction.bind(this)
-    };
+    try {
+      console.log('🤖 Loading TensorFlow Lite model for Android...');
+      
+      // Check if TFLite model exists in app bundle
+      const modelPath = `${require('react-native-fs').DocumentDirectoryPath}/models/exercise_analyzer.tflite`;
+      const modelExists = await require('react-native-fs').exists(modelPath);
+      
+      if (modelExists) {
+        // Load TensorFlow Lite model
+        const tf = require('@tensorflow/tfjs');
+        await tf.ready();
+        
+        const modelUrl = `file://${modelPath}`;
+        this.model = await tf.loadLayersModel(modelUrl);
+        console.log('✅ TensorFlow Lite model loaded successfully');
+      } else {
+        console.log('⚠️ TensorFlow Lite model not found, using rule-based fallback');
+        this.model = {
+          predict: this.mockPrediction.bind(this)
+        };
+      }
+    } catch (error) {
+      console.log('⚠️ TensorFlow Lite not available, using rule-based analysis:', error);
+      this.model = {
+        predict: this.mockPrediction.bind(this)
+      };
+    }
   }
 
   async analyzeMovement(features: FeatureFrame): Promise<MLModelOutput | null> {

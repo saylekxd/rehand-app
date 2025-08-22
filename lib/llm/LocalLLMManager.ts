@@ -143,37 +143,92 @@ export class LocalLLMManager {
 
   private async initializeReactNativeAI(modelName: string): Promise<void> {
     try {
-      // TODO: Initialize React Native AI
       console.log(`🔧 Initializing React Native AI with ${modelName}...`);
       
-      // Mock initialization for now
+      // Check if React Native AI is available and has models
+      try {
+        // Try to import React Native AI (if available)
+        const RNAI = require('react-native-ai');
+        
+        // Check if model exists locally
+        const modelExists = await this.checkModelExists(`models/${modelName}`);
+        
+        if (modelExists && RNAI) {
+          this.model = await RNAI.loadModel({
+            modelName,
+            maxTokens: 50, // Short responses for real-time feedback
+            temperature: 0.7,
+            topP: 0.9
+          });
+          console.log('✅ React Native AI model loaded successfully');
+        } else {
+          throw new Error('React Native AI model not available');
+        }
+      } catch (importError) {
+        console.log('⚠️ React Native AI not available, using hardcoded messages');
+        // Fallback to hardcoded messages
+        this.model = {
+          generate: this.mockGenerate.bind(this),
+          isReady: () => true
+        };
+      }
+    } catch (error) {
+      console.error('❌ Failed to initialize React Native AI:', error);
+      // Final fallback
       this.model = {
         generate: this.mockGenerate.bind(this),
         isReady: () => true
       };
-      
-      console.log('✅ React Native AI initialized');
-    } catch (error) {
-      console.error('❌ Failed to initialize React Native AI:', error);
-      throw error;
     }
   }
 
   private async initializeMLC(modelName: string): Promise<void> {
     try {
-      // TODO: Initialize MLC
       console.log(`🔧 Initializing MLC with ${modelName}...`);
       
-      // Mock initialization for now
+      try {
+        // Try to import MLC (if available)
+        const MLC = require('mlc-llm');
+        
+        // Check if MLC model exists
+        const modelExists = await this.checkModelExists(`models/mlc/${modelName}`);
+        
+        if (modelExists && MLC) {
+          this.model = await MLC.ChatModule.initialize({
+            model: modelName,
+            temperature: 0.7,
+            max_gen_len: 100, // Limit for mobile efficiency
+            top_p: 0.9
+          });
+          console.log('✅ MLC model loaded successfully');
+        } else {
+          throw new Error('MLC model not available');
+        }
+      } catch (importError) {
+        console.log('⚠️ MLC not available, using hardcoded messages');
+        // Fallback to hardcoded messages
+        this.model = {
+          generate: this.mockGenerate.bind(this),
+          isReady: () => true
+        };
+      }
+    } catch (error) {
+      console.error('❌ Failed to initialize MLC:', error);
+      // Final fallback
       this.model = {
         generate: this.mockGenerate.bind(this),
         isReady: () => true
       };
-      
-      console.log('✅ MLC initialized');
+    }
+  }
+
+  private async checkModelExists(modelPath: string): Promise<boolean> {
+    try {
+      const RNFS = require('react-native-fs');
+      const fullPath = `${RNFS.DocumentDirectoryPath}/${modelPath}`;
+      return await RNFS.exists(fullPath);
     } catch (error) {
-      console.error('❌ Failed to initialize MLC:', error);
-      throw error;
+      return false;
     }
   }
 

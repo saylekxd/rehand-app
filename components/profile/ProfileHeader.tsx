@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { User } from 'lucide-react-native';
+import { User as UserIcon } from 'lucide-react-native';
 
 interface User {
   id: string;
@@ -72,7 +72,7 @@ export default function ProfileHeader({ user, onEditPress }: ProfileHeaderProps)
           style={styles.editButton} 
           onPress={onEditPress}
         >
-          <User size={20} color="#2563EB" />
+          <UserIcon size={20} color="#2563EB" />
         </TouchableOpacity>
       </View>
     </View>

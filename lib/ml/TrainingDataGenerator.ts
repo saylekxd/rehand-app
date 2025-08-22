@@ -103,7 +103,7 @@ export class TrainingDataGenerator {
       }
     };
     
-    return patterns[exerciseType] || patterns[ExerciseType.GENERAL];
+    return patterns[exerciseType as keyof typeof patterns] || patterns[ExerciseType.GENERAL];
   }
 
   private static generateFrameAngles(
