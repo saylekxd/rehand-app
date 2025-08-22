@@ -1,0 +1,34 @@
+{
+  "exerciseType": "leg_raises",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "transition": 58,
+    "concentric": 22,
+    "eccentric": 20
+  },
+  "qualityDistribution": {
+    "average": 73.83474597222457,
+    "min": 68.12761432465123,
+    "max": 79.6208812164868,
+    "bins": {
+      "poor": 0,
+      "fair": 0,
+      "good": 500,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500
+    }
+  },
+  "deviceTierDistribution": {
+    "pro": 126,
+    "ultra": 127,
+    "basic": 131,
+    "enhanced": 116
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

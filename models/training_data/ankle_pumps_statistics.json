@@ -1,0 +1,35 @@
+{
+  "exerciseType": "ankle_pumps",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "transition": 65,
+    "concentric": 18,
+    "eccentric": 17,
+    "isometric": 0
+  },
+  "qualityDistribution": {
+    "average": 72.87454223034143,
+    "min": 66.50858754994486,
+    "max": 79.52266164106709,
+    "bins": {
+      "poor": 0,
+      "fair": 0,
+      "good": 500,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500
+    }
+  },
+  "deviceTierDistribution": {
+    "basic": 132,
+    "ultra": 121,
+    "pro": 126,
+    "enhanced": 121
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

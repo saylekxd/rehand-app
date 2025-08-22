@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { Camera, RotateCcw, Zap, CircleCheck as CheckCircle, CircleAlert as Aler
 import { useAIExerciseAnalysis } from '../../lib/useAIExerciseAnalysis';
 import { ExerciseType } from '../../lib/ml/types';
 import { OverlayRenderer } from '../../lib/visualization/OverlayRenderer';
+import { MockFrameGenerator } from '../../lib/test/MockFrameGenerator';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -29,6 +30,7 @@ export default function AITab() {
   const [permission, requestPermission] = useCameraPermissions();
   const [selectedExercise, setSelectedExercise] = useState<ExerciseType>(ExerciseType.NECK_STRETCH);
   const cameraRef = useRef<CameraView>(null);
+  const mockFrameGenerator = useRef<MockFrameGenerator>(new MockFrameGenerator(5)); // 5fps for testing
   
   // Initialize AI system
   const aiAnalysis = useAIExerciseAnalysis({
@@ -78,9 +80,21 @@ export default function AITab() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   };
 
+
+
   const startAnalysis = async () => {
     try {
+      // Setup mock frame processing for testing
+      mockFrameGenerator.current.addCallback(async (visionOutput) => {
+        // Convert VisionOutput to ImageData format (simplified for testing)
+        const mockImageData = new ImageData(640, 480);
+        await aiAnalysis.processFrame(mockImageData);
+      });
+      
       aiAnalysis.startSession();
+      mockFrameGenerator.current.start();
+      
+      console.log('🚀 AI Analysis started with mock frame processing at 5fps');
     } catch (error) {
       Alert.alert('Błąd', 'Nie udało się uruchomić analizy AI. Sprawdź połączenie i spróbuj ponownie.');
       console.error('AI Analysis error:', error);
@@ -89,7 +103,9 @@ export default function AITab() {
 
   const stopAnalysis = async () => {
     try {
+      mockFrameGenerator.current.stop();
       await aiAnalysis.endSession();
+      console.log('🛑 AI Analysis stopped');
     } catch (error) {
       console.error('Error ending session:', error);
     }
@@ -157,7 +173,14 @@ export default function AITab() {
         </View>
 
         <View style={styles.cameraContainer}>
-          <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+          <CameraView 
+            style={styles.camera} 
+            facing={facing} 
+            ref={cameraRef}
+            onCameraReady={() => {
+              console.log('📸 Camera ready for AI analysis');
+            }}
+          />
           
           {/* 3D Visualization Overlay */}
           {isAnalyzing && visualizationData && (

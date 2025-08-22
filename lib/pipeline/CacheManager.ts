@@ -256,7 +256,7 @@ export class CacheManager {
     this.cleanupInterval = setInterval(() => {
       this.cleanupExpiredEntries();
       this.updateCacheStats();
-    }, 30000); // Cleanup every 30 seconds
+    }, 30000) as unknown as NodeJS.Timeout; // Cleanup every 30 seconds
   }
 
   private cleanupExpiredEntries(): void {

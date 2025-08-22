@@ -202,7 +202,7 @@ export class MLAnalyzer {
     const movementPhase = {
       eccentric: dominantPhase === 'eccentric' ? 0.8 : 0.1,
       concentric: dominantPhase === 'concentric' ? 0.8 : 0.1,
-      isometric: dominantPhase === 'isometric' ? 0.8 : 0.1,
+      isometric: 0.1, // Isometric phase detection to be implemented
       transition: dominantPhase === 'transition' ? 0.8 : 0.1
     };
 

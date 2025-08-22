@@ -1,0 +1,35 @@
+{
+  "exerciseType": "neck_stretch",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "transition": 98,
+    "eccentric": 1,
+    "concentric": 1
+  },
+  "qualityDistribution": {
+    "average": 70.53897661620306,
+    "min": 55.986106311307594,
+    "max": 76.9722812758724,
+    "bins": {
+      "poor": 0,
+      "fair": 15,
+      "good": 485,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500,
+      "headForwardPosture": 50
+    }
+  },
+  "deviceTierDistribution": {
+    "ultra": 135,
+    "basic": 118,
+    "enhanced": 120,
+    "pro": 127
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

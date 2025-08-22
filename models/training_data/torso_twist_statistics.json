@@ -1,0 +1,34 @@
+{
+  "exerciseType": "torso_twist",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "eccentric": 19,
+    "concentric": 19,
+    "transition": 62
+  },
+  "qualityDistribution": {
+    "average": 72.94020304386434,
+    "min": 66.74962330593911,
+    "max": 78.96724837360566,
+    "bins": {
+      "poor": 0,
+      "fair": 0,
+      "good": 500,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500
+    }
+  },
+  "deviceTierDistribution": {
+    "basic": 130,
+    "ultra": 95,
+    "pro": 144,
+    "enhanced": 131
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

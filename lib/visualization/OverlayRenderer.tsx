@@ -40,7 +40,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
   // Initialize animated values for elements that need animation
   useEffect(() => {
     [...overlayState.angles, ...overlayState.errorHighlights].forEach((element, index) => {
-      const key = `${element.joint || element.errorType}_${index}`;
+      const key = `${'joint' in element ? element.joint : element.errorType}_${index}`;
       if (!animatedValues.has(key)) {
         animatedValues.set(key, new Animated.Value(0));
       }
@@ -142,7 +142,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
           d={arcPath}
           stroke={angle.visualStyle.color}
           strokeWidth={angle.visualStyle.thickness}
-          strokeOpacity={opacity}
+          strokeOpacity={typeof opacity === 'number' ? opacity : 0.8}
           fill="none"
           strokeLinecap="round"
         />
@@ -153,7 +153,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
           cy={angle.centerPoint.y}
           r={4}
           fill={angle.visualStyle.color}
-          fillOpacity={opacity * 0.8}
+          fillOpacity={typeof opacity === 'number' ? opacity * 0.8 : 0.6}
         />
 
         {/* Angle value text */}
@@ -163,7 +163,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
             y={angle.centerPoint.y - 10}
             fontSize="12"
             fill={angle.visualStyle.color}
-            fillOpacity={opacity}
+            fillOpacity={typeof opacity === 'number' ? opacity : 0.8}
             textAnchor="start"
           >
             {Math.round(angle.angle)}°
@@ -177,7 +177,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
             y={angle.centerPoint.y + 5}
             fontSize="10"
             fill={angle.visualStyle.color}
-            fillOpacity={opacity * 0.8}
+            fillOpacity={typeof opacity === 'number' ? opacity * 0.8 : 0.6}
             textAnchor="start"
           >
             {angle.joint.replace('_', ' ')}
@@ -310,7 +310,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
                 y={(guide.from.y + guide.to.y) / 2 - 10}
                 fontSize="10"
                 fill={guide.style.color}
-                fillOpacity={guide.style.opacity * 0.9}
+                fillOpacity={typeof guide.style.opacity === 'number' ? guide.style.opacity * 0.9 : 0.7}
                 textAnchor="middle"
               >
                 {guide.label}
@@ -365,7 +365,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
           fill="none"
           stroke={error.visualization.color}
           strokeWidth="3"
-          strokeOpacity={opacity}
+          strokeOpacity={typeof opacity === 'number' ? opacity : 0.8}
         />
         
         {/* Warning icon (simplified) */}
@@ -374,7 +374,7 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
           cy={error.position.y}
           r="3"
           fill={error.visualization.color}
-          fillOpacity={opacity}
+          fillOpacity={typeof opacity === 'number' ? opacity : 0.8}
         />
 
         {/* Correction hint */}
@@ -384,9 +384,8 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
             y={error.position.y + radius + 15}
             fontSize="9"
             fill={error.visualization.color}
-            fillOpacity={opacity * 0.9}
+            fillOpacity={typeof opacity === 'number' ? opacity * 0.9 : 0.7}
             textAnchor="middle"
-            maxWidth="100"
           >
             {error.correctionHint}
           </SvgText>

@@ -1,0 +1,35 @@
+{
+  "exerciseType": "arm_circles",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "transition": 67,
+    "eccentric": 16,
+    "concentric": 16,
+    "isometric": 0
+  },
+  "qualityDistribution": {
+    "average": 72.94454041866189,
+    "min": 66.62972039877594,
+    "max": 79.14678815678606,
+    "bins": {
+      "poor": 0,
+      "fair": 0,
+      "good": 500,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500
+    }
+  },
+  "deviceTierDistribution": {
+    "pro": 125,
+    "basic": 124,
+    "enhanced": 118,
+    "ultra": 133
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

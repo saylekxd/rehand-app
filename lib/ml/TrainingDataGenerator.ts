@@ -95,6 +95,36 @@ export class TrainingDataGenerator {
         frequency: 0.4,
         phases: ['elevation', 'retraction', 'depression', 'protraction']
       },
+      [ExerciseType.ARM_CIRCLES]: {
+        primaryJoint: 'arm',
+        amplitude: 60,
+        frequency: 0.6,
+        phases: ['forward_up', 'forward_down', 'backward_up', 'backward_down']
+      },
+      [ExerciseType.TORSO_TWIST]: {
+        primaryJoint: 'spine',
+        amplitude: 30,
+        frequency: 0.3,
+        phases: ['center', 'left_twist', 'center', 'right_twist']
+      },
+      [ExerciseType.LEG_RAISES]: {
+        primaryJoint: 'hip',
+        amplitude: 45,
+        frequency: 0.5,
+        phases: ['start', 'raise', 'hold', 'lower']
+      },
+      [ExerciseType.ANKLE_PUMPS]: {
+        primaryJoint: 'ankle',
+        amplitude: 15,
+        frequency: 1.0,
+        phases: ['flexion', 'extension']
+      },
+      [ExerciseType.LUNGES]: {
+        primaryJoint: 'knee',
+        amplitude: 90,
+        frequency: 0.2,
+        phases: ['start', 'step_forward', 'descend', 'ascend']
+      },
       [ExerciseType.GENERAL]: {
         primaryJoint: 'general',
         amplitude: 20,

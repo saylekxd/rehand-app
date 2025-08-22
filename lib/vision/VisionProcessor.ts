@@ -15,15 +15,15 @@ export class VisionProcessor {
   private async initializePoseDetection() {
     try {
       // Initialize MediaPipe Pose
-      const { Pose } = await import('@mediapipe/pose');
+      const { Pose } = require('@mediapipe/pose');
       
       this.pose = new Pose({
-        locateFile: (file) => {
+        locateFile: (file: string) => {
           return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
         }
       });
 
-      this.pose.setOptions({
+      this.pose?.setOptions({
         modelComplexity: 1,
         smoothLandmarks: true,
         enableSegmentation: false,
@@ -32,7 +32,7 @@ export class VisionProcessor {
         minTrackingConfidence: 0.5
       });
 
-      this.pose.onResults((results) => {
+      this.pose?.onResults((results) => {
         this.onPoseResults(results);
       });
 
@@ -73,7 +73,15 @@ export class VisionProcessor {
     }
 
     try {
-      await this.pose.send({ image: imageData });
+      // Convert ImageData to HTMLCanvasElement for MediaPipe
+      const canvas = document.createElement('canvas');
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.putImageData(imageData, 0, 0);
+        await this.pose.send({ image: canvas });
+      }
       return null; // Results handled in onPoseResults callback
     } catch (error) {
       console.error('Error processing frame:', error);

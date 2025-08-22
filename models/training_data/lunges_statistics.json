@@ -1,0 +1,35 @@
+{
+  "exerciseType": "lunges",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "eccentric": 24,
+    "transition": 51,
+    "isometric": 1,
+    "concentric": 24
+  },
+  "qualityDistribution": {
+    "average": 73.56475153096203,
+    "min": 67.72252683650517,
+    "max": 79.41981510244065,
+    "bins": {
+      "poor": 0,
+      "fair": 0,
+      "good": 500,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500
+    }
+  },
+  "deviceTierDistribution": {
+    "enhanced": 124,
+    "pro": 123,
+    "basic": 120,
+    "ultra": 133
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

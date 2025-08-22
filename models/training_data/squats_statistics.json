@@ -1,0 +1,35 @@
+{
+  "exerciseType": "squats",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "transition": 51,
+    "concentric": 27,
+    "eccentric": 22
+  },
+  "qualityDistribution": {
+    "average": 71.09129620499534,
+    "min": 57.99107848860231,
+    "max": 80.26739190342538,
+    "bins": {
+      "poor": 0,
+      "fair": 25,
+      "good": 474,
+      "excellent": 1
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500,
+      "valgusKnee": 122
+    }
+  },
+  "deviceTierDistribution": {
+    "enhanced": 126,
+    "pro": 125,
+    "basic": 125,
+    "ultra": 124
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

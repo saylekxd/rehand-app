@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-08-22T11:31:54.256Z",
+  "totalExercises": 9,
+  "totalSamples": 4500,
+  "results": [
+    {
+      "exerciseType": "neck_stretch",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "shoulder_rolls",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "arm_circles",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "torso_twist",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "leg_raises",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "ankle_pumps",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "squats",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "lunges",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    },
+    {
+      "exerciseType": "general",
+      "trainSize": 350,
+      "validSize": 75,
+      "testSize": 75,
+      "totalSize": 500
+    }
+  ]
+}

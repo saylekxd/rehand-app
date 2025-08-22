@@ -1,0 +1,32 @@
+{
+  "exerciseType": "shoulder_rolls",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "transition": 100
+  },
+  "qualityDistribution": {
+    "average": 70.54839393992195,
+    "min": 64.4876679652054,
+    "max": 76.06766729607823,
+    "bins": {
+      "poor": 0,
+      "fair": 0,
+      "good": 500,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500
+    }
+  },
+  "deviceTierDistribution": {
+    "basic": 153,
+    "ultra": 101,
+    "enhanced": 127,
+    "pro": 119
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

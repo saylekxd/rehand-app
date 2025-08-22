@@ -1,0 +1,32 @@
+{
+  "exerciseType": "general",
+  "totalSamples": 500,
+  "phaseDistribution": {
+    "transition": 100
+  },
+  "qualityDistribution": {
+    "average": 68.46686397317426,
+    "min": 62.532351405553925,
+    "max": 74.92775676845767,
+    "bins": {
+      "poor": 0,
+      "fair": 0,
+      "good": 500,
+      "excellent": 0
+    }
+  },
+  "errorDistribution": {
+    "mostCommon": "asymmetricMovement",
+    "distribution": {
+      "asymmetricMovement": 500
+    }
+  },
+  "deviceTierDistribution": {
+    "ultra": 126,
+    "pro": 114,
+    "basic": 134,
+    "enhanced": 126
+  },
+  "averageSequenceLength": 60,
+  "featureCount": 9
+}

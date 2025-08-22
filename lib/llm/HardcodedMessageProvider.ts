@@ -246,7 +246,7 @@ export class HardcodedMessageProvider {
     
     Object.values(this.messages).forEach(category => {
       Object.values(category).forEach(subcategory => {
-        totalMessages += subcategory.length;
+        totalMessages += (subcategory as any[]).length;
       });
     });
 

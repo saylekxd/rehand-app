@@ -90,8 +90,8 @@ export class HierarchicalPipeline {
       // Setup thread configurations
       await this.setupThreads();
       
-      // Initialize adaptive quality monitoring
-      this.initializeAdaptiveQuality();
+      // Initialize performance monitoring
+      this.initializePerformanceMonitoring();
 
       console.log('✅ Hierarchical Pipeline initialized successfully');
       this.emitEvent({
@@ -358,7 +358,7 @@ export class HierarchicalPipeline {
     this.performanceMonitorInterval = setInterval(() => {
       this.updateMetrics();
       this.checkAdaptiveQuality();
-    }, 1000);
+    }, 1000) as unknown as NodeJS.Timeout;
   }
 
   private updateFrameMetrics(frameStartTime: number): void {
