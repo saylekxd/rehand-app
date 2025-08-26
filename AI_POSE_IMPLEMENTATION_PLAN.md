@@ -6,7 +6,7 @@
 
 ---
 
-[ ] Etap 0 — Preflight (zamiana kamery na VisionCamera)
+[x] Etap 0 — Preflight (zamiana kamery na VisionCamera)
 **Prompt**
 - Zastąp `expo-camera` przez VisionCamera v3 w dev-cliencie, zachowując istniejące UI/UX. Bez ML.
 
@@ -15,17 +15,19 @@
 - Podgląd kamery działa w obecnym `CameraSurface` i fullscreen modal.
 
 **Akcje**
-- Zainstaluj: `react-native-vision-camera@^3`, `react-native-worklets-core@^1`, `@shopify/react-native-skia`, `react-native-fast-tflite`, `vision-camera-resize-plugin`.
-- Przebuduj dev client (`expo run:ios` / `expo run:android`).
-- Podmień `CameraView` → `Camera` (VisionCamera) w `components/ai/CameraSurface.tsx` i hooki uprawnień.
+- [x] Zainstaluj: `react-native-vision-camera@^3`, `react-native-worklets-core@^1`, `@shopify/react-native-skia`, `react-native-fast-tflite`, `vision-camera-resize-plugin`.
+- [x] Dodaj `.tflite` do `metro.config.js` (assetExts).
+- [x] Utwórz `components/ai/CameraSurface.tsx` z VisionCamera i przenieś uprawnienia.
+- [x] Zrefaktoryzuj `app/(tabs)/ai.tsx` do użycia `CameraSurface`.
+- [ ] Przebuduj dev client (`expo run:ios` / `expo run:android`).
 
 --- WAŻNE RZECZY DO POTWIERDZENIA PRZED ETAPEM 1---
 Kamera i uprawnienia:
-[ ] Kod używa expo-camera (CameraView, useCameraPermissions) w app/(tabs)/ai.tsx i components/ai/CameraSurface.tsx.
-[ ] isionCamera ma inny model: useCameraDevice('front'|'back') + <Camera device={device} isActive frameProcessor={...} />, a uprawnienia przez useCameraPermission() lub metody statyczne.
-[ ] Konieczna refaktoryzacja obu plików: typy, hook uprawnień, API komponentu kamery.
-[ ] Usuń expo-camera z zależności po migracji, żeby uniknąć dublowania i pomyłek w importach.
-[ ] Metro bundler:
+[x] Kod NIE używa już expo-camera w `app/(tabs)/ai.tsx` i `components/ai/CameraSurface.tsx` (zmigrowano na VisionCamera).
+[x] VisionCamera ma inny model: useCameraDevice('front'|'back') + <Camera device={device} isActive frameProcessor={...} />, a uprawnienia przez useCameraPermission() lub metody statyczne.
+[x] Konieczna refaktoryzacja obu plików: typy, hook uprawnień, API komponentu kamery — ZROBIONE.
+[x] Usuń expo-camera z zależności po migracji, żeby uniknąć dublowania i pomyłek w importach.
+[x] Metro bundler:
 Brakuje wsparcia dla assetów .tflite. Trzeba rozszerzyć metro.config.js.
 
 ---

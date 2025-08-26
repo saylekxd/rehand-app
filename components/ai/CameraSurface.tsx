@@ -1,54 +1,66 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity, Text, ViewStyle } from 'react-native';
-import { CameraView, CameraType } from 'expo-camera';
-import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
+import { View, StyleSheet, ViewStyle, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 interface CameraSurfaceProps {
-  facing: CameraType;
-  onToggleFacing: () => void;
-  isRecording: boolean;
-  isFullScreen: boolean;
-  onToggleFullScreen: () => void;
-  cameraRef?: React.RefObject<CameraView | null>;
-  children?: React.ReactNode;
+  facing: 'front' | 'back';
+  isActive: boolean;
+  onToggleFacing?: () => void;
+  isRecording?: boolean;
+  isFullScreen?: boolean;
+  onToggleFullScreen?: () => void;
+  cameraRef?: React.RefObject<Camera> | React.Ref<any>;
   containerStyle?: ViewStyle;
+  children?: React.ReactNode;
 }
 
-export default function CameraSurface({
-  facing,
-  onToggleFacing,
-  isRecording,
-  isFullScreen,
-  onToggleFullScreen,
-  cameraRef,
-  children,
-  containerStyle,
-}: CameraSurfaceProps) {
+export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen }: CameraSurfaceProps) {
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();
+
+  React.useEffect(() => {
+    if (!hasPermission) {
+      requestPermission();
+    }
+  }, [hasPermission, requestPermission]);
+
+  if (!device) return <View style={[styles.container, styles.containerInline, styles.black, containerStyle]} />;
+
   const topOffset = (isFullScreen ? insets.top : 0) + 12;
+
   return (
     <View style={[styles.container, isFullScreen ? styles.containerFull : styles.containerInline, containerStyle]}>
-      <CameraView style={StyleSheet.absoluteFill} facing={facing} ref={cameraRef} />
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={isActive}
+        ref={cameraRef as any}
+      />
 
       <View style={styles.overlay}>
-        {isRecording && (
+        {isRecording ? (
           <View style={[styles.recordingIndicator, { top: topOffset }] }>
             <View style={styles.recordingDot} />
             <Text style={styles.recordingText}>Analizuję...</Text>
           </View>
-        )}
+        ) : null}
 
-        {/* Top-right controls */}
         <View style={[styles.topRightControls, { top: topOffset }]}>
-          <TouchableOpacity style={styles.iconButton} onPress={onToggleFacing} accessibilityRole="button" accessibilityLabel="Przełącz kamerę">
-            <RotateCcw size={22} color="#FFFFFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={onToggleFullScreen} accessibilityRole="button" accessibilityLabel={isFullScreen ? 'Wyłącz pełny ekran' : 'Włącz pełny ekran'}>
-            {isFullScreen ? <Minimize2 size={22} color="#FFFFFF" /> : <Maximize2 size={22} color="#FFFFFF" />}
-          </TouchableOpacity>
+          {onToggleFacing ? (
+            <TouchableOpacity style={styles.iconButton} onPress={onToggleFacing} accessibilityRole="button" accessibilityLabel="Przełącz kamerę">
+              <RotateCcw size={22} color="#FFFFFF" />
+            </TouchableOpacity>
+          ) : null}
+          {onToggleFullScreen ? (
+            <TouchableOpacity style={styles.iconButton} onPress={onToggleFullScreen} accessibilityRole="button" accessibilityLabel={isFullScreen ? 'Wyłącz pełny ekran' : 'Włącz pełny ekran'}>
+              {isFullScreen ? <Minimize2 size={22} color="#FFFFFF" /> : <Maximize2 size={22} color="#FFFFFF" />}
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         {children}
@@ -67,6 +79,9 @@ const styles = StyleSheet.create({
   },
   containerFull: {
     flex: 1,
+  },
+  black: {
+    backgroundColor: '#000',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
@@ -108,5 +123,3 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
 });
-
-

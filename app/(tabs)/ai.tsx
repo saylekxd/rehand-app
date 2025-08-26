@@ -8,8 +8,7 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Camera } from 'lucide-react-native';
+// Using VisionCamera under the hood via CameraSurface
 import { Modal, Platform } from 'react-native';
 import AuthWrapper from '@/components/auth/AuthWrapper';
 import CameraSurface from '@/components/ai/CameraSurface';
@@ -23,46 +22,17 @@ const { width: screenWidth } = Dimensions.get('window');
 
 export default function AITab() {
   const insets = useSafeAreaInsets();
-  const [facing, setFacing] = useState<CameraType>('front');
-  const [permission, requestPermission] = useCameraPermissions();
+  const [facing, setFacing] = useState<'front' | 'back'>('front');
+  // Permissions handled inside CameraSurface via VisionCamera
   const [isRecording, setIsRecording] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [liveMessages, setLiveMessages] = useState<LiveMessage[]>([]);
   const [livePosition, setLivePosition] = useState<'top' | 'bottom'>('bottom');
-  const cameraRef = useRef<CameraView | null>(null);
+  const cameraRef = useRef<any>(null);
 
-  if (!permission) {
-    return (
-      <AuthWrapper>
-        <SafeAreaView style={styles.container}>
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Ładowanie kamery...</Text>
-          </View>
-        </SafeAreaView>
-      </AuthWrapper>
-    );
-  }
-
-  if (!permission.granted) {
-    return (
-      <AuthWrapper>
-        <SafeAreaView style={styles.container}>
-          <View style={styles.permissionContainer}>
-            <Camera size={64} color="#6B7280" />
-            <Text style={styles.permissionTitle}>Dostęp do kamery</Text>
-            <Text style={styles.permissionText}>
-              Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym
-            </Text>
-            <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-              <Text style={styles.permissionButtonText}>Udziel dostępu</Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </AuthWrapper>
-    );
-  }
+  // VisionCamera will request permission when needed
 
   const toggleCameraFacing = () => {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
@@ -133,12 +103,9 @@ export default function AITab() {
 
         <View style={styles.cameraContainerCard}>
           <CameraSurface
-            facing={facing}
-            onToggleFacing={toggleCameraFacing}
-            isRecording={isRecording}
-            isFullScreen={false}
-            onToggleFullScreen={toggleFullScreen}
-            cameraRef={cameraRef}
+            facing={facing === 'front' ? 'front' : 'back'}
+            isActive={!isFullScreen}
+            cameraRef={cameraRef as any}
             containerStyle={styles.cameraCard}
           >
             <LiveFeedbackOverlay visible={isRecording} position={livePosition} messages={liveMessages} />
@@ -149,12 +116,9 @@ export default function AITab() {
         <Modal visible={isFullScreen} animationType="fade" presentationStyle={Platform.OS === 'ios' ? 'fullScreen' : 'overFullScreen'}>
           <View style={styles.fullscreenRoot}>
             <CameraSurface
-              facing={facing}
-              onToggleFacing={toggleCameraFacing}
-              isRecording={isRecording}
-              isFullScreen
-              onToggleFullScreen={toggleFullScreen}
-              cameraRef={cameraRef}
+              facing={facing === 'front' ? 'front' : 'back'}
+              isActive={isFullScreen}
+              cameraRef={cameraRef as any}
             >
               <LiveFeedbackOverlay visible={isRecording} position={livePosition} messages={liveMessages} />
             </CameraSurface>
