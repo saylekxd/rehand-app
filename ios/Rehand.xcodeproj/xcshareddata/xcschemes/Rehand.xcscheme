@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "Rehand.app"
-               BlueprintName = "boltexponativewind"
-               ReferencedContainer = "container:boltexponativewind.xcodeproj">
+               BlueprintName = "Rehand"
+               ReferencedContainer = "container:Rehand.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,16 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "boltexponativewindTests.xctest"
-               BlueprintName = "boltexponativewindTests"
-               ReferencedContainer = "container:boltexponativewind.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -56,8 +46,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Rehand.app"
-            BlueprintName = "boltexponativewind"
-            ReferencedContainer = "container:boltexponativewind.xcodeproj">
+            BlueprintName = "Rehand"
+            ReferencedContainer = "container:Rehand.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -73,8 +63,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Rehand.app"
-            BlueprintName = "boltexponativewind"
-            ReferencedContainer = "container:boltexponativewind.xcodeproj">
+            BlueprintName = "Rehand"
+            ReferencedContainer = "container:Rehand.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -86,3 +76,5 @@
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
+
+

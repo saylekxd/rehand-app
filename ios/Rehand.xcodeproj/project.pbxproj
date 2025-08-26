@@ -9,27 +9,29 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		9FFE042706ABE763D1F6AB14 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C918487DAEF0689716626D /* ExpoModulesProvider.swift */; };
+		4DB4DAFF11E3E7F1E6F9010D /* libPods-Rehand.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D1E91FD22042BCAEA99B5D2 /* libPods-Rehand.a */; };
+		9EB9EA04704571DAEF552F7D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1D83CD8E59A2DF133C6A8D /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		C776A5CBDE1348DB3FCBE624 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 95344EAF27B6D783408DFAAF /* PrivacyInfo.xcprivacy */; };
-		EACA272F38BA6BCEC533BF14 /* libPods-boltexponativewind.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA2F021474249E6C77AA330 /* libPods-boltexponativewind.a */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0FA2F021474249E6C77AA330 /* libPods-boltexponativewind.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-boltexponativewind.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* Rehand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rehand.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = boltexponativewind/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = boltexponativewind/Info.plist; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Rehand/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Rehand/Info.plist; sourceTree = "<group>"; };
+		198E5BC81FA820D8905735C9 /* Pods-Rehand.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.debug.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.debug.xcconfig"; sourceTree = "<group>"; };
+		3A1DCFE1A2B026F5CDD3BB6C /* Pods-Rehand.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.release.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.release.xcconfig"; sourceTree = "<group>"; };
 		4126DBE74FFD5FDF875E790D /* Pods-boltexponativewind.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-boltexponativewind.debug.xcconfig"; path = "Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind.debug.xcconfig"; sourceTree = "<group>"; };
+		5D1E91FD22042BCAEA99B5D2 /* libPods-Rehand.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Rehand.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77C3127E2CF504052036D989 /* Pods-boltexponativewind.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-boltexponativewind.release.xcconfig"; path = "Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind.release.xcconfig"; sourceTree = "<group>"; };
-		95344EAF27B6D783408DFAAF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = boltexponativewind/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = boltexponativewind/SplashScreen.storyboard; sourceTree = "<group>"; };
+		95344EAF27B6D783408DFAAF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Rehand/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Rehand/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = boltexponativewind/AppDelegate.swift; sourceTree = "<group>"; };
-		F11748442D0722820044C1D9 /* boltexponativewind-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "boltexponativewind-Bridging-Header.h"; path = "boltexponativewind/boltexponativewind-Bridging-Header.h"; sourceTree = "<group>"; };
-		F5C918487DAEF0689716626D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-boltexponativewind/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Rehand/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* boltexponativewind-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "boltexponativewind-Bridging-Header.h"; path = "Rehand/boltexponativewind-Bridging-Header.h"; sourceTree = "<group>"; };
+		FD1D83CD8E59A2DF133C6A8D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Rehand/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,14 +39,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EACA272F38BA6BCEC533BF14 /* libPods-boltexponativewind.a in Frameworks */,
+				4DB4DAFF11E3E7F1E6F9010D /* libPods-Rehand.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* boltexponativewind */ = {
+		13B07FAE1A68108700A75B9A /* Rehand */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
@@ -55,24 +57,16 @@
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				95344EAF27B6D783408DFAAF /* PrivacyInfo.xcprivacy */,
 			);
-			name = boltexponativewind;
+			name = Rehand;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				0FA2F021474249E6C77AA330 /* libPods-boltexponativewind.a */,
+				5D1E91FD22042BCAEA99B5D2 /* libPods-Rehand.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		3EE0CC99A40264FD0AA86A33 /* boltexponativewind */ = {
-			isa = PBXGroup;
-			children = (
-				F5C918487DAEF0689716626D /* ExpoModulesProvider.swift */,
-			);
-			name = boltexponativewind;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -85,7 +79,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* boltexponativewind */,
+				13B07FAE1A68108700A75B9A /* Rehand */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -105,11 +99,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8456862F1D4B6B73F9263C41 /* Rehand */ = {
+			isa = PBXGroup;
+			children = (
+				FD1D83CD8E59A2DF133C6A8D /* ExpoModulesProvider.swift */,
+			);
+			name = Rehand;
+			sourceTree = "<group>";
+		};
 		B1AC0A7BA09980ECCEA6B556 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				4126DBE74FFD5FDF875E790D /* Pods-boltexponativewind.debug.xcconfig */,
 				77C3127E2CF504052036D989 /* Pods-boltexponativewind.release.xcconfig */,
+				198E5BC81FA820D8905735C9 /* Pods-Rehand.debug.xcconfig */,
+				3A1DCFE1A2B026F5CDD3BB6C /* Pods-Rehand.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -120,13 +124,13 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = boltexponativewind/Supporting;
+			path = Rehand/Supporting;
 			sourceTree = "<group>";
 		};
 		BB3B410D5811250B7FB3F337 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				3EE0CC99A40264FD0AA86A33 /* boltexponativewind */,
+				8456862F1D4B6B73F9263C41 /* Rehand */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -152,7 +156,7 @@
 			dependencies = (
 			);
 			name = Rehand;
-			productName = boltexponativewind;
+			productName = Rehand;
 			productReference = 13B07F961A680F5B00A75B9A /* Rehand.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -232,7 +236,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-boltexponativewind-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Rehand-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -245,7 +249,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Rehand/Pods-Rehand-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -254,7 +258,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Rehand/Pods-Rehand-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		145532C5C76D38B9B4631D24 /* [Expo] Configure project */ = {
@@ -274,7 +278,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-boltexponativewind/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Rehand/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -282,7 +286,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Rehand/Pods-Rehand-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
@@ -309,7 +313,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Rehand/Pods-Rehand-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -320,7 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				9FFE042706ABE763D1F6AB14 /* ExpoModulesProvider.swift in Sources */,
+				9EB9EA04704571DAEF552F7D /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,11 +333,11 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4126DBE74FFD5FDF875E790D /* Pods-boltexponativewind.debug.xcconfig */;
+			baseConfigurationReference = 198E5BC81FA820D8905735C9 /* Pods-Rehand.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = boltexponativewind/boltexponativewind.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Rehand/boltexponativewind.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BPZ3K4C472;
 				ENABLE_BITCODE = NO;
@@ -341,7 +345,7 @@
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = boltexponativewind/Info.plist;
+				INFOPLIST_FILE = Rehand/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -356,7 +360,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saylekxd.rehand;
 				PRODUCT_NAME = Rehand;
-				SWIFT_OBJC_BRIDGING_HEADER = "boltexponativewind/boltexponativewind-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Rehand/boltexponativewind-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -366,14 +370,14 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 77C3127E2CF504052036D989 /* Pods-boltexponativewind.release.xcconfig */;
+			baseConfigurationReference = 3A1DCFE1A2B026F5CDD3BB6C /* Pods-Rehand.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = boltexponativewind/boltexponativewind.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Rehand/boltexponativewind.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BPZ3K4C472;
-				INFOPLIST_FILE = boltexponativewind/Info.plist;
+				INFOPLIST_FILE = Rehand/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -388,7 +392,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saylekxd.rehand;
 				PRODUCT_NAME = Rehand;
-				SWIFT_OBJC_BRIDGING_HEADER = "boltexponativewind/boltexponativewind-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Rehand/boltexponativewind-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -450,7 +454,10 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -505,7 +512,10 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
