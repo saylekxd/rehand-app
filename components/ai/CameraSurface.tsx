@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle, Dimensions, TouchableOpacity, Text } from 'react-native';
-import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
+import { Camera, useCameraDevice, useCameraPermission, useFrameProcessor } from 'react-native-vision-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
+import { poseProcessor } from '@/frameProcessors/poseProcessor';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -33,6 +34,12 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
 
   const topOffset = (isFullScreen ? insets.top : 0) + 12;
 
+  // Frame processor with worklet function
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet';
+    poseProcessor(frame);
+  }, []);
+
   return (
     <View style={[styles.container, isFullScreen ? styles.containerFull : styles.containerInline, containerStyle]}>
       <Camera
@@ -40,6 +47,8 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         device={device}
         isActive={isActive}
         ref={cameraRef as any}
+        frameProcessor={frameProcessor}
+
       />
 
       <View style={styles.overlay}>

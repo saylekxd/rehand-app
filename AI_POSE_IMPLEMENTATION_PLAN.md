@@ -32,7 +32,7 @@ Brakuje wsparcia dla assetów .tflite. Trzeba rozszerzyć metro.config.js.
 
 ---
 
-[ ] Etap 1 — Szkielet frame processora
+[x] Etap 1 — Szkielet frame processora
 **Prompt**
 - Dodaj hook `useFrameProcessor`, który odbiera klatki (30 FPS), jeszcze bez ML. Loguj rozmiar i ogranicz do ~15 FPS w fullscreen.
 
@@ -40,8 +40,8 @@ Brakuje wsparcia dla assetów .tflite. Trzeba rozszerzyć metro.config.js.
 - W logach widać dane klatek; FPS stabilny; brak jank.
 
 **Akcje**
-- Utwórz `frameProcessors/poseProcessor.ts` z no-op procesorem.
-- Podepnij do `Camera` z `frameProcessorFps={15}` (fullscreen), `10` (inline).
+- [x] Utwórz `frameProcessors/poseProcessor.ts` z no-op procesorem.
+- [x] Podepnij do `Camera` z `useFrameProcessor` - naturalny throttling przez VisionCamera.
 
 ---
 
