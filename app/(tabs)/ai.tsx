@@ -106,6 +106,10 @@ export default function AITab() {
             facing={facing === 'front' ? 'front' : 'back'}
             isActive={!isFullScreen}
             cameraRef={cameraRef as any}
+            onToggleFacing={toggleCameraFacing}
+            isRecording={isRecording}
+            isFullScreen={false}
+            onToggleFullScreen={toggleFullScreen}
             containerStyle={styles.cameraCard}
           >
             <LiveFeedbackOverlay visible={isRecording} position={livePosition} messages={liveMessages} />
@@ -119,6 +123,10 @@ export default function AITab() {
               facing={facing === 'front' ? 'front' : 'back'}
               isActive={isFullScreen}
               cameraRef={cameraRef as any}
+              onToggleFacing={toggleCameraFacing}
+              isRecording={isRecording}
+              isFullScreen
+              onToggleFullScreen={toggleFullScreen}
             >
               <LiveFeedbackOverlay visible={isRecording} position={livePosition} messages={liveMessages} />
             </CameraSurface>
