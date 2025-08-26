@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -9,24 +9,29 @@ import {
   Dimensions,
 } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Camera, RotateCcw, Zap, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react-native';
+import { Camera } from 'lucide-react-native';
+import { Modal, Platform } from 'react-native';
 import AuthWrapper from '@/components/auth/AuthWrapper';
+import CameraSurface from '@/components/ai/CameraSurface';
+import LiveFeedbackOverlay from '@/components/ai/LiveFeedbackOverlay';
+import ControlsBar from '@/components/ai/ControlsBar';
+import AnalysisModal from '@/components/ai/AnalysisModal';
+import type { AnalysisResult, LiveMessage } from '@/components/ai/types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-interface AnalysisResult {
-  score: number;
-  feedback: string;
-  suggestions: string[];
-}
-
 export default function AITab() {
+  const insets = useSafeAreaInsets();
   const [facing, setFacing] = useState<CameraType>('front');
   const [permission, requestPermission] = useCameraPermissions();
   const [isRecording, setIsRecording] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const cameraRef = useRef<CameraView>(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [liveMessages, setLiveMessages] = useState<LiveMessage[]>([]);
+  const [livePosition, setLivePosition] = useState<'top' | 'bottom'>('bottom');
+  const cameraRef = useRef<CameraView | null>(null);
 
   if (!permission) {
     return (
@@ -62,16 +67,36 @@ export default function AITab() {
   const toggleCameraFacing = () => {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   };
+  const toggleFullScreen = () => setIsFullScreen(v => !v);
 
   const startAnalysis = async () => {
     setIsRecording(true);
     setIsAnalyzing(true);
     setAnalysisResult(null);
+    setLiveMessages([]);
 
-    // Symulacja analizy AI (w rzeczywistej aplikacji tutaj byłaby integracja z AI)
+    // Start mock live feedback stream
+    const stream: LiveMessage[] = [
+      { id: '1', text: 'Ustaw barki równo', level: 'info' },
+      { id: '2', text: 'Wolniej opuszczaj rękę', level: 'warning' },
+      { id: '3', text: 'Świetna stabilizacja!', level: 'success' },
+      { id: '4', text: 'Zachowaj stały oddech', level: 'info' },
+      { id: '5', text: 'Zwiększ zakres ruchu', level: 'warning' },
+    ];
+
+    let index = 0;
+    const interval = setInterval(() => {
+      setLiveMessages(prev => [...prev, { ...stream[index], id: `${Date.now()}-${index}` }]);
+      index += 1;
+      if (index >= stream.length) {
+        clearInterval(interval);
+      }
+    }, 700);
+
+    // Simulate analysis completion
     setTimeout(() => {
       const mockResult: AnalysisResult = {
-        score: Math.floor(Math.random() * 40) + 60, // 60-100
+        score: Math.floor(Math.random() * 40) + 60,
         feedback: 'Dobra technika! Pamiętaj o równomiernym tempie ruchu.',
         suggestions: [
           'Utrzymuj prostą postawę',
@@ -82,7 +107,7 @@ export default function AITab() {
       setAnalysisResult(mockResult);
       setIsRecording(false);
       setIsAnalyzing(false);
-    }, 3000);
+    }, 3500);
   };
 
   const stopAnalysis = () => {
@@ -99,69 +124,59 @@ export default function AITab() {
   return (
     <AuthWrapper>
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>AI Trener</Text>
-          <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
+        {!isFullScreen && (
+          <View style={styles.header}>
+            <Text style={styles.title}>AI Trener</Text>
+            <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
+          </View>
+        )}
+
+        <View style={styles.cameraContainerCard}>
+          <CameraSurface
+            facing={facing}
+            onToggleFacing={toggleCameraFacing}
+            isRecording={isRecording}
+            isFullScreen={false}
+            onToggleFullScreen={toggleFullScreen}
+            cameraRef={cameraRef}
+            containerStyle={styles.cameraCard}
+          >
+            <LiveFeedbackOverlay visible={isRecording} position={livePosition} messages={liveMessages} />
+          </CameraSurface>
         </View>
 
-        <View style={styles.cameraContainer}>
-          <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
-          <View style={styles.cameraOverlay}>
-            {isRecording && (
-              <View style={styles.recordingIndicator}>
-                <View style={styles.recordingDot} />
-                <Text style={styles.recordingText}>Analizuję...</Text>
+        {/* Fullscreen camera in modal to cover tabs and header */}
+        <Modal visible={isFullScreen} animationType="fade" presentationStyle={Platform.OS === 'ios' ? 'fullScreen' : 'overFullScreen'}>
+          <View style={styles.fullscreenRoot}>
+            <CameraSurface
+              facing={facing}
+              onToggleFacing={toggleCameraFacing}
+              isRecording={isRecording}
+              isFullScreen
+              onToggleFullScreen={toggleFullScreen}
+              cameraRef={cameraRef}
+            >
+              <LiveFeedbackOverlay visible={isRecording} position={livePosition} messages={liveMessages} />
+            </CameraSurface>
+
+            {/* Controls overlay for fullscreen */}
+            {!isRecording && (
+              <View style={[styles.fullscreenControls, { paddingBottom: insets.bottom + 12 }] }>
+                <ControlsBar isRecording={false} onStart={startAnalysis} onStop={stopAnalysis} />
               </View>
             )}
-            
-            <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
-              <RotateCcw size={24} color="#FFFFFF" />
-            </TouchableOpacity>
+
+            {/* Analysis modal shown within fullscreen */}
+            <AnalysisModal visible={!isRecording && !!analysisResult} result={analysisResult} onClose={() => setAnalysisResult(null)} />
           </View>
-        </View>
+        </Modal>
 
-        <View style={styles.controlsContainer}>
-          {!isRecording ? (
-            <TouchableOpacity style={styles.startButton} onPress={startAnalysis}>
-              <Zap size={24} color="#FFFFFF" />
-              <Text style={styles.startButtonText}>Rozpocznij Analizę</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.stopButton} onPress={stopAnalysis}>
-              <Text style={styles.stopButtonText}>Zatrzymaj</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+        {!isFullScreen && !isRecording && (
+          <ControlsBar isRecording={false} onStart={startAnalysis} onStop={stopAnalysis} />
+        )}
 
-        {analysisResult && (
-          <View style={styles.resultsContainer}>
-            <View style={styles.scoreContainer}>
-              <Text style={styles.scoreLabel}>Wynik analizy</Text>
-              <Text style={[styles.scoreValue, { color: getScoreColor(analysisResult.score) }]}>
-                {analysisResult.score}%
-              </Text>
-            </View>
-
-            <View style={styles.feedbackContainer}>
-              <View style={styles.feedbackHeader}>
-                <CheckCircle size={20} color="#10B981" />
-                <Text style={styles.feedbackTitle}>Ocena</Text>
-              </View>
-              <Text style={styles.feedbackText}>{analysisResult.feedback}</Text>
-            </View>
-
-            <View style={styles.suggestionsContainer}>
-              <View style={styles.suggestionsHeader}>
-                <AlertCircle size={20} color="#F59E0B" />
-                <Text style={styles.suggestionsTitle}>Sugestie</Text>
-              </View>
-              {analysisResult.suggestions.map((suggestion, index) => (
-                <Text key={index} style={styles.suggestionText}>
-                  • {suggestion}
-                </Text>
-              ))}
-            </View>
-          </View>
+        {!isFullScreen && (
+          <AnalysisModal visible={!isRecording && !!analysisResult} result={analysisResult} onClose={() => setAnalysisResult(null)} />
         )}
       </SafeAreaView>
     </AuthWrapper>
@@ -231,146 +246,29 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
     color: '#FFFFFF',
   },
-  cameraContainer: {
+  cameraContainerCard: {
     marginHorizontal: 24,
-    borderRadius: 16,
+    marginBottom: 16,
+  },
+  cameraCard: {
+    borderRadius: 20,
     overflow: 'hidden',
-    height: screenWidth - 48,
-    backgroundColor: '#000',
-    position: 'relative',
+    backgroundColor: '#111827',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 6,
   },
-  camera: {
+  fullscreenRoot: {
     flex: 1,
+    backgroundColor: '#000',
   },
-  cameraOverlay: {
+  fullscreenControls: {
     position: 'absolute',
-    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: 'space-between',
-    padding: 20,
-  },
-  recordingIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-    backgroundColor: 'rgba(239, 68, 68, 0.9)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 8,
-  },
-  recordingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFFFFF',
-  },
-  recordingText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Medium',
-    color: '#FFFFFF',
-  },
-  flipButton: {
-    alignSelf: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 12,
-    borderRadius: 24,
-  },
-  controlsContainer: {
-    padding: 24,
-  },
-  startButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#2563EB',
-    paddingVertical: 16,
-    borderRadius: 12,
-    gap: 8,
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontFamily: 'Inter-SemiBold',
-    color: '#FFFFFF',
-  },
-  stopButton: {
-    backgroundColor: '#EF4444',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  stopButtonText: {
-    fontSize: 18,
-    fontFamily: 'Inter-SemiBold',
-    color: '#FFFFFF',
-  },
-  resultsContainer: {
-    marginHorizontal: 24,
-    marginBottom: 24,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  scoreContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  scoreLabel: {
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
-    color: '#6B7280',
-    marginBottom: 8,
-  },
-  scoreValue: {
-    fontSize: 36,
-    fontFamily: 'Inter-SemiBold',
-  },
-  feedbackContainer: {
-    marginBottom: 20,
-  },
-  feedbackHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-  },
-  feedbackTitle: {
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-    color: '#1F2937',
-  },
-  feedbackText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
-    color: '#6B7280',
-    lineHeight: 20,
-  },
-  suggestionsContainer: {
-    marginBottom: 0,
-  },
-  suggestionsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-  },
-  suggestionsTitle: {
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-    color: '#1F2937',
-  },
-  suggestionText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
-    color: '#6B7280',
-    lineHeight: 20,
-    marginBottom: 4,
+    backgroundColor: 'transparent',
   },
 });
