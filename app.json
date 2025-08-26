@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.saylekxd.bolt-expo-nativewind",
+      "bundleIdentifier": "com.saylekxd.rehand",
       "infoPlist": {
         "NSCameraUsageDescription": "Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym.",
         "NSMicrophoneUsageDescription": "Potrzebujemy dostępu do mikrofonu podczas nagrywania wideo do analizy ruchu."
@@ -29,6 +29,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4cd3baeb-8bba-48a1-b775-d99820c92b49"
+      }
     }
   }
 }
