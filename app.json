@@ -37,6 +37,9 @@
       },
       "supabaseUrl": "https://ihgfxnyppyoitmzdexic.supabase.co",
       "supabaseKey": "sb_publishable_oK6KLv7brZYI7EauI00PDQ_Ey-tWUw8"
+    },
+    "android": {
+      "package": "com.saylekxd.rehand"
     }
   }
 }
