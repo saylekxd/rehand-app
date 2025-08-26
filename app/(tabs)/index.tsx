@@ -16,6 +16,7 @@ import { Search, Clock, Target, Play, AlertCircle } from 'lucide-react-native';
 import { useExercises } from '@/hooks/useExercises';
 import { Exercise } from '@/types';
 import ExerciseDetailScreen from '@/screens/ExerciseDetailScreen';
+import AuthWrapper from '@/components/auth/AuthWrapper';
 
 export default function ExercisesTab() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,156 +78,160 @@ export default function ExercisesTab() {
   // Error state
   if (error && !loading && exercises.length === 0) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <AlertCircle size={48} color="#EF4444" />
-          <Text style={styles.errorTitle}>Błąd ładowania</Text>
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={refetch}>
-            <Text style={styles.retryButtonText}>Spróbuj ponownie</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <AuthWrapper>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.errorContainer}>
+            <AlertCircle size={48} color="#EF4444" />
+            <Text style={styles.errorTitle}>Błąd ładowania</Text>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity style={styles.retryButton} onPress={refetch}>
+              <Text style={styles.retryButtonText}>Spróbuj ponownie</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </AuthWrapper>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Biblioteka Ćwiczeń</Text>
-        <Text style={styles.subtitle}>Wybierz ćwiczenie dostosowane do Twoich potrzeb</Text>
-      </View>
-
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBox}>
-          <Search size={20} color="#6B7280" />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Szukaj ćwiczeń..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholderTextColor="#9CA3AF"
-          />
+    <AuthWrapper>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Biblioteka Ćwiczeń</Text>
+          <Text style={styles.subtitle}>Wybierz ćwiczenie dostosowane do Twoich potrzeb</Text>
         </View>
-      </View>
 
-      <View style={styles.categoriesContainer}>
+        <View style={styles.searchContainer}>
+          <View style={styles.searchBox}>
+            <Search size={20} color="#6B7280" />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Szukaj ćwiczeń..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholderTextColor="#9CA3AF"
+            />
+          </View>
+        </View>
+
+        <View style={styles.categoriesContainer}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoriesContent}
+          >
+            {categories.map((category) => (
+              <TouchableOpacity
+                key={category}
+                style={[
+                  styles.categoryButton,
+                  selectedCategory === category && styles.categoryButtonActive
+                ]}
+                onPress={() => setSelectedCategory(category)}
+              >
+                <Text style={[
+                  styles.categoryText,
+                  selectedCategory === category && styles.categoryTextActive
+                ]}>
+                  {category}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
         <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesContent}
+          style={styles.exercisesList} 
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={refetch}
+              colors={['#2563EB']}
+              tintColor="#2563EB"
+            />
+          }
         >
-          {categories.map((category) => (
-            <TouchableOpacity
-              key={category}
-              style={[
-                styles.categoryButton,
-                selectedCategory === category && styles.categoryButtonActive
-              ]}
-              onPress={() => setSelectedCategory(category)}
-            >
-              <Text style={[
-                styles.categoryText,
-                selectedCategory === category && styles.categoryTextActive
-              ]}>
-                {category}
+          {loading && exercises.length === 0 ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#2563EB" />
+              <Text style={styles.loadingText}>Ładowanie ćwiczeń...</Text>
+            </View>
+          ) : exercises.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Target size={48} color="#9CA3AF" />
+              <Text style={styles.emptyTitle}>Brak ćwiczeń</Text>
+              <Text style={styles.emptyText}>
+                {searchQuery || selectedCategory !== 'Wszystkie' 
+                  ? 'Nie znaleziono ćwiczeń spełniających kryteria wyszukiwania'
+                  : 'Obecnie brak dostępnych ćwiczeń'
+                }
               </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      <ScrollView 
-        style={styles.exercisesList} 
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={refetch}
-            colors={['#2563EB']}
-            tintColor="#2563EB"
-          />
-        }
-      >
-        {loading && exercises.length === 0 ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#2563EB" />
-            <Text style={styles.loadingText}>Ładowanie ćwiczeń...</Text>
-          </View>
-        ) : exercises.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Target size={48} color="#9CA3AF" />
-            <Text style={styles.emptyTitle}>Brak ćwiczeń</Text>
-            <Text style={styles.emptyText}>
-              {searchQuery || selectedCategory !== 'Wszystkie' 
-                ? 'Nie znaleziono ćwiczeń spełniających kryteria wyszukiwania'
-                : 'Obecnie brak dostępnych ćwiczeń'
-              }
-            </Text>
-          </View>
-        ) : (
-          exercises.map((exercise) => (
-            <TouchableOpacity 
-              key={exercise.id} 
-              style={styles.exerciseCard}
-              onPress={() => handleExercisePress(exercise)}
-            >
-              <Image source={{ uri: getImageUrl(exercise) }} style={styles.exerciseImage} />
-              <View style={styles.exerciseContent}>
-                <View style={styles.exerciseHeader}>
-                  <Text style={styles.exerciseTitle}>{exercise.title}</Text>
-                  <View style={[
-                    styles.difficultyBadge, 
-                    { backgroundColor: getDifficultyColor(exercise.difficulty) + '20' }
-                  ]}>
-                    <Text style={[
-                      styles.difficultyText, 
-                      { color: getDifficultyColor(exercise.difficulty) }
+            </View>
+          ) : (
+            exercises.map((exercise) => (
+              <TouchableOpacity 
+                key={exercise.id} 
+                style={styles.exerciseCard}
+                onPress={() => handleExercisePress(exercise)}
+              >
+                <Image source={{ uri: getImageUrl(exercise) }} style={styles.exerciseImage} />
+                <View style={styles.exerciseContent}>
+                  <View style={styles.exerciseHeader}>
+                    <Text style={styles.exerciseTitle}>{exercise.title}</Text>
+                    <View style={[
+                      styles.difficultyBadge, 
+                      { backgroundColor: getDifficultyColor(exercise.difficulty) + '20' }
                     ]}>
-                      {translateDifficulty(exercise.difficulty)}
-                    </Text>
+                      <Text style={[
+                        styles.difficultyText, 
+                        { color: getDifficultyColor(exercise.difficulty) }
+                      ]}>
+                        {translateDifficulty(exercise.difficulty)}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text style={styles.exerciseDescription}>{exercise.description}</Text>
+                  <View style={styles.exerciseFooter}>
+                    <View style={styles.exerciseInfo}>
+                      <Clock size={16} color="#6B7280" />
+                      <Text style={styles.exerciseInfoText}>{formatDuration(exercise.duration_minutes)}</Text>
+                      <Target size={16} color="#6B7280" />
+                      <Text style={styles.exerciseInfoText}>{exercise.category}</Text>
+                    </View>
+                    <TouchableOpacity 
+                      style={styles.playButton}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        handleExercisePress(exercise);
+                      }}
+                    >
+                      <Play size={16} color="#FFFFFF" />
+                      <Text style={styles.playButtonText}>Zobacz</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-                <Text style={styles.exerciseDescription}>{exercise.description}</Text>
-                <View style={styles.exerciseFooter}>
-                  <View style={styles.exerciseInfo}>
-                    <Clock size={16} color="#6B7280" />
-                    <Text style={styles.exerciseInfoText}>{formatDuration(exercise.duration_minutes)}</Text>
-                    <Target size={16} color="#6B7280" />
-                    <Text style={styles.exerciseInfoText}>{exercise.category}</Text>
-                  </View>
-                  <TouchableOpacity 
-                    style={styles.playButton}
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      handleExercisePress(exercise);
-                    }}
-                  >
-                    <Play size={16} color="#FFFFFF" />
-                    <Text style={styles.playButtonText}>Zobacz</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))
-        )}
-      </ScrollView>
+              </TouchableOpacity>
+            ))
+          )}
+        </ScrollView>
 
-      {/* Exercise Detail Modal */}
-      <Modal
-        visible={selectedExerciseId !== null}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={handleCloseDetail}
-      >
-        {selectedExerciseId && (
-          <ExerciseDetailScreen 
-            exerciseId={selectedExerciseId}
-            onClose={handleCloseDetail}
-          />
-        )}
-      </Modal>
-    </SafeAreaView>
+        {/* Exercise Detail Modal */}
+        <Modal
+          visible={selectedExerciseId !== null}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={handleCloseDetail}
+        >
+          {selectedExerciseId && (
+            <ExerciseDetailScreen 
+              exerciseId={selectedExerciseId}
+              onClose={handleCloseDetail}
+            />
+          )}
+        </Modal>
+      </SafeAreaView>
+    </AuthWrapper>
   );
 }
 

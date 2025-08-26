@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Camera, RotateCcw, Zap, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react-native';
+import AuthWrapper from '@/components/auth/AuthWrapper';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -29,28 +30,32 @@ export default function AITab() {
 
   if (!permission) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Ładowanie kamery...</Text>
-        </View>
-      </SafeAreaView>
+      <AuthWrapper>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Ładowanie kamery...</Text>
+          </View>
+        </SafeAreaView>
+      </AuthWrapper>
     );
   }
 
   if (!permission.granted) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.permissionContainer}>
-          <Camera size={64} color="#6B7280" />
-          <Text style={styles.permissionTitle}>Dostęp do kamery</Text>
-          <Text style={styles.permissionText}>
-            Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym
-          </Text>
-          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-            <Text style={styles.permissionButtonText}>Udziel dostępu</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <AuthWrapper>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.permissionContainer}>
+            <Camera size={64} color="#6B7280" />
+            <Text style={styles.permissionTitle}>Dostęp do kamery</Text>
+            <Text style={styles.permissionText}>
+              Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym
+            </Text>
+            <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+              <Text style={styles.permissionButtonText}>Udziel dostępu</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </AuthWrapper>
     );
   }
 
@@ -92,72 +97,74 @@ export default function AITab() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>AI Trener</Text>
-        <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
-      </View>
+    <AuthWrapper>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>AI Trener</Text>
+          <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
+        </View>
 
-      <View style={styles.cameraContainer}>
-        <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
-        <View style={styles.cameraOverlay}>
-          {isRecording && (
-            <View style={styles.recordingIndicator}>
-              <View style={styles.recordingDot} />
-              <Text style={styles.recordingText}>Analizuję...</Text>
-            </View>
+        <View style={styles.cameraContainer}>
+          <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+          <View style={styles.cameraOverlay}>
+            {isRecording && (
+              <View style={styles.recordingIndicator}>
+                <View style={styles.recordingDot} />
+                <Text style={styles.recordingText}>Analizuję...</Text>
+              </View>
+            )}
+            
+            <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
+              <RotateCcw size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.controlsContainer}>
+          {!isRecording ? (
+            <TouchableOpacity style={styles.startButton} onPress={startAnalysis}>
+              <Zap size={24} color="#FFFFFF" />
+              <Text style={styles.startButtonText}>Rozpocznij Analizę</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.stopButton} onPress={stopAnalysis}>
+              <Text style={styles.stopButtonText}>Zatrzymaj</Text>
+            </TouchableOpacity>
           )}
-          
-          <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
-            <RotateCcw size={24} color="#FFFFFF" />
-          </TouchableOpacity>
         </View>
-      </View>
 
-      <View style={styles.controlsContainer}>
-        {!isRecording ? (
-          <TouchableOpacity style={styles.startButton} onPress={startAnalysis}>
-            <Zap size={24} color="#FFFFFF" />
-            <Text style={styles.startButtonText}>Rozpocznij Analizę</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.stopButton} onPress={stopAnalysis}>
-            <Text style={styles.stopButtonText}>Zatrzymaj</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {analysisResult && (
-        <View style={styles.resultsContainer}>
-          <View style={styles.scoreContainer}>
-            <Text style={styles.scoreLabel}>Wynik analizy</Text>
-            <Text style={[styles.scoreValue, { color: getScoreColor(analysisResult.score) }]}>
-              {analysisResult.score}%
-            </Text>
-          </View>
-
-          <View style={styles.feedbackContainer}>
-            <View style={styles.feedbackHeader}>
-              <CheckCircle size={20} color="#10B981" />
-              <Text style={styles.feedbackTitle}>Ocena</Text>
-            </View>
-            <Text style={styles.feedbackText}>{analysisResult.feedback}</Text>
-          </View>
-
-          <View style={styles.suggestionsContainer}>
-            <View style={styles.suggestionsHeader}>
-              <AlertCircle size={20} color="#F59E0B" />
-              <Text style={styles.suggestionsTitle}>Sugestie</Text>
-            </View>
-            {analysisResult.suggestions.map((suggestion, index) => (
-              <Text key={index} style={styles.suggestionText}>
-                • {suggestion}
+        {analysisResult && (
+          <View style={styles.resultsContainer}>
+            <View style={styles.scoreContainer}>
+              <Text style={styles.scoreLabel}>Wynik analizy</Text>
+              <Text style={[styles.scoreValue, { color: getScoreColor(analysisResult.score) }]}>
+                {analysisResult.score}%
               </Text>
-            ))}
+            </View>
+
+            <View style={styles.feedbackContainer}>
+              <View style={styles.feedbackHeader}>
+                <CheckCircle size={20} color="#10B981" />
+                <Text style={styles.feedbackTitle}>Ocena</Text>
+              </View>
+              <Text style={styles.feedbackText}>{analysisResult.feedback}</Text>
+            </View>
+
+            <View style={styles.suggestionsContainer}>
+              <View style={styles.suggestionsHeader}>
+                <AlertCircle size={20} color="#F59E0B" />
+                <Text style={styles.suggestionsTitle}>Sugestie</Text>
+              </View>
+              {analysisResult.suggestions.map((suggestion, index) => (
+                <Text key={index} style={styles.suggestionText}>
+                  • {suggestion}
+                </Text>
+              ))}
+            </View>
           </View>
-        </View>
-      )}
-    </SafeAreaView>
+        )}
+      </SafeAreaView>
+    </AuthWrapper>
   );
 }
 
