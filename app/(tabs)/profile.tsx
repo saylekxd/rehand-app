@@ -8,6 +8,7 @@ import {
   Text,
 } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthWrapper from '@/components/auth/AuthWrapper';
 import { useUserStats } from '@/hooks/useUserStats';
 import { useAchievements } from '@/hooks/useAchievements';
 import EditProfileScreen from '@/screens/EditProfileScreen';
@@ -36,19 +37,23 @@ export default function ProfileTab() {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
+  // Guard: if user not ready yet, let AuthWrapper handle auth/onboarding and show lightweight fallback
   if (!user) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Ładowanie profilu...</Text>
-        </View>
-      </SafeAreaView>
+      <AuthWrapper>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Ładowanie profilu...</Text>
+          </View>
+        </SafeAreaView>
+      </AuthWrapper>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <AuthWrapper>
+      <SafeAreaView style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
         <ProfileHeader 
           user={user} 
           onEditPress={() => setShowEditProfile(true)} 
@@ -85,8 +90,8 @@ export default function ProfileTab() {
           onLogout={signOut}
         />
 
-        <View style={styles.bottomSpacing} />
-      </ScrollView>
+          <View style={styles.bottomSpacing} />
+        </ScrollView>
 
       {/* Edit Profile Modal */}
       <Modal
@@ -144,7 +149,8 @@ export default function ProfileTab() {
       >
         <HelpScreen onClose={() => setShowHelp(false)} />
       </Modal>
-    </SafeAreaView>
+      </SafeAreaView>
+    </AuthWrapper>
   );
 }
 
