@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Alert,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 // Using VisionCamera under the hood via CameraSurface
 import { Modal, Platform } from 'react-native';
@@ -17,11 +18,14 @@ import ControlsBar from '@/components/ai/ControlsBar';
 import AnalysisModal from '@/components/ai/AnalysisModal';
 import type { AnalysisResult, LiveMessage } from '@/components/ai/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useBlazePose } from '@/hooks/useBlazePose';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function AITab() {
   const insets = useSafeAreaInsets();
+  // Load BlazePose models (detector + landmark)
+  const { loading: modelsLoading, error: modelsError } = useBlazePose('full');
   const [facing, setFacing] = useState<'front' | 'back'>('front');
   // Permissions handled inside CameraSurface via VisionCamera
   const [isRecording, setIsRecording] = useState(false);
@@ -98,6 +102,22 @@ export default function AITab() {
           <View style={styles.header}>
             <Text style={styles.title}>AI Trener</Text>
             <Text style={styles.subtitle}>Analiza ruchu w czasie rzeczywistym</Text>
+          </View>
+        )}
+
+        {/* Models loading / error indicator */}
+        {!isFullScreen && (
+          <View style={{ paddingHorizontal: 24, marginBottom: 8 }}>
+            {modelsLoading ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <ActivityIndicator size="small" color="#2563EB" />
+                <Text style={{ color: '#2563EB', fontFamily: 'Inter-Medium' }}>Ładowanie modeli TFLite…</Text>
+              </View>
+            ) : modelsError ? (
+              <Text style={{ color: '#EF4444', fontFamily: 'Inter-Medium' }}>Błąd ładowania modeli: {String(modelsError)}</Text>
+            ) : (
+              <Text style={{ color: '#10B981', fontFamily: 'Inter-Medium' }}>Modele załadowane ✓</Text>
+            )}
           </View>
         )}
 

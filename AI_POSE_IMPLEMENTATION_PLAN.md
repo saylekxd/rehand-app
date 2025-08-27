@@ -53,11 +53,11 @@ Brakuje wsparcia dla assetów .tflite. Trzeba rozszerzyć metro.config.js.
 - Modele (detector + landmark) ładują się < 150 ms każdy; pamięć stabilna.
 
 **Akcje**
-- Umieść w `assets/models/`:
+- [x] Umieść w `assets/models/` placeholdery:
   - `pose_detection.tflite` (detector)
-  - `pose_landmark_full.tflite` (dokładność) lub `pose_landmark_heavy.tflite` (maks. dokładność)
-- Dodaj rozszerzenie `tflite` do `metro.config.js` (`assetExts`).
-- Lazy load w hooku `hooks/useBlazePose.ts`.
+  - `pose_landmark_full.tflite` lub `pose_landmark_heavy.tflite`
+- [x] Dodaj rozszerzenie `tflite` do `metro.config.js` (`assetExts`).
+- [x] Lazy load w hooku `hooks/useBlazePose.ts` (bez inferencji).
 
 ---
 
