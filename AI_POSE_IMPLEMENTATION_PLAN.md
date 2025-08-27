@@ -1,8 +1,8 @@
-## Prompt-based implementation plan: expo-pose-landmarks + VisionCamera v3 + Skia
+## Prompt-based implementation plan: MediaPipe Tasks Pose + VisionCamera v3 + Skia (pełne ciało)
 
 ### Notatki
-- VisionCamera v3 obsługuje real-time frame processing; wykorzystamy plugin `expo-pose-landmarks`, który udostępnia worklet API do pozyskania 33 landmarków pozy (z visibility i opcjonalnym score). Overlay narysujemy w `@shopify/react-native-skia`.
-- Z `expo-pose-landmarks` nie bundlujemy własnych modeli `.tflite`, nie potrzebujemy `react-native-fast-tflite` ani `vision-camera-resize-plugin`.
+- Docelowo wykrywamy CAŁE CIAŁO (Pose), nie dłoń. Integracja bazuje na MediaPipe Tasks Vision (Pose Landmarker) osadzonym natywnie przez CocoaPods/Gradle i wywoływanym z frame processora VisionCamera v3; overlay rysujemy w `@shopify/react-native-skia`.
+- Plan adaptuje kroki z przewodnika (Hand → Pose) i używa eventów/streamu landmarków do wyzwalania funkcji w fazach ćwiczeń, bez integracji z protezą ręki.
 
 ---
 
@@ -25,62 +25,68 @@ Kamera i uprawnienia:
 [x] Kod NIE używa już expo-camera w `app/(tabs)/ai.tsx` i `components/ai/CameraSurface.tsx` (zmigrowano na VisionCamera).
 [x] VisionCamera ma inny model: useCameraDevice('front'|'back') + <Camera device={device} isActive frameProcessor={...} />, a uprawnienia przez useCameraPermission() lub metody statyczne.
 [x] Konieczna refaktoryzacja obu plików: typy, hook uprawnień, API komponentu kamery — ZROBIONE.
-[x] Usuń `expo-camera` z zależności po migracji, żeby uniknąć dublowania i pomyłek w importach.
-[x] Brak potrzeby dodawania wsparcia dla assetów `.tflite` w `metro.config.js` (modele nie są bundlowane ręcznie).
+[x] Usuń expo-camera z zależności po migracji, żeby uniknąć dublowania i pomyłek w importach.
+[x] Metro bundler:
+Modele `.task` dodajemy natywnie (iOS: Xcode, Android: `android/app/src/main/assets/`) — bez zmian w Metro.
 
 ---
 
-[ ] Etap 1 — Instalacja i szkielet pluginu `expo-pose-landmarks`
+[x] Etap 1 — Szkielet frame processora
 **Prompt**
-- Dodaj `expo-pose-landmarks` i podstawową integrację z `useFrameProcessor`. W wersji szkieletowej tylko wywołuj landmarker i loguj liczbę wykrytych punktów; ogranicz do ~15 FPS w fullscreen.
+- Dodaj hook `useFrameProcessor`, który odbiera klatki (30 FPS), jeszcze bez ML. Loguj rozmiar i ogranicz do ~15 FPS w fullscreen.
 
 **Acceptance**
-- Plugin inicjalizuje się poprawnie; w logach widać liczbę landmarków; FPS stabilny, brak jank.
+- W logach widać dane klatek; FPS stabilny; brak jank.
 
 **Akcje**
-- [ ] Zainstaluj `expo-pose-landmarks` i dodaj do `app.json` w sekcji `plugins`.
-- [ ] Zaktualizuj `frameProcessors/poseProcessor.ts` tak, by wywoływał worklet landmarkera z pluginu i zwracał wynik do JS (np. przez `useSharedValue` lub `runOnJS`).
-- [ ] Podepnij do `Camera` przez `useFrameProcessor`.
-- [ ] Przebuduj dev client po dodaniu pluginu (`expo run:ios` / `expo run:android`).
+- [x] Utwórz `frameProcessors/poseProcessor.ts` z no-op procesorem.
+- [x] Podepnij do `Camera` z `useFrameProcessor` - naturalny throttling przez VisionCamera.
 
 ---
 
-[ ] Etap 2 — Konfiguracja pluginu i API danych
+[ ] Etap 2 — Natywne zależności MediaPipe Tasks Vision + model `.task`
 **Prompt**
-- Skonfiguruj opcje `expo-pose-landmarks` (np. tryb szybki vs dokładny, liczba osób – jeśli wspierane) i wystandaryzuj kształt danych landmarków (33 punkty, visibility, z) do dalszego przetwarzania.
+- Dodaj MediaPipe Tasks Vision (Pose Landmarker) natywnie oraz model `.task` dla pose. Bez uruchamiania inferencji.
 
 **Acceptance**
-- Dane landmarków są dostępne w JS jako aktualna wartość i zawierają spójne pola; pamięć stabilna.
+- iOS: `pod install` przechodzi z `MediaPipeTasksVision` (>= 0.10.14), projekt się buduje.
+- Android: dodane zależności i assets; projekt się buduje.
 
 **Akcje**
-- Zapewnij bezpieczne przekazanie wyników z workletu do JS (np. throttling co N klatek, debouncing, kontrola `isActive`).
-- Ustal i udokumentuj typ `PoseLandmarks` w `components/ai/types.ts`.
+- iOS: w `ios/Podfile` dodaj `pod 'MediaPipeTasksVision', '0.10.14'` i uruchom `pod install`.
+- iOS: dodaj do projektu plik modelu: np. `pose_landmarker_full.task` (lub `lite`/`heavy`) – przypisz do targetu aplikacji.
+- Android: umieść `pose_landmarker_full.task` w `android/app/src/main/assets/` (utwórz katalog, jeśli brak).
+- Android: upewnij się, że `mavenCentral()` jest w repozytoriach; w razie potrzeby dodaj `implementation("com.google.mediapipe:tasks-vision:0.10.14")` w module `app`.
 
 ---
 
-[ ] Etap 3 — Harmonogram i throttling detekcji
+[ ] Etap 3 — Plugin frame processora (VisionCamera Plugin Builder)
 **Prompt**
-- Zaimplementuj harmonogram wywołań landmarkera (co klatkę lub co N klatek zależnie od wydajności) oraz throttling przekazywania danych do JS, by utrzymać ≥ 15 FPS w fullscreen.
+- Wygeneruj plugin frame processora i moduł natywny dla Pose Landmarker (singleton), analogicznie do przewodnika (Hand → Pose). Stream LIVE_STREAM.
 
 **Acceptance**
-- Stabilny strumień landmarków bez dropów UI; CPU/GPU w normie na docelowych urządzeniach.
+- iOS/Android: istnieje plugin (np. `PoseLandmarksFrameProcessor`) oraz moduł `PoseLandmarks` inicjalizujący model i emitujący eventy.
 
 **Akcje**
-- Dodaj licznik klatek w worklecie i kontrolę częstotliwości publikacji wyników.
-- Zaimplementuj opcjonalne wyłączanie przetwarzania przy `isActive=false`/gdy ekran niewidoczny.
+- Uruchom: `npx vision-camera-plugin-builder@latest ios` i `npx vision-camera-plugin-builder@latest android`.
+- iOS: dodaj `PoseLandmarkerHolder.swift` (singleton), `PoseLandmarks.swift` + most `.m`, oraz `PoseLandmarksFrameProcessor.swift` przekazujący klatki do `PoseLandmarker` (`RunningMode.LIVE_STREAM`).
+- Android (Kotlin): dodaj `PoseLandmarks.kt` (NativeModule z `@ReactMethod initModel()`), listener wyników (`PoseLandmarkerResult`) i `PoseLandmarksFrameProcessor` (plugin) — dodaj pakiety do `MainApplication` (`getPackages()`).
+- Eventy: `onPoseLandmarksStatus`, `onPoseLandmarksError`, `onPoseLandmarksDetected` (33 punkty: x, y, z, visibility).
 
 ---
 
-[ ] Etap 4 — Wygładzanie i normalizacja
+[ ] Etap 4 — Integracja JS: inicjalizacja modelu + strumień landmarków
 **Prompt**
-- Dodaj wygładzanie (EMA/median) 3–5 ostatnich klatek i normalizację współrzędnych do [0..1] względem widoku kamery, z obsługą lustrzanego odbicia dla przedniej kamery.
+- W `components/ai/CameraSurface.tsx` zainicjuj model przy starcie ekranu, podłącz `useSkiaFrameProcessor` aby renderować podgląd i odbierać landmarki przez eventy. Lustrzane odbicie dla przedniej kamery.
 
 **Acceptance**
-- Strumień punktów ≥ 15 FPS (fullscreen) na średnich/wysokich urządzeniach; widocznie stabilniejsze punkty.
+- Stabilny strumień landmarków (≥ 15 FPS fullscreen na średnich/wysokich urządzeniach).
+- Brak crashy przy background/foreground; poprawny mirror dla przedniej kamery.
 
 **Akcje**
-- Implementuj EMA/median filter i progi visibility.
-- Zachowaj indeksację 33 punktów kompatybilną z MediaPipe.
+- Subskrybuj `onPoseLandmarksDetected` i mapuj wynik do znormalizowanych współrzędnych [0..1] widoku kamery.
+- Dodaj wygładzanie (EMA 3–5 klatek) po stronie JS dla stabilności overlay/reguł.
+- Zaimplementuj mirror współrzędnych dla przedniej kamery.
 
 ---
 
@@ -97,9 +103,9 @@ Kamera i uprawnienia:
 
 ---
 
-[ ] Etap 6 — Prymitywy ćwiczeń (rule engine)
+[ ] Etap 6 — Prymitywy ćwiczeń (rule engine) + wyzwalanie funkcji
 **Prompt**
-- Dodaj warstwę reguł do liczenia kątów i powtórzeń dla 1–2 ruchów (np. biceps curl, squat). Emituj podpowiedzi do `LiveFeedbackOverlay`.
+- Dodaj warstwę reguł do liczenia kątów i powtórzeń dla 1–2 ruchów (np. biceps curl, squat). Zamiast sterowania protezą — wyzwalaj funkcje/callbacki w fazach ruchu; równolegle podpowiedzi do `LiveFeedbackOverlay`.
 
 **Acceptance**
 - Na żywo pojawiają się wskazówki „tempo”, „zakres”, „postawa”; repy liczone poprawnie z debouncingiem.
@@ -107,18 +113,19 @@ Kamera i uprawnienia:
 **Akcje**
 - `services/poseMath.ts` (kąty, wygładzanie, wykrywanie faz).
 - `services/exercises/*.ts` (progi kątów, przejścia fazowe dla ćwiczeń).
+- W ekranie AI rejestruj callbacki (np. `onExercisePhaseChange`, `onRepCompleted`) i wywołuj je na podstawie reguł.
 
 ---
 
 [ ] Etap 7 — Integracja, UX i fallback
 **Prompt**
-- Dodaj przełączniki: mirror dla przedniej kamery, throttling jakości; fallback: wyłącz przetwarzanie na symulatorze/urządzeniach bez wsparcia pluginu. Obsłuż pauzę kamery przy backgroundingu.
+- Dodaj wybór wariantu modelu (full vs heavy), fallback do inline (niższy FPS) na słabych urządzeniach. Obsłuż pauzę kamery przy backgroundingu.
 
 **Acceptance**
-- Przełączniki działają i się zapamiętują; app stabilna po background/foreground; brak crashy.
+- Przełącznik modelu działa i się zapamiętuje; app stabilna po background/foreground; brak crashy.
 
 **Akcje**
-- Małe ustawienia w aplikacji, persist w storage.
+- Małe ustawienie w aplikacji, persist w storage.
 - Pauzuj frame processor gdy ekran niewidoczny lub aplikacja w tle.
 
 ---
@@ -133,15 +140,16 @@ Kamera i uprawnienia:
 ## Pakiety i wersje (rekomendacje)
 - `react-native-vision-camera` v3.x
 - `react-native-worklets-core` v1.x
-- `expo-pose-landmarks` (najnowsza)
 - `@shopify/react-native-skia` (najnowsza)
+- MediaPipe Tasks Vision (natywnie): `MediaPipeTasksVision` 0.10.14 (iOS, CocoaPods), `com.google.mediapipe:tasks-vision:0.10.14` (Android)
 
 ## Modele
-- Brak ręcznego bundlowania modeli `.tflite` — używamy `expo-pose-landmarks`.
+- MediaPipe Tasks Pose: `pose_landmarker_*.task` (warianty: `lite`, `full`, `heavy`).
+- Licencja: Apache-2.0 (free, komercyjnie przyjazna).
 
 ---
 
 ## Pierwszy krok do wdrożenia
-- Podmiana `expo-camera` → VisionCamera + integracja `expo-pose-landmarks` (szkielet), green build w dev‑cliencie, a potem overlay w Skia.
+- Mamy VisionCamera + no‑op frame processor. Następnie: dodaj MediaPipe Tasks (Pods/Gradle) i podłącz model `.task`, wygeneruj plugin frame processora (adaptacja z artykułu Hand→Pose), zainicjalizuj model i uruchom strumień landmarków.
 
 

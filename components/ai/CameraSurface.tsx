@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, ViewStyle, Dimensions, TouchableOpacity, Text, NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import type { CameraProps } from 'react-native-vision-camera';
 import { Camera, useCameraDevice, useCameraPermission, useFrameProcessor } from 'react-native-vision-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
-import { poseProcessor } from '@/frameProcessors/poseProcessor';
+import { poseProcessor } from '../../frameProcessors/poseProcessor';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -26,11 +27,69 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
 
   React.useEffect(() => {
     if (!hasPermission) {
-      requestPermission();
+      requestPermission().catch(() => {});
     }
   }, [hasPermission, requestPermission]);
 
-  if (!device) return <View style={[styles.container, styles.containerInline, styles.black, containerStyle]} />;
+  // Debug: log camera availability and permission changes
+  React.useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('[CameraSurface] hasPermission=', hasPermission, ' device=', device?.id);
+  }, [hasPermission, device?.id]);
+
+  // Stage 4: Init Pose model and subscribe to events
+  React.useEffect(() => {
+    // Inspect available native modules once on mount
+    try {
+      const keys = Object.keys(NativeModules || {});
+      // eslint-disable-next-line no-console
+      console.log('[NativeModules][probe]', keys.filter(k => /Pose|Vision|Camera/i.test(k)));
+    } catch {}
+
+    const PoseLandmarks = (NativeModules as any).PoseLandmarks;
+    if (!PoseLandmarks) {
+      // eslint-disable-next-line no-console
+      console.warn('[Pose] Native module not found (NativeModules.PoseLandmarks)');
+      return;
+    }
+    const emitter = new NativeEventEmitter(PoseLandmarks);
+    const subStatus = emitter.addListener('onPoseLandmarksStatus', (e) => {
+      // eslint-disable-next-line no-console
+      console.log('[Pose][Status]', e);
+    });
+    const subError = emitter.addListener('onPoseLandmarksError', (e) => {
+      console.warn('[Pose][Error]', e?.error || e);
+    });
+    const subDetected = emitter.addListener('onPoseLandmarksDetected', (e) => {
+      // e.poses: [{ landmarks: [{ keypoint, x, y, z }, ...] }]
+      // eslint-disable-next-line no-console
+      console.log('[Pose][Detected] poses=', Array.isArray(e?.poses) ? e.poses.length : 0);
+    });
+    try {
+      PoseLandmarks.initModel();
+    } catch {}
+    return () => {
+      subStatus.remove();
+      subError.remove();
+      subDetected.remove();
+    };
+  }, []);
+
+  if (!hasPermission) {
+    return (
+      <View style={[styles.container, styles.containerInline, styles.black, containerStyle, { alignItems: 'center', justifyContent: 'center' }]}>
+        <Text style={{ color: '#fff' }}>Brak uprawnień do kamery</Text>
+      </View>
+    );
+  }
+
+  if (!device) {
+    return (
+      <View style={[styles.container, styles.containerInline, styles.black, containerStyle, { alignItems: 'center', justifyContent: 'center' }]}>
+        <Text style={{ color: '#fff' }}>Nie znaleziono kamery</Text>
+      </View>
+    );
+  }
 
   const topOffset = (isFullScreen ? insets.top : 0) + 12;
 
@@ -40,14 +99,17 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
     poseProcessor(frame);
   }, []);
 
+  const pixelFormat: CameraProps['pixelFormat'] = Platform.OS === 'ios' ? 'rgb' : 'yuv';
+
   return (
     <View style={[styles.container, isFullScreen ? styles.containerFull : styles.containerInline, containerStyle]}>
       <Camera
         style={StyleSheet.absoluteFill}
         device={device}
-        isActive={isActive}
+        isActive={isActive && hasPermission}
         ref={cameraRef as any}
         frameProcessor={frameProcessor}
+        pixelFormat={pixelFormat}
 
       />
 

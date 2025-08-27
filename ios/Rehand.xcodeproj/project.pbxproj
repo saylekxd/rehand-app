@@ -7,29 +7,41 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		031589732E5FA30D001DC056 /* pose_landmarker_full.task in Resources */ = {isa = PBXBuildFile; fileRef = 031589722E5FA30C001DC056 /* pose_landmarker_full.task */; };
+		031589752E5FC445001DC056 /* PoseLandmarkerHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031589742E5FC445001DC056 /* PoseLandmarkerHolder.swift */; };
+		031589772E5FC45C001DC056 /* PoseLandmarks.m in Sources */ = {isa = PBXBuildFile; fileRef = 031589762E5FC45C001DC056 /* PoseLandmarks.m */; };
+		031589792E5FC46B001DC056 /* PoseLandmarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031589782E5FC46B001DC056 /* PoseLandmarks.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		25245ADC6FDEA328B3AABE36 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C5D973FB14A8D54E4A752 /* ExpoModulesProvider.swift */; };
+		19E150812C17AC86BAB3C553 /* Pods_Rehand.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F7616D1F5827908E73A705 /* Pods_Rehand.framework */; };
+		29E91B5D8A7CDABADC385C57 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F85FEEED848E47F8F30D63C8 /* PrivacyInfo.xcprivacy */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		906426DA1E798FB6D913104B /* libPods-Rehand.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 140BF5665296C8E78146C338 /* libPods-Rehand.a */; };
+		9631ACF7552940008E881A8D /* PoseLandmarksFrameProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */; };
+		BB157F5EBCB74DC1856CB2EC /* PoseLandmarksFrameProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C72E47FAC4B3CF4D3B33EB70 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B546C890E61FD397C4720BD3 /* PrivacyInfo.xcprivacy */; };
+		BF8570A177CA8BDA08BD96FA /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63504571A295FD8A4A162826 /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		031589722E5FA30C001DC056 /* pose_landmarker_full.task */ = {isa = PBXFileReference; lastKnownFileType = file; path = pose_landmarker_full.task; sourceTree = "<group>"; };
+		031589742E5FC445001DC056 /* PoseLandmarkerHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseLandmarkerHolder.swift; sourceTree = "<group>"; };
+		031589762E5FC45C001DC056 /* PoseLandmarks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PoseLandmarks.m; sourceTree = "<group>"; };
+		031589782E5FC46B001DC056 /* PoseLandmarks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseLandmarks.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Rehand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rehand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Rehand/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Rehand/Info.plist; sourceTree = "<group>"; };
-		140BF5665296C8E78146C338 /* libPods-Rehand.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Rehand.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D6C5D973FB14A8D54E4A752 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Rehand/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		95DEF6891C47D5581F0EE8BA /* Pods-Rehand.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.debug.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.debug.xcconfig"; sourceTree = "<group>"; };
+		36F939662AF0714F8C54EEAB /* Pods-Rehand.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.release.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.release.xcconfig"; sourceTree = "<group>"; };
+		501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = PoseLandmarksFrameProcessor.m; sourceTree = "<group>"; };
+		63504571A295FD8A4A162826 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Rehand/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		67F7616D1F5827908E73A705 /* Pods_Rehand.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Rehand.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Rehand/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B546C890E61FD397C4720BD3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Rehand/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C5480C647F704A7AC3656512 /* Pods-Rehand.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.release.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Rehand/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Rehand-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Rehand-Bridging-Header.h"; path = "Rehand/Rehand-Bridging-Header.h"; sourceTree = "<group>"; };
+		F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = PoseLandmarksFrameProcessor.swift; sourceTree = "<group>"; };
+		F85FEEED848E47F8F30D63C8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Rehand/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		FD83B3628C6B4F0DEE1EFE33 /* Pods-Rehand.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.debug.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,13 +49,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				906426DA1E798FB6D913104B /* libPods-Rehand.a in Frameworks */,
+				19E150812C17AC86BAB3C553 /* Pods_Rehand.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01157F401A6ACAC190D4C2D4 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				547847080358024C275B7F3A /* Rehand */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* Rehand */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,28 +73,47 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				B546C890E61FD397C4720BD3 /* PrivacyInfo.xcprivacy */,
+				F85FEEED848E47F8F30D63C8 /* PrivacyInfo.xcprivacy */,
+				031589742E5FC445001DC056 /* PoseLandmarkerHolder.swift */,
+				031589762E5FC45C001DC056 /* PoseLandmarks.m */,
+				031589782E5FC46B001DC056 /* PoseLandmarks.swift */,
 			);
 			name = Rehand;
-			sourceTree = "<group>";
-		};
-		263A07A4A40F066C3975B048 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				95DEF6891C47D5581F0EE8BA /* Pods-Rehand.debug.xcconfig */,
-				C5480C647F704A7AC3656512 /* Pods-Rehand.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				140BF5665296C8E78146C338 /* libPods-Rehand.a */,
+				67F7616D1F5827908E73A705 /* Pods_Rehand.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3B780F1B4ACE4248961F941A /* PoseLandmarksFrameProcessor */ = {
+			isa = PBXGroup;
+			children = (
+				501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */,
+				F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */,
+			);
+			path = PoseLandmarksFrameProcessor;
+			sourceTree = "<group>";
+		};
+		547847080358024C275B7F3A /* Rehand */ = {
+			isa = PBXGroup;
+			children = (
+				63504571A295FD8A4A162826 /* ExpoModulesProvider.swift */,
+			);
+			name = Rehand;
+			sourceTree = "<group>";
+		};
+		78B7597C063B101E1951F34B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FD83B3628C6B4F0DEE1EFE33 /* Pods-Rehand.debug.xcconfig */,
+				36F939662AF0714F8C54EEAB /* Pods-Rehand.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -91,8 +130,10 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				263A07A4A40F066C3975B048 /* Pods */,
-				977B2B344DE3BECD07824F3C /* ExpoModulesProviders */,
+				78B7597C063B101E1951F34B /* Pods */,
+				01157F401A6ACAC190D4C2D4 /* ExpoModulesProviders */,
+				031589722E5FA30C001DC056 /* pose_landmarker_full.task */,
+				3B780F1B4ACE4248961F941A /* PoseLandmarksFrameProcessor */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -105,22 +146,6 @@
 				13B07F961A680F5B00A75B9A /* Rehand.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		977B2B344DE3BECD07824F3C /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				A2167DFC31D5DB025A21BC5D /* Rehand */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		A2167DFC31D5DB025A21BC5D /* Rehand */ = {
-			isa = PBXGroup;
-			children = (
-				2D6C5D973FB14A8D54E4A752 /* ExpoModulesProvider.swift */,
-			);
-			name = Rehand;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -139,14 +164,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Rehand" */;
 			buildPhases = (
-				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				4AA665AC4161220552B8223C /* [Expo] Configure project */,
+				E65A88CA32070F1AB7CEF939 /* [CP] Check Pods Manifest.lock */,
+				B8F480C4643722947434F517 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				4706EBEAEDE16704DAFC5B33 /* [CP] Embed Pods Frameworks */,
+				9647B0CC6A698F662A15774C /* [CP] Embed Pods Frameworks */,
+				B7C2F29790C33E37B455CA7A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -196,7 +221,8 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				C72E47FAC4B3CF4D3B33EB70 /* PrivacyInfo.xcprivacy in Resources */,
+				031589732E5FA30D001DC056 /* pose_landmarker_full.task in Resources */,
+				29E91B5D8A7CDABADC385C57 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,29 +244,7 @@
 			shellPath = /bin/sh;
 			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n# Source .xcode.env.updates if it exists to allow\n# SKIP_BUNDLING to be unset if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.updates\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.updates\"\nfi\n# Source local changes to allow overrides\n# if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n\n";
 		};
-		08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Rehand-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4706EBEAEDE16704DAFC5B33 /* [CP] Embed Pods Frameworks */ = {
+		9647B0CC6A698F662A15774C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -258,26 +262,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Rehand/Pods-Rehand-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4AA665AC4161220552B8223C /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Rehand/expo-configure-project.sh\"\n";
-		};
-		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
+		B7C2F29790C33E37B455CA7A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -319,6 +304,47 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Rehand/Pods-Rehand-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B8F480C4643722947434F517 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Rehand/expo-configure-project.sh\"\n";
+		};
+		E65A88CA32070F1AB7CEF939 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Rehand-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -327,7 +353,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				25245ADC6FDEA328B3AABE36 /* ExpoModulesProvider.swift in Sources */,
+				031589752E5FC445001DC056 /* PoseLandmarkerHolder.swift in Sources */,
+				031589772E5FC45C001DC056 /* PoseLandmarks.m in Sources */,
+				BF8570A177CA8BDA08BD96FA /* ExpoModulesProvider.swift in Sources */,
+				BB157F5EBCB74DC1856CB2EC /* PoseLandmarksFrameProcessor.m in Sources */,
+				031589792E5FC46B001DC056 /* PoseLandmarks.swift in Sources */,
+				9631ACF7552940008E881A8D /* PoseLandmarksFrameProcessor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,19 +367,20 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 95DEF6891C47D5581F0EE8BA /* Pods-Rehand.debug.xcconfig */;
+			baseConfigurationReference = FD83B3628C6B4F0DEE1EFE33 /* Pods-Rehand.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Rehand/Rehand.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BPZ3K4C472;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = Rehand/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -372,14 +404,15 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C5480C647F704A7AC3656512 /* Pods-Rehand.release.xcconfig */;
+			baseConfigurationReference = 36F939662AF0714F8C54EEAB /* Pods-Rehand.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Rehand/Rehand.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BPZ3K4C472;
 				INFOPLIST_FILE = Rehand/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -447,7 +480,18 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -455,10 +499,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -506,17 +547,25 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

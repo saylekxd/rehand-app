@@ -1,21 +1,13 @@
-import { Frame } from 'react-native-vision-camera';
-import { poseLandmarker } from 'expo-pose-landmarks';
+import type { Frame } from 'react-native-vision-camera'
 
-/**
- * Stage 1: Plugin-backed frame processor with minimal logging
- * 
- * This processor:
- * - Calls expo-pose-landmarks landmarker on each frame (worklet)
- * - Leaves performance throttling to VisionCamera for now
- */
-export function poseProcessor(frame: Frame): void {
-  'worklet';
-
-  try {
-    // poseLandmarker posts results via JS listeners; it does not return data
-    poseLandmarker(frame);
-  } catch (e) {
-    // Swallow errors in worklet to avoid crashing the frame processor
-    // console.log('[PoseProcessor] error running landmarker');
+export function poseProcessor(frame: Frame) {
+  'worklet'
+  // Call native VisionCamera Frame Processor plugin registered name
+  // The builder usually registers the plugin under its exported name
+  // Try both possible global names to be safe.
+  // @ts-ignore - injected by VisionCamera at runtime in the Worklet context
+  const fn = (globalThis as any).PoseLandmarksFrameProcessor ?? (globalThis as any).PoseLandmarks
+  if (typeof fn === 'function') {
+    fn(frame)
   }
 }
