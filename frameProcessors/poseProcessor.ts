@@ -1,20 +1,21 @@
 import { Frame } from 'react-native-vision-camera';
+import { poseLandmarker } from 'expo-pose-landmarks';
 
 /**
- * Stage 1: No-op frame processor with FPS logging and frame dimension tracking
+ * Stage 1: Plugin-backed frame processor with minimal logging
  * 
  * This processor:
- * - Logs frame dimensions and FPS every 2 seconds
- * - Does no actual ML processing yet
- * - Serves as a foundation for future TensorFlow Lite integration
+ * - Calls expo-pose-landmarks landmarker on each frame (worklet)
+ * - Leaves performance throttling to VisionCamera for now
  */
 export function poseProcessor(frame: Frame): void {
   'worklet';
-  
-  // Simple frame logging without FPS calculation for now
-  // VisionCamera already handles throttling internally
-  //console.log(`[PoseProcessor] Frame: ${frame.width}x${frame.height}`);
-  
-  // No-op: just return without processing
-  // Future stages will add TensorFlow Lite inference here
+
+  try {
+    // poseLandmarker posts results via JS listeners; it does not return data
+    poseLandmarker(frame);
+  } catch (e) {
+    // Swallow errors in worklet to avoid crashing the frame processor
+    // console.log('[PoseProcessor] error running landmarker');
+  }
 }

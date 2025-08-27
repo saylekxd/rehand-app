@@ -17,6 +17,7 @@ import ControlsBar from '@/components/ai/ControlsBar';
 import AnalysisModal from '@/components/ai/AnalysisModal';
 import type { AnalysisResult, LiveMessage } from '@/components/ai/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { initPoseLandmarks, addPoseDetectedListener, addStatusListener, addErrorListener, removeAllListeners } from 'expo-pose-landmarks';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -31,6 +32,44 @@ export default function AITab() {
   const [liveMessages, setLiveMessages] = useState<LiveMessage[]>([]);
   const [livePosition, setLivePosition] = useState<'top' | 'bottom'>('bottom');
   const cameraRef = useRef<any>(null);
+
+  // Initialize pose landmarker and minimal logging (Stage 1)
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        await initPoseLandmarks();
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn('[Pose] init error', e);
+      }
+    })();
+
+    addPoseDetectedListener((result: any) => {
+      if (cancelled) return;
+      const posesCount = Array.isArray(result?.landmarks) ? result.landmarks.length : 0;
+      // eslint-disable-next-line no-console
+      console.log(`[Pose] poses=${posesCount} frame=${result?.frameWidth}x${result?.frameHeight}`);
+    });
+
+    addStatusListener((status: any) => {
+      if (cancelled) return;
+      // eslint-disable-next-line no-console
+      console.log('[Pose] status=', status?.status);
+    });
+
+    addErrorListener((error: any) => {
+      if (cancelled) return;
+      // eslint-disable-next-line no-console
+      console.log('[Pose] error=', error?.error);
+    });
+
+    return () => {
+      cancelled = true;
+      removeAllListeners();
+    };
+  }, []);
 
   // VisionCamera will request permission when needed
 

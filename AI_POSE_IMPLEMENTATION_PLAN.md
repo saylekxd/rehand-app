@@ -1,8 +1,8 @@
-## Prompt-based implementation plan: TensorFlow Lite + VisionCamera v3 + Skia (BlazePose)
+## Prompt-based implementation plan: expo-pose-landmarks + VisionCamera v3 + Skia
 
 ### Notatki
-- VisionCamera v3 obsługuje real-time frame processing; uruchomimy TFLite w frame processorze przez `react-native-fast-tflite`, z resizingiem przez `vision-camera-resize-plugin`, a rysowanie zrobimy w `@shopify/react-native-skia`.
-- MediaPipe BlazePose (modele: detector + landmark full/heavy) są dostępne na licencji Apache-2.0 – brak opłat runtime.
+- VisionCamera v3 obsługuje real-time frame processing; wykorzystamy plugin `expo-pose-landmarks`, który udostępnia worklet API do pozyskania 33 landmarków pozy (z visibility i opcjonalnym score). Overlay narysujemy w `@shopify/react-native-skia`.
+- Z `expo-pose-landmarks` nie bundlujemy własnych modeli `.tflite`, nie potrzebujemy `react-native-fast-tflite` ani `vision-camera-resize-plugin`.
 
 ---
 
@@ -15,8 +15,7 @@
 - Podgląd kamery działa w obecnym `CameraSurface` i fullscreen modal.
 
 **Akcje**
-- [x] Zainstaluj: `react-native-vision-camera@^3`, `react-native-worklets-core@^1`, `@shopify/react-native-skia`, `react-native-fast-tflite`, `vision-camera-resize-plugin`.
-- [x] Dodaj `.tflite` do `metro.config.js` (assetExts).
+- [x] Zainstaluj: `react-native-vision-camera@^3`, `react-native-worklets-core@^1`, `@shopify/react-native-skia`.
 - [x] Utwórz `components/ai/CameraSurface.tsx` z VisionCamera i przenieś uprawnienia.
 - [x] Zrefaktoryzuj `app/(tabs)/ai.tsx` do użycia `CameraSurface`.
 - [ ] Przebuduj dev client (`expo run:ios` / `expo run:android`).
@@ -26,65 +25,62 @@ Kamera i uprawnienia:
 [x] Kod NIE używa już expo-camera w `app/(tabs)/ai.tsx` i `components/ai/CameraSurface.tsx` (zmigrowano na VisionCamera).
 [x] VisionCamera ma inny model: useCameraDevice('front'|'back') + <Camera device={device} isActive frameProcessor={...} />, a uprawnienia przez useCameraPermission() lub metody statyczne.
 [x] Konieczna refaktoryzacja obu plików: typy, hook uprawnień, API komponentu kamery — ZROBIONE.
-[x] Usuń expo-camera z zależności po migracji, żeby uniknąć dublowania i pomyłek w importach.
-[x] Metro bundler:
-Brakuje wsparcia dla assetów .tflite. Trzeba rozszerzyć metro.config.js.
+[x] Usuń `expo-camera` z zależności po migracji, żeby uniknąć dublowania i pomyłek w importach.
+[x] Brak potrzeby dodawania wsparcia dla assetów `.tflite` w `metro.config.js` (modele nie są bundlowane ręcznie).
 
 ---
 
-[x] Etap 1 — Szkielet frame processora
+[ ] Etap 1 — Instalacja i szkielet pluginu `expo-pose-landmarks`
 **Prompt**
-- Dodaj hook `useFrameProcessor`, który odbiera klatki (30 FPS), jeszcze bez ML. Loguj rozmiar i ogranicz do ~15 FPS w fullscreen.
+- Dodaj `expo-pose-landmarks` i podstawową integrację z `useFrameProcessor`. W wersji szkieletowej tylko wywołuj landmarker i loguj liczbę wykrytych punktów; ogranicz do ~15 FPS w fullscreen.
 
 **Acceptance**
-- W logach widać dane klatek; FPS stabilny; brak jank.
+- Plugin inicjalizuje się poprawnie; w logach widać liczbę landmarków; FPS stabilny, brak jank.
 
 **Akcje**
-- [x] Utwórz `frameProcessors/poseProcessor.ts` z no-op procesorem.
-- [x] Podepnij do `Camera` z `useFrameProcessor` - naturalny throttling przez VisionCamera.
+- [ ] Zainstaluj `expo-pose-landmarks` i dodaj do `app.json` w sekcji `plugins`.
+- [ ] Zaktualizuj `frameProcessors/poseProcessor.ts` tak, by wywoływał worklet landmarkera z pluginu i zwracał wynik do JS (np. przez `useSharedValue` lub `runOnJS`).
+- [ ] Podepnij do `Camera` przez `useFrameProcessor`.
+- [ ] Przebuduj dev client po dodaniu pluginu (`expo run:ios` / `expo run:android`).
 
 ---
 
-[ ] Etap 2 — Runtime TFLite + assety modeli
+[ ] Etap 2 — Konfiguracja pluginu i API danych
 **Prompt**
-- Zbundluj modele BlazePose i wczytaj je przez `react-native-fast-tflite`. Bez inferencji.
+- Skonfiguruj opcje `expo-pose-landmarks` (np. tryb szybki vs dokładny, liczba osób – jeśli wspierane) i wystandaryzuj kształt danych landmarków (33 punkty, visibility, z) do dalszego przetwarzania.
 
 **Acceptance**
-- Modele (detector + landmark) ładują się < 150 ms każdy; pamięć stabilna.
+- Dane landmarków są dostępne w JS jako aktualna wartość i zawierają spójne pola; pamięć stabilna.
 
 **Akcje**
-- Umieść w `assets/models/`:
-  - `pose_detection.tflite` (detector)
-  - `pose_landmark_full.tflite` (dokładność) lub `pose_landmark_heavy.tflite` (maks. dokładność)
-- Dodaj rozszerzenie `tflite` do `metro.config.js` (`assetExts`).
-- Lazy load w hooku `hooks/useBlazePose.ts`.
+- Zapewnij bezpieczne przekazanie wyników z workletu do JS (np. throttling co N klatek, debouncing, kontrola `isActive`).
+- Ustal i udokumentuj typ `PoseLandmarks` w `components/ai/types.ts`.
 
 ---
 
-[ ] Etap 3 — Preprocessing (resize plugin)
+[ ] Etap 3 — Harmonogram i throttling detekcji
 **Prompt**
-- Użyj `vision-camera-resize-plugin` do konwersji YUV→RGB i resize do wejść modeli (np. 192×192 dla detectora, 256×256 dla landmarków). Normalizuj do zakresu zgodnego z modelem.
+- Zaimplementuj harmonogram wywołań landmarkera (co klatkę lub co N klatek zależnie od wydajności) oraz throttling przekazywania danych do JS, by utrzymać ≥ 15 FPS w fullscreen.
 
 **Acceptance**
-- Detector < 6 ms/klatkę na nowoczesnych urządzeniach; landmark 12–18 ms/klatkę.
+- Stabilny strumień landmarków bez dropów UI; CPU/GPU w normie na docelowych urządzeniach.
 
 **Akcje**
-- W worklecie wywołuj plugin (GPU), buduj `TypedArray` dla TFLite.
-- Uruchamiaj detector co N klatek (np. 6); ROI z detectora używaj do cropu w landmarkach na każdej klatce.
+- Dodaj licznik klatek w worklecie i kontrolę częstotliwości publikacji wyników.
+- Zaimplementuj opcjonalne wyłączanie przetwarzania przy `isActive=false`/gdy ekran niewidoczny.
 
 ---
 
-[ ] Etap 4 — Pipeline BlazePose (detector + tracker)
+[ ] Etap 4 — Wygładzanie i normalizacja
 **Prompt**
-- Zaimplementuj pętlę detector-tracker: detector okresowo; landmarks każdą klatkę na śledzonym ROI; wynik: 33 keypointy + visibility + z.
+- Dodaj wygładzanie (EMA/median) 3–5 ostatnich klatek i normalizację współrzędnych do [0..1] względem widoku kamery, z obsługą lustrzanego odbicia dla przedniej kamery.
 
 **Acceptance**
-- Strumień punktów ≥ 15 FPS (fullscreen) na średnich/wysokich urządzeniach.
-- Stabilne śledzenie osoby bez częstych re-detekcji.
+- Strumień punktów ≥ 15 FPS (fullscreen) na średnich/wysokich urządzeniach; widocznie stabilniejsze punkty.
 
 **Akcje**
-- Wygładzanie EMA 3–5 ostatnich klatek.
-- Zwracaj współrzędne znormalizowane [0..1] względem widoku kamery i ROI.
+- Implementuj EMA/median filter i progi visibility.
+- Zachowaj indeksację 33 punktów kompatybilną z MediaPipe.
 
 ---
 
@@ -116,13 +112,13 @@ Brakuje wsparcia dla assetów .tflite. Trzeba rozszerzyć metro.config.js.
 
 [ ] Etap 7 — Integracja, UX i fallback
 **Prompt**
-- Dodaj wybór wariantu modelu (full vs heavy), fallback do inline (niższy FPS) na słabych urządzeniach. Obsłuż pauzę kamery przy backgroundingu.
+- Dodaj przełączniki: mirror dla przedniej kamery, throttling jakości; fallback: wyłącz przetwarzanie na symulatorze/urządzeniach bez wsparcia pluginu. Obsłuż pauzę kamery przy backgroundingu.
 
 **Acceptance**
-- Przełącznik modelu działa i się zapamiętuje; app stabilna po background/foreground; brak crashy.
+- Przełączniki działają i się zapamiętują; app stabilna po background/foreground; brak crashy.
 
 **Akcje**
-- Małe ustawienie w aplikacji, persist w storage.
+- Małe ustawienia w aplikacji, persist w storage.
 - Pauzuj frame processor gdy ekran niewidoczny lub aplikacja w tle.
 
 ---
@@ -137,17 +133,15 @@ Brakuje wsparcia dla assetów .tflite. Trzeba rozszerzyć metro.config.js.
 ## Pakiety i wersje (rekomendacje)
 - `react-native-vision-camera` v3.x
 - `react-native-worklets-core` v1.x
-- `react-native-fast-tflite` (najnowsza)
-- `vision-camera-resize-plugin` (najnowsza)
+- `expo-pose-landmarks` (najnowsza)
 - `@shopify/react-native-skia` (najnowsza)
 
 ## Modele
-- MediaPipe BlazePose: `pose_detection.tflite` + `pose_landmark_full.tflite` (lub `heavy.tflite`).
-- Licencja: Apache-2.0 (free, komercyjnie przyjazna).
+- Brak ręcznego bundlowania modeli `.tflite` — używamy `expo-pose-landmarks`.
 
 ---
 
 ## Pierwszy krok do wdrożenia
-- Podmiana `expo-camera` → VisionCamera + no‑op frame processor, green build w dev‑cliencie, a potem włączanie TFLite.
+- Podmiana `expo-camera` → VisionCamera + integracja `expo-pose-landmarks` (szkielet), green build w dev‑cliencie, a potem overlay w Skia.
 
 

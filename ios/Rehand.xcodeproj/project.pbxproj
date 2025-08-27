@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		25245ADC6FDEA328B3AABE36 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C5D973FB14A8D54E4A752 /* ExpoModulesProvider.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		4DB4DAFF11E3E7F1E6F9010D /* libPods-Rehand.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D1E91FD22042BCAEA99B5D2 /* libPods-Rehand.a */; };
-		9EB9EA04704571DAEF552F7D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1D83CD8E59A2DF133C6A8D /* ExpoModulesProvider.swift */; };
+		906426DA1E798FB6D913104B /* libPods-Rehand.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 140BF5665296C8E78146C338 /* libPods-Rehand.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C776A5CBDE1348DB3FCBE624 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 95344EAF27B6D783408DFAAF /* PrivacyInfo.xcprivacy */; };
+		C72E47FAC4B3CF4D3B33EB70 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B546C890E61FD397C4720BD3 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,18 +20,16 @@
 		13B07F961A680F5B00A75B9A /* Rehand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rehand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Rehand/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Rehand/Info.plist; sourceTree = "<group>"; };
-		198E5BC81FA820D8905735C9 /* Pods-Rehand.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.debug.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.debug.xcconfig"; sourceTree = "<group>"; };
-		3A1DCFE1A2B026F5CDD3BB6C /* Pods-Rehand.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.release.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.release.xcconfig"; sourceTree = "<group>"; };
-		4126DBE74FFD5FDF875E790D /* Pods-boltexponativewind.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-boltexponativewind.debug.xcconfig"; path = "Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind.debug.xcconfig"; sourceTree = "<group>"; };
-		5D1E91FD22042BCAEA99B5D2 /* libPods-Rehand.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Rehand.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		77C3127E2CF504052036D989 /* Pods-boltexponativewind.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-boltexponativewind.release.xcconfig"; path = "Target Support Files/Pods-boltexponativewind/Pods-boltexponativewind.release.xcconfig"; sourceTree = "<group>"; };
-		95344EAF27B6D783408DFAAF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Rehand/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		140BF5665296C8E78146C338 /* libPods-Rehand.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Rehand.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D6C5D973FB14A8D54E4A752 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Rehand/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		95DEF6891C47D5581F0EE8BA /* Pods-Rehand.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.debug.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Rehand/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B546C890E61FD397C4720BD3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Rehand/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		C5480C647F704A7AC3656512 /* Pods-Rehand.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.release.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Rehand/AppDelegate.swift; sourceTree = "<group>"; };
-		F11748442D0722820044C1D9 /* boltexponativewind-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "boltexponativewind-Bridging-Header.h"; path = "Rehand/boltexponativewind-Bridging-Header.h"; sourceTree = "<group>"; };
-		FD1D83CD8E59A2DF133C6A8D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Rehand/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* Rehand-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Rehand-Bridging-Header.h"; path = "Rehand/Rehand-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4DB4DAFF11E3E7F1E6F9010D /* libPods-Rehand.a in Frameworks */,
+				906426DA1E798FB6D913104B /* libPods-Rehand.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,21 +48,31 @@
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
-				F11748442D0722820044C1D9 /* boltexponativewind-Bridging-Header.h */,
+				F11748442D0722820044C1D9 /* Rehand-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				95344EAF27B6D783408DFAAF /* PrivacyInfo.xcprivacy */,
+				B546C890E61FD397C4720BD3 /* PrivacyInfo.xcprivacy */,
 			);
 			name = Rehand;
+			sourceTree = "<group>";
+		};
+		263A07A4A40F066C3975B048 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				95DEF6891C47D5581F0EE8BA /* Pods-Rehand.debug.xcconfig */,
+				C5480C647F704A7AC3656512 /* Pods-Rehand.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5D1E91FD22042BCAEA99B5D2 /* libPods-Rehand.a */,
+				140BF5665296C8E78146C338 /* libPods-Rehand.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -83,8 +91,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				B1AC0A7BA09980ECCEA6B556 /* Pods */,
-				BB3B410D5811250B7FB3F337 /* ExpoModulesProviders */,
+				263A07A4A40F066C3975B048 /* Pods */,
+				977B2B344DE3BECD07824F3C /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -99,23 +107,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8456862F1D4B6B73F9263C41 /* Rehand */ = {
+		977B2B344DE3BECD07824F3C /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				FD1D83CD8E59A2DF133C6A8D /* ExpoModulesProvider.swift */,
+				A2167DFC31D5DB025A21BC5D /* Rehand */,
 			);
-			name = Rehand;
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
-		B1AC0A7BA09980ECCEA6B556 /* Pods */ = {
+		A2167DFC31D5DB025A21BC5D /* Rehand */ = {
 			isa = PBXGroup;
 			children = (
-				4126DBE74FFD5FDF875E790D /* Pods-boltexponativewind.debug.xcconfig */,
-				77C3127E2CF504052036D989 /* Pods-boltexponativewind.release.xcconfig */,
-				198E5BC81FA820D8905735C9 /* Pods-Rehand.debug.xcconfig */,
-				3A1DCFE1A2B026F5CDD3BB6C /* Pods-Rehand.release.xcconfig */,
+				2D6C5D973FB14A8D54E4A752 /* ExpoModulesProvider.swift */,
 			);
-			path = Pods;
+			name = Rehand;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -127,14 +132,6 @@
 			path = Rehand/Supporting;
 			sourceTree = "<group>";
 		};
-		BB3B410D5811250B7FB3F337 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				8456862F1D4B6B73F9263C41 /* Rehand */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Rehand" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				145532C5C76D38B9B4631D24 /* [Expo] Configure project */,
+				4AA665AC4161220552B8223C /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				0A7D60C61D35FE445F2F7D7B /* [CP] Embed Pods Frameworks */,
+				4706EBEAEDE16704DAFC5B33 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -199,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				C776A5CBDE1348DB3FCBE624 /* PrivacyInfo.xcprivacy in Resources */,
+				C72E47FAC4B3CF4D3B33EB70 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,7 +240,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		0A7D60C61D35FE445F2F7D7B /* [CP] Embed Pods Frameworks */ = {
+		4706EBEAEDE16704DAFC5B33 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -261,7 +258,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Rehand/Pods-Rehand-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		145532C5C76D38B9B4631D24 /* [Expo] Configure project */ = {
+		4AA665AC4161220552B8223C /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -330,7 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				9EB9EA04704571DAEF552F7D /* ExpoModulesProvider.swift in Sources */,
+				25245ADC6FDEA328B3AABE36 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,13 +336,12 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 198E5BC81FA820D8905735C9 /* Pods-Rehand.debug.xcconfig */;
+			baseConfigurationReference = 95DEF6891C47D5581F0EE8BA /* Pods-Rehand.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Rehand/boltexponativewind.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Rehand/Rehand.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BPZ3K4C472;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -366,7 +362,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saylekxd.rehand;
 				PRODUCT_NAME = Rehand;
-				SWIFT_OBJC_BRIDGING_HEADER = "Rehand/boltexponativewind-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Rehand/Rehand-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -376,13 +372,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3A1DCFE1A2B026F5CDD3BB6C /* Pods-Rehand.release.xcconfig */;
+			baseConfigurationReference = C5480C647F704A7AC3656512 /* Pods-Rehand.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Rehand/boltexponativewind.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Rehand/Rehand.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BPZ3K4C472;
 				INFOPLIST_FILE = Rehand/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -398,7 +393,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saylekxd.rehand;
 				PRODUCT_NAME = Rehand;
-				SWIFT_OBJC_BRIDGING_HEADER = "Rehand/boltexponativewind-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Rehand/Rehand-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

@@ -50,24 +50,6 @@ target 'Rehand' do
       :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
     )
 
-    # VisionCamera + RN 0.79: Provide compatibility shim for removed RCTBlockGuard.h
-    begin
-      require 'fileutils'
-      react_headers_dir = File.join(installer.sandbox.public_headers_root, 'ReactCommon')
-      FileUtils.mkdir_p(react_headers_dir)
-      shim_path = File.join(react_headers_dir, 'RCTBlockGuard.h')
-      unless File.exist?(shim_path)
-        File.write(shim_path, <<~EOS)
-          #ifndef RCTBlockGuard_h
-          #define RCTBlockGuard_h
-          #import <ReactCommon/RCTExpected.h>
-          #endif
-        EOS
-      end
-    rescue => e
-      puts "[Podfile] Failed to write RCTBlockGuard shim: #{e}"
-    end
-
     # This is necessary for Xcode 14, because it signs resource bundles by default
     # when building for devices.
     installer.target_installation_results.pod_target_installation_results
