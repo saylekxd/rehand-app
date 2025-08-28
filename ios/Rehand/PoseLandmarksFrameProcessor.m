@@ -7,4 +7,4 @@
 #import "Rehand-Swift.h"
 #endif
 
-VISION_EXPORT_SWIFT_FRAME_PROCESSOR(PoseLandmarksFrameProcessorPlugin, PoseLandmarks)
+VISION_EXPORT_SWIFT_FRAME_PROCESSOR(PoseLandmarksFrameProcessorPlugin, PoseLandmarksFrameProcessor)

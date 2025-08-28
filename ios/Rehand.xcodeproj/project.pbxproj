@@ -31,7 +31,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Rehand/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Rehand/Info.plist; sourceTree = "<group>"; };
 		36F939662AF0714F8C54EEAB /* Pods-Rehand.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.release.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.release.xcconfig"; sourceTree = "<group>"; };
-		501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = PoseLandmarksFrameProcessor.m; sourceTree = "<group>"; };
+		501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = PoseLandmarksFrameProcessor.m; path = Rehand/PoseLandmarksFrameProcessor.m; sourceTree = "<group>"; };
 		63504571A295FD8A4A162826 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Rehand/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		67F7616D1F5827908E73A705 /* Pods_Rehand.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Rehand.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Rehand/SplashScreen.storyboard; sourceTree = "<group>"; };
@@ -39,7 +39,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Rehand/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Rehand-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Rehand-Bridging-Header.h"; path = "Rehand/Rehand-Bridging-Header.h"; sourceTree = "<group>"; };
-		F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = PoseLandmarksFrameProcessor.swift; sourceTree = "<group>"; };
+		F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = PoseLandmarksFrameProcessor.swift; path = Rehand/PoseLandmarksFrameProcessor.swift; sourceTree = "<group>"; };
 		F85FEEED848E47F8F30D63C8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Rehand/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		FD83B3628C6B4F0DEE1EFE33 /* Pods-Rehand.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Rehand.debug.xcconfig"; path = "Target Support Files/Pods-Rehand/Pods-Rehand.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +77,8 @@
 				031589742E5FC445001DC056 /* PoseLandmarkerHolder.swift */,
 				031589762E5FC45C001DC056 /* PoseLandmarks.m */,
 				031589782E5FC46B001DC056 /* PoseLandmarks.swift */,
+				501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */,
+				F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */,
 			);
 			name = Rehand;
 			sourceTree = "<group>";
@@ -88,15 +90,6 @@
 				67F7616D1F5827908E73A705 /* Pods_Rehand.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		3B780F1B4ACE4248961F941A /* PoseLandmarksFrameProcessor */ = {
-			isa = PBXGroup;
-			children = (
-				501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */,
-				F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */,
-			);
-			path = PoseLandmarksFrameProcessor;
 			sourceTree = "<group>";
 		};
 		547847080358024C275B7F3A /* Rehand */ = {
@@ -133,7 +126,6 @@
 				78B7597C063B101E1951F34B /* Pods */,
 				01157F401A6ACAC190D4C2D4 /* ExpoModulesProviders */,
 				031589722E5FA30C001DC056 /* pose_landmarker_full.task */,
-				3B780F1B4ACE4248961F941A /* PoseLandmarksFrameProcessor */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";

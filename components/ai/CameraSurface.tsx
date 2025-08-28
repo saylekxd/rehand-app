@@ -56,7 +56,14 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         const keys = Object.keys(NativeModules || {});
         // eslint-disable-next-line no-console
         console.log('[NativeModules][probe]', keys);
-      } catch {}
+        
+        // Check if PoseLandmarks is available via direct import
+        const { PoseLandmarks } = NativeModules;
+        // eslint-disable-next-line no-console
+        console.log('[NativeModules][PoseLandmarks]', !!PoseLandmarks);
+      } catch (error) {
+        console.warn('[NativeModules][error]', error);
+      }
 
       const PoseLandmarks = (NativeModules as any).PoseLandmarks;
       if (!PoseLandmarks) {

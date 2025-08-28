@@ -1,13 +1,23 @@
-import type { Frame } from 'react-native-vision-camera'
+import { VisionCameraProxy, type Frame } from 'react-native-vision-camera'
+
+// Initialize the frame processor plugin using the new VisionCamera 4.x API
+const plugin = VisionCameraProxy.initFrameProcessorPlugin('PoseLandmarksFrameProcessor')
 
 export function poseProcessor(frame: Frame) {
   'worklet'
-  // Call native VisionCamera Frame Processor plugin registered name
-  // The builder usually registers the plugin under its exported name
-  // Try both possible global names to be safe.
-  // @ts-ignore - injected by VisionCamera at runtime in the Worklet context
-  const fn = (globalThis as any).PoseLandmarksFrameProcessor ?? (globalThis as any).PoseLandmarks
-  if (typeof fn === 'function') {
-    fn(frame)
+  
+  if (plugin == null) {
+    // Show debug info if plugin is not loaded
+    if (Math.random() < 0.01) { // 1% chance to log for debugging
+      console.log('[FrameProcessor] Plugin not loaded - PoseLandmarksFrameProcessor')
+    }
+    return
+  }
+
+  try {
+    // Call the native frame processor plugin
+    plugin.call(frame)
+  } catch (error) {
+    console.log('[FrameProcessor] Error calling plugin:', error)
   }
 }
