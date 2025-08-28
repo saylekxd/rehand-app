@@ -66,6 +66,8 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 
   override func bundleURL() -> URL? {
 #if DEBUG
+    // Force Metro host in Debug to your LAN IP so the dev build doesn't use 127.0.0.1
+    UserDefaults.standard.set("192.168.68.133:8081", forKey: "RCT_jsLocation")
     return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
 #else
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
