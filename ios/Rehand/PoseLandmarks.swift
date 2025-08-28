@@ -7,6 +7,7 @@ import MediaPipeTasksVision
 @objc(PoseLandmarks)
 class PoseLandmarks: RCTEventEmitter {
     override static func moduleName() -> String! { "PoseLandmarks" }
+    @objc override static func requiresMainQueueSetup() -> Bool { true }
     override func supportedEvents() -> [String]! {
         ["onPoseLandmarksStatus", "onPoseLandmarksError", "onPoseLandmarksDetected"]
     }
@@ -23,10 +24,12 @@ class PoseLandmarks: RCTEventEmitter {
                 sendEvent(withName: "onPoseLandmarksError", body: ["error": "Model not found in bundle"]) 
                 return
             }
-            let baseOptions = try BaseOptions(modelAssetPath: modelPath)
-            let options = try PoseLandmarkerOptions(baseOptions: baseOptions)
+            let baseOptions = BaseOptions()
+            baseOptions.modelAssetPath = modelPath
+            var options = PoseLandmarkerOptions()
+            options.baseOptions = baseOptions
+            options.runningMode = RunningMode.liveStream
             options.numPoses = 1
-            options.runningMode = .liveStream
             options.poseLandmarkerLiveStreamDelegate = self
             try PoseLandmarkerHolder.shared.initialize(with: options)
             sendEvent(withName: "onPoseLandmarksStatus", body: ["status": "Model initialized successfully"]) 

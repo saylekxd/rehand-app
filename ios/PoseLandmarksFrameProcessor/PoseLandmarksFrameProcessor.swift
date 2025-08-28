@@ -1,13 +1,6 @@
 import VisionCamera
 #if canImport(MediaPipeTasksVision)
 import MediaPipeTasksVision
-
-// Define holder here to ensure visibility in this target
-class PoseLandmarkerHolder {
-  static let shared = PoseLandmarkerHolder()
-  var poseLandmarker: PoseLandmarker?
-  private init() {}
-}
 #endif
 
 @objc(PoseLandmarksFrameProcessorPlugin)

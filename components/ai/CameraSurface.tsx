@@ -43,7 +43,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
     try {
       const keys = Object.keys(NativeModules || {});
       // eslint-disable-next-line no-console
-      console.log('[NativeModules][probe]', keys.filter(k => /Pose|Vision|Camera/i.test(k)));
+      console.log('[NativeModules][probe]', keys);
     } catch {}
 
     const PoseLandmarks = (NativeModules as any).PoseLandmarks;
