@@ -25,6 +25,14 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();
 
+  // Frame processor with worklet function
+  // IMPORTANT: Hooks must be called unconditionally in the same order on every render.
+  // This must be declared before any early returns to avoid "Rendered more hooks than during the previous render".
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet';
+    poseProcessor(frame);
+  }, []);
+
   React.useEffect(() => {
     if (!hasPermission) {
       requestPermission().catch(() => {});
@@ -92,12 +100,6 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   }
 
   const topOffset = (isFullScreen ? insets.top : 0) + 12;
-
-  // Frame processor with worklet function
-  const frameProcessor = useFrameProcessor((frame) => {
-    'worklet';
-    poseProcessor(frame);
-  }, []);
 
   const pixelFormat: CameraProps['pixelFormat'] = Platform.OS === 'ios' ? 'rgb' : 'yuv';
 
