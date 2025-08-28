@@ -13,6 +13,8 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 
+project 'Rehand.xcodeproj'
+
 target 'Rehand' do
   use_expo_modules!
 
@@ -41,8 +43,6 @@ target 'Rehand' do
     :app_path => "#{Pod::Config.instance.installation_root}/..",
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
-
-  pod 'MediaPipeTasksVision', '0.10.14'
 
   post_install do |installer|
     react_native_post_install(
