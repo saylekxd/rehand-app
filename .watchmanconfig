@@ -1,0 +1,10 @@
+{
+  "ignore_dirs": [
+    "ios/build",
+    "ios/build/ModuleCache.noindex",
+    "ios/Pods",
+    "android/build"
+  ]
+}
+
+

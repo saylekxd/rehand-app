@@ -8,6 +8,16 @@
       "developmentClient": true,
       "distribution": "internal"
     },
+    "release-dev": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "buildConfiguration": "Release"
+      },
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
     "preview": {
       "distribution": "internal"
     },
