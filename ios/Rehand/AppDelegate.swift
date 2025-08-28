@@ -22,11 +22,15 @@ public class AppDelegate: ExpoAppDelegate {
     bindReactNativeFactory(factory)
 
 #if os(iOS) || os(tvOS)
-    window = UIWindow(frame: UIScreen.main.bounds)
-    factory.startReactNative(
-      withModuleName: "main",
-      in: window,
-      launchOptions: launchOptions)
+    if #available(iOS 13.0, *) {
+      // Window and React Native startup are handled in SceneDelegate
+    } else {
+      window = UIWindow(frame: UIScreen.main.bounds)
+      factory.startReactNative(
+        withModuleName: "main",
+        in: window,
+        launchOptions: launchOptions)
+    }
 #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

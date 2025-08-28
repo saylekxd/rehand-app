@@ -20,6 +20,7 @@
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		BF8570A177CA8BDA08BD96FA /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63504571A295FD8A4A162826 /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
+		F1E5A1B22D0F000100000001 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E5A1B12D0F000100000001 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Rehand/AppDelegate.swift; sourceTree = "<group>"; };
+		F1E5A1B12D0F000100000001 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = Rehand/SceneDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Rehand-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Rehand-Bridging-Header.h"; path = "Rehand/Rehand-Bridging-Header.h"; sourceTree = "<group>"; };
 		F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = PoseLandmarksFrameProcessor.swift; sourceTree = "<group>"; };
 		F85FEEED848E47F8F30D63C8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Rehand/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
+				F1E5A1B12D0F000100000001 /* SceneDelegate.swift */,
 				F11748442D0722820044C1D9 /* Rehand-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -353,6 +356,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
+				F1E5A1B22D0F000100000001 /* SceneDelegate.swift in Sources */,
 				031589752E5FC445001DC056 /* PoseLandmarkerHolder.swift in Sources */,
 				031589772E5FC45C001DC056 /* PoseLandmarks.m in Sources */,
 				BF8570A177CA8BDA08BD96FA /* ExpoModulesProvider.swift in Sources */,
