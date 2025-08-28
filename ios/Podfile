@@ -44,8 +44,8 @@ target 'Rehand' do
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
 
-  # MediaPipe Tasks Vision (Pose Landmarker)
-  pod 'MediaPipeTasksVision', '0.10.14'
+  # MediaPipe Tasks Vision (Pose Landmarker) - Using older stable version
+  pod 'MediaPipeTasksVision', '0.10.13'
 
   post_install do |installer|
     react_native_post_install(

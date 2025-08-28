@@ -47,39 +47,49 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
 
   // Stage 4: Init Pose model and subscribe to events
   React.useEffect(() => {
-    // Inspect available native modules once on mount
-    try {
-      const keys = Object.keys(NativeModules || {});
-      // eslint-disable-next-line no-console
-      console.log('[NativeModules][probe]', keys);
-    } catch {}
+    let subscriptions: any[] = [];
 
-    const PoseLandmarks = (NativeModules as any).PoseLandmarks;
-    if (!PoseLandmarks) {
-      // eslint-disable-next-line no-console
-      console.warn('[Pose] Native module not found (NativeModules.PoseLandmarks)');
-      return;
-    }
-    const emitter = new NativeEventEmitter(PoseLandmarks);
-    const subStatus = emitter.addListener('onPoseLandmarksStatus', (e) => {
-      // eslint-disable-next-line no-console
-      console.log('[Pose][Status]', e);
-    });
-    const subError = emitter.addListener('onPoseLandmarksError', (e) => {
-      console.warn('[Pose][Error]', e?.error || e);
-    });
-    const subDetected = emitter.addListener('onPoseLandmarksDetected', (e) => {
-      // e.poses: [{ landmarks: [{ keypoint, x, y, z }, ...] }]
-      // eslint-disable-next-line no-console
-      console.log('[Pose][Detected] poses=', Array.isArray(e?.poses) ? e.poses.length : 0);
-    });
-    try {
-      PoseLandmarks.initModel();
-    } catch {}
+    // Add delay to ensure native modules are fully loaded
+    const timeoutId = setTimeout(() => {
+      // Inspect available native modules once on mount
+      try {
+        const keys = Object.keys(NativeModules || {});
+        // eslint-disable-next-line no-console
+        console.log('[NativeModules][probe]', keys);
+      } catch {}
+
+      const PoseLandmarks = (NativeModules as any).PoseLandmarks;
+      if (!PoseLandmarks) {
+        // eslint-disable-next-line no-console
+        console.warn('[Pose] Native module not found (NativeModules.PoseLandmarks)');
+        return;
+      }
+      const emitter = new NativeEventEmitter(PoseLandmarks);
+      const subStatus = emitter.addListener('onPoseLandmarksStatus', (e) => {
+        // eslint-disable-next-line no-console
+        console.log('[Pose][Status]', e);
+      });
+      const subError = emitter.addListener('onPoseLandmarksError', (e) => {
+        console.warn('[Pose][Error]', e?.error || e);
+      });
+      const subDetected = emitter.addListener('onPoseLandmarksDetected', (e) => {
+        // e.poses: [{ landmarks: [{ keypoint, x, y, z }, ...] }]
+        // eslint-disable-next-line no-console
+        console.log('[Pose][Detected] poses=', Array.isArray(e?.poses) ? e.poses.length : 0);
+      });
+      
+      subscriptions = [subStatus, subError, subDetected];
+      
+      try {
+        PoseLandmarks.initModel();
+      } catch (error) {
+        console.warn('[Pose] MediaPipe initialization failed:', error);
+      }
+    }, 1000); // 1 second delay
+
     return () => {
-      subStatus.remove();
-      subError.remove();
-      subDetected.remove();
+      clearTimeout(timeoutId);
+      subscriptions.forEach(sub => sub?.remove?.());
     };
   }, []);
 
