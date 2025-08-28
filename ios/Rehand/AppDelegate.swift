@@ -22,15 +22,11 @@ public class AppDelegate: ExpoAppDelegate {
     bindReactNativeFactory(factory)
 
 #if os(iOS) || os(tvOS)
-    if #available(iOS 13.0, *) {
-      // Window and React Native startup are handled in SceneDelegate
-    } else {
-      window = UIWindow(frame: UIScreen.main.bounds)
-      factory.startReactNative(
-        withModuleName: "main",
-        in: window,
-        launchOptions: launchOptions)
-    }
+    window = UIWindow(frame: UIScreen.main.bounds)
+    factory.startReactNative(
+      withModuleName: "main",
+      in: window,
+      launchOptions: launchOptions)
 #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -66,8 +62,6 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 
   override func bundleURL() -> URL? {
 #if DEBUG
-    // Force Metro host in Debug to your LAN IP so the dev build doesn't use 127.0.0.1
-    UserDefaults.standard.set("192.168.68.133:8081", forKey: "RCT_jsLocation")
     return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
 #else
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
