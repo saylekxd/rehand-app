@@ -5,6 +5,7 @@ import { Camera, useCameraDevice, useCameraPermission, useFrameProcessor } from 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
 import { poseProcessor } from '../../frameProcessors/poseProcessor';
+import PoseOverlay from './PoseOverlay';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -24,6 +25,13 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();
+  
+  // Pose overlay state (throttled updates)
+  type PoseLandmark = { keypoint: number; name: string; x: number; y: number; z: number; visibility: number };
+  type Pose = { landmarks: PoseLandmark[] };
+  const [poses, setPoses] = React.useState<Pose[]>([]);
+  const [previewSize, setPreviewSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const lastOverlayUpdateRef = React.useRef(0);
 
   // Frame processor with worklet function
   // IMPORTANT: Hooks must be called unconditionally in the same order on every render.
@@ -80,9 +88,36 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         console.warn('[Pose][Error]', e?.error || e);
       });
       const subDetected = emitter.addListener('onPoseLandmarksDetected', (e) => {
-        // e.poses: [{ landmarks: [{ keypoint, x, y, z }, ...] }]
+        // e.poses: [{ landmarks: [{ keypoint, name, x, y, z, visibility }, ...] }]
         // eslint-disable-next-line no-console
-        console.log('[Pose][Detected] poses=', Array.isArray(e?.poses) ? e.poses.length : 0);
+        console.log(`🏃‍♂️ [Pose][Detected] Wykryto ${Array.isArray(e?.poses) ? e.poses.length : 0} pozę(y)`);
+        
+        // Log key landmarks for first pose (if available)
+        if (e?.poses?.length > 0 && e.poses[0]?.landmarks) {
+          const keyLandmarks = [0, 11, 12, 23, 24, 15, 16, 25, 26]; // nose, shoulders, hips, wrists, knees
+          const landmarks = e.poses[0].landmarks;
+          
+          // eslint-disable-next-line no-console
+          console.log('   📍 Kluczowe punkty:');
+          keyLandmarks.forEach((idx) => {
+            const landmark = landmarks.find((lm: any) => lm.keypoint === idx);
+            if (landmark) {
+              const confidence = landmark.visibility || 0;
+              const confidenceIcon = confidence > 0.7 ? '🟢' : confidence > 0.4 ? '🟡' : '🔴';
+              // eslint-disable-next-line no-console
+              console.log(`     ${confidenceIcon} ${landmark.name || `point_${idx}`}: (${landmark.x.toFixed(3)}, ${landmark.y.toFixed(3)}) conf: ${confidence.toFixed(2)}`);
+            }
+          });
+        }
+
+        // Throttle overlay updates to ~10 FPS to avoid UI thrash
+        if (e?.poses && Array.isArray(e.poses)) {
+          const now = Date.now();
+          if (now - lastOverlayUpdateRef.current > 100) {
+            lastOverlayUpdateRef.current = now;
+            setPoses(e.poses as Pose[]);
+          }
+        }
       });
       
       subscriptions = [subStatus, subError, subDetected];
@@ -119,9 +154,30 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   const topOffset = (isFullScreen ? insets.top : 0) + 12;
 
   const pixelFormat: CameraProps['pixelFormat'] = Platform.OS === 'ios' ? 'rgb' : 'yuv';
+  
+  // Compute video aspect-ratio from selected device format if available (portrait width/height)
+  const videoAspectRatio = React.useMemo(() => {
+    const format = device?.formats?.[0];
+    // Fallback to common 3:4 if not known
+    if (!format) return 3 / 4;
+    // VisionCamera numbers are landscape. Convert to portrait (swap if width > height)
+    const w = Math.min(format.videoWidth ?? 0, format.videoHeight ?? 0) || 720;
+    const h = Math.max(format.videoWidth ?? 0, format.videoHeight ?? 0) || 1280;
+    return w / h;
+  }, [device?.formats]);
 
   return (
-    <View style={[styles.container, isFullScreen ? styles.containerFull : styles.containerInline, containerStyle]}>
+    <View
+      style={[
+        styles.container,
+        isFullScreen ? styles.containerFull : styles.containerInline,
+        containerStyle,
+      ]}
+      onLayout={(e) => {
+        const { width, height } = e.nativeEvent.layout;
+        setPreviewSize({ width, height });
+      }}
+    >
       <Camera
         style={StyleSheet.absoluteFill}
         device={device}
@@ -133,6 +189,20 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
       />
 
       <View style={styles.overlay}>
+        {/* Skia overlay with pose points and skeleton */}
+        {previewSize.width > 0 && previewSize.height > 0 && poses.length > 0 ? (
+          <PoseOverlay
+            poses={poses}
+            frameWidth={previewSize.width}
+            frameHeight={previewSize.height}
+            isFrontCamera={facing === 'front'}
+            showLabels={false}
+            showSkeleton
+            videoAspectRatio={videoAspectRatio}
+            // On iOS MediaPipe and camera buffers often come landscape-based; rotate CW to align in portrait
+            rotate={Platform.OS === 'ios' ? 'cw' : 'none'}
+          />
+        ) : null}
         {isRecording ? (
           <View style={[styles.recordingIndicator, { top: topOffset }] }>
             <View style={styles.recordingDot} />
@@ -177,6 +247,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'space-between',
     padding: 16,
+  },
+  mirrored: {
+    transform: [{ scaleX: -1 }],
   },
   recordingIndicator: {
     position: 'absolute',
