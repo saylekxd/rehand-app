@@ -19,9 +19,10 @@ interface CameraSurfaceProps {
   cameraRef?: React.RefObject<Camera> | React.Ref<any>;
   containerStyle?: ViewStyle;
   children?: React.ReactNode;
+  onReadyChange?: (ready: boolean) => void;
 }
 
-export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen }: CameraSurfaceProps) {
+export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, onReadyChange }: CameraSurfaceProps) {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();
@@ -46,6 +47,15 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
       requestPermission().catch(() => {});
     }
   }, [hasPermission, requestPermission]);
+
+  // Notify parent when camera readiness changes (permission + device available)
+  React.useEffect(() => {
+    try {
+      onReadyChange && onReadyChange(hasPermission && !!device);
+    } catch (e) {
+      // no-op
+    }
+  }, [onReadyChange, hasPermission, device]);
 
   // Debug: log camera availability and permission changes
   React.useEffect(() => {
@@ -90,24 +100,24 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
       const subDetected = emitter.addListener('onPoseLandmarksDetected', (e) => {
         // e.poses: [{ landmarks: [{ keypoint, name, x, y, z, visibility }, ...] }]
         // eslint-disable-next-line no-console
-        console.log(`🏃‍♂️ [Pose][Detected] Wykryto ${Array.isArray(e?.poses) ? e.poses.length : 0} pozę(y)`);
+        // console.log(`🏃‍♂️ [Pose][Detected] Wykryto ${Array.isArray(e?.poses) ? e.poses.length : 0} pozę(y)`);
         
         // Log key landmarks for first pose (if available)
         if (e?.poses?.length > 0 && e.poses[0]?.landmarks) {
           const keyLandmarks = [0, 11, 12, 23, 24, 15, 16, 25, 26]; // nose, shoulders, hips, wrists, knees
           const landmarks = e.poses[0].landmarks;
           
-          // eslint-disable-next-line no-console
-          console.log('   📍 Kluczowe punkty:');
-          keyLandmarks.forEach((idx) => {
-            const landmark = landmarks.find((lm: any) => lm.keypoint === idx);
-            if (landmark) {
-              const confidence = landmark.visibility || 0;
-              const confidenceIcon = confidence > 0.7 ? '🟢' : confidence > 0.4 ? '🟡' : '🔴';
-              // eslint-disable-next-line no-console
-              console.log(`     ${confidenceIcon} ${landmark.name || `point_${idx}`}: (${landmark.x.toFixed(3)}, ${landmark.y.toFixed(3)}) conf: ${confidence.toFixed(2)}`);
-            }
-          });
+          // // eslint-disable-next-line no-console
+          // console.log('   📍 Kluczowe punkty:');
+          // keyLandmarks.forEach((idx) => {
+          //   const landmark = landmarks.find((lm: any) => lm.keypoint === idx);
+          //   if (landmark) {
+          //     const confidence = landmark.visibility || 0;
+          //     const confidenceIcon = confidence > 0.7 ? '🟢' : confidence > 0.4 ? '🟡' : '🔴';
+          //     // eslint-disable-next-line no-console
+          //     console.log(`     ${confidenceIcon} ${landmark.name || `point_${idx}`}: (${landmark.x.toFixed(3)}, ${landmark.y.toFixed(3)}) conf: ${confidence.toFixed(2)}`);
+          //   }
+          // });
         }
 
         // Throttle overlay updates to ~10 FPS to avoid UI thrash
