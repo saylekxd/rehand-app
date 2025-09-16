@@ -61,6 +61,8 @@
     <string>Allow $(PRODUCT_NAME) to access your photos</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Potrzebujemy dostępu do Twojej lokalizacji tylko podczas korzystania z funkcji, które tego wymagają, aby poprawić działanie aplikacji. Nie śledzimy ani nie zapisujemy Twojego położenia.</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Potrzebujemy dostępu do sieci lokalnej, aby połączyć się z serwerem deweloperskim podczas debugowania aplikacji.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
