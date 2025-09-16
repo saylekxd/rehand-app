@@ -1,0 +1,20 @@
+{
+  "menuItems": [
+    {
+      "name": "Performance Monitor",
+      "isEnabled": true
+    },
+    {
+      "name": "Element Inspector",
+      "isEnabled": true
+    },
+    {
+      "name": "Fast Refresh",
+      "isEnabled": true
+    },
+    {
+      "name": "Show Dev Menu",
+      "isEnabled": true
+    }
+  ]
+}

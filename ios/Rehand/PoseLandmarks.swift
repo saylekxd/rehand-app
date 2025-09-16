@@ -52,7 +52,7 @@ class PoseLandmarks: RCTEventEmitter {
         print("   📋 Wszystkie punkty dla pozy \(poseIndex + 1):")
         for (idx, landmark) in landmarks.enumerated() {
             let name = idx < Self.landmarkNames.count ? Self.landmarkNames[idx] : "unknown_\(idx)"
-            let confidence = landmark.visibility ?? 0.0
+            let confidence = landmark.visibility?.doubleValue ?? 0.0
             let confidenceIcon = confidence > 0.7 ? "🟢" : confidence > 0.4 ? "🟡" : "🔴"
             print("     \(String(format: "%2d", idx)). \(confidenceIcon) \(name): (x: \(String(format: "%.3f", landmark.x)), y: \(String(format: "%.3f", landmark.y)), z: \(String(format: "%.3f", landmark.z))) conf: \(String(format: "%.2f", confidence))")
         }
@@ -115,7 +115,7 @@ extension PoseLandmarks: PoseLandmarkerLiveStreamDelegate {
                     if landmarkIndex < landmarks.count {
                         let landmark = landmarks[landmarkIndex]
                         let name = landmarkIndex < Self.landmarkNames.count ? Self.landmarkNames[landmarkIndex] : "unknown_\(landmarkIndex)"
-                        let confidence = landmark.visibility ?? 0.0
+                        let confidence = landmark.visibility?.doubleValue ?? 0.0
                         let confidenceIcon = confidence > 0.7 ? "🟢" : confidence > 0.4 ? "🟡" : "🔴"
                         print("     \(confidenceIcon) \(name): (x: \(String(format: "%.3f", landmark.x)), y: \(String(format: "%.3f", landmark.y)), z: \(String(format: "%.3f", landmark.z))) conf: \(String(format: "%.2f", confidence))")
                     }

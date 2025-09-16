@@ -1666,31 +1666,6 @@ PODS:
     - React-jsiexecutor
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
-  - react-native-fast-tflite (1.6.1):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.11.18.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-hermes
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-renderercss
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - TensorFlowLiteC (= 2.17.0)
-    - Yoga
   - react-native-safe-area-context (5.4.0):
     - React-Core
   - react-native-skia (2.2.4):
@@ -2267,9 +2242,6 @@ PODS:
   - RNSVG (15.11.2):
     - React-Core
   - SocketRocket (0.7.1)
-  - TensorFlowLiteC (2.17.0):
-    - TensorFlowLiteC/Core (= 2.17.0)
-  - TensorFlowLiteC/Core (2.17.0)
   - vision-camera-resize-plugin (3.2.0):
     - DoubleConversion
     - glog
@@ -2378,7 +2350,6 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
-  - react-native-fast-tflite (from `../node_modules/react-native-fast-tflite`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../node_modules/@shopify/react-native-skia`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -2428,7 +2399,6 @@ SPEC REPOS:
     - MediaPipeTasksCommon
     - MediaPipeTasksVision
     - SocketRocket
-    - TensorFlowLiteC
 
 EXTERNAL SOURCES:
   boost:
@@ -2562,8 +2532,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
-  react-native-fast-tflite:
-    :path: "../node_modules/react-native-fast-tflite"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-skia:
@@ -2719,7 +2687,6 @@ SPEC CHECKSUMS:
   React-logger: e6e6164f1753e46d1b7e2c8f0949cd7937eaf31b
   React-Mapbuffer: a83853bd80bb31a4451e64af91a86c02f7df4f80
   React-microtasksnativemodule: 964a2c1213bb39fa5cc8d5ee4f55846d67747f32
-  react-native-fast-tflite: f47417d7c39045e38ad3e5732a07cb4322055236
   react-native-safe-area-context: 8870dc3e45c8d241336cd8ee3fa3fc76f3a040ac
   react-native-skia: eee8f5b2560445bea34c27bb9f0b2dc7adb04e53
   react-native-webview: 94294e5a5d8cf4f53793aee7ef69ebd14c79e397
@@ -2761,7 +2728,6 @@ SPEC CHECKSUMS:
   RNScreens: edd4795b025d94f879e20cc346b844176d938f0c
   RNSVG: 1d73f0c3199936c8e44f4d102d2744f3d258d2fc
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  TensorFlowLiteC: eac6d689a8d391d1b202dc59e3d9165ba64aaf73
   vision-camera-resize-plugin: 33cd56c79c8f949e8072167f8641ab0932cd6f1c
   VisionCamera: d785f2775f8b200d713f6e74b6ebdee2b8c8cb5c
   Yoga: dbbb7c0d9e8c516c8669e6226afbb17e0fff1741
