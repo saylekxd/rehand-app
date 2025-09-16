@@ -62,8 +62,8 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 
   override func bundleURL() -> URL? {
 #if DEBUG
-    // Use default Expo Dev Client / RN provider to resolve Metro URL
-    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
+    // Use default Expo Dev Client / RN provider to resolve Metro URL, with super fallback
+    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry") ?? super.bundleURL()
 #else
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif

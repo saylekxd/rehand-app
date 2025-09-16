@@ -3,21 +3,20 @@ import { View } from 'react-native';
 import { AuthProvider } from '@/contexts/AuthContext';
 import * as Sentry from '@sentry/react-native';
 
-Sentry.init({
-  dsn: 'https://865b4f9b87891caa676f77b0de92d462@o4508910073348096.ingest.de.sentry.io/4510028390858832',
+const isProdBuild = !__DEV__;
 
-  // Adds more context data to events (IP address, cookies, user, etc.)
-  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
-  sendDefaultPii: true,
-
-  // Configure Session Replay
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1,
-  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
-
-  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // spotlight: __DEV__,
-});
+if (isProdBuild) {
+  Sentry.init({
+    dsn: 'https://865b4f9b87891caa676f77b0de92d462@o4508910073348096.ingest.de.sentry.io/4510028390858832',
+    sendDefaultPii: true,
+    replaysSessionSampleRate: 0.0,
+    replaysOnErrorSampleRate: 0.2,
+    integrations: [Sentry.feedbackIntegration()],
+  });
+} else {
+  // In development: minimal Sentry to avoid interfering with dev tools
+  Sentry.init({ dsn: '', enabled: false });
+}
 
 console.log('🚀 _layout.tsx loading...');
 
