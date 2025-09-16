@@ -51,6 +51,14 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Potrzebujemy dostępu do sieci lokalnej, aby połączyć się z serwerem Metro podczas developmentu.</string>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_http._tcp</string>
+      <string>_https._tcp</string>
+      <string>_exp._tcp</string>
+    </array>
     <key>NSCameraUsageDescription</key>
     <string>Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym.</string>
     <key>NSFaceIDUsageDescription</key>

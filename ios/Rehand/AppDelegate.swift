@@ -62,11 +62,8 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 
   override func bundleURL() -> URL? {
 #if DEBUG
-    // Force Metro host:port (avoid localhost on device; override any saved value)
-    let provider = RCTBundleURLProvider.sharedSettings()
-    provider.resetToDefaults()
-    provider.jsLocation = "192.168.68.200:8081"
-    return provider.jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
+    // Use default Expo Dev Client / RN provider to resolve Metro URL
+    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
 #else
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif
