@@ -9,7 +9,8 @@ import com.mrousavy.camera.frameprocessors.FrameProcessorPluginRegistry
 class PoseLandmarksFrameProcessorPluginPluginPackage : ReactPackage {
   companion object {
     init {
-      FrameProcessorPluginRegistry.addFrameProcessorPlugin("PoseLandmarks") { proxy, options ->
+      // Match JS init name: VisionCameraProxy.initFrameProcessorPlugin('PoseLandmarksFrameProcessor', {})
+      FrameProcessorPluginRegistry.addFrameProcessorPlugin("PoseLandmarksFrameProcessor") { proxy, options ->
         PoseLandmarksFrameProcessorPluginPlugin(proxy, options)
       }
     }
