@@ -1,6 +1,7 @@
 import Expo
 import React
 import ReactAppDependencyProvider
+import EXDevLauncher
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -62,11 +63,17 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 
   override func bundleURL() -> URL? {
 #if DEBUG
-    // Force Metro host:port (avoid localhost on device; override any saved value)
-    let provider = RCTBundleURLProvider.sharedSettings()
-    provider.resetToDefaults()
-    provider.jsLocation = "192.168.68.200:8081"
-    return provider.jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
+    // Use default expo-dev-client bundler detection
+    if let devLauncherController = NSClassFromString("EXDevLauncherController") as? NSObject.Type,
+       let sharedInstance = devLauncherController.perform(NSSelectorFromString("sharedInstance"))?.takeUnretainedValue(),
+       let sourceURLMethod = sharedInstance.method(for: NSSelectorFromString("sourceURLForBridge:")),
+       sourceURLMethod != nil {
+      // If expo-dev-client is available, use its URL
+      return EXDevLauncherController.sharedInstance().sourceURL(for: RCTBridge())
+    } else {
+      // Fallback to default Metro bundler
+      return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: ".expo/.virtual-metro-entry")
+    }
 #else
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif
