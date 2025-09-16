@@ -1,13 +1,16 @@
 {
-    "mcpServers": {
-      "supabase": {
-        "command": "npx",
-        "args": [
-          "-y",
-          "@supabase/mcp-server-supabase@latest",
-          "--access-token",
-          "sbp_930233b66acdf92e6322b8b0c6ecce3aad717d50"
-        ]
-      }
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        "sbp_930233b66acdf92e6322b8b0c6ecce3aad717d50"
+      ]
+    },
+    "Sentry": {
+      "url": "https://mcp.sentry.dev/mcp/swtlabs-vn/rehand-app"
     }
   }
+}

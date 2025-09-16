@@ -25,7 +25,15 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "rehand-app",
+          "organization": "swtlabs-vn"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

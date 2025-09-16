@@ -11,12 +11,14 @@ import {
   ActivityIndicator,
   RefreshControl,
   Modal,
+  Button,
 } from 'react-native';
 import { Search, Clock, Target, Play, AlertCircle } from 'lucide-react-native';
 import { useExercises } from '@/hooks/useExercises';
 import { Exercise } from '@/types';
 import ExerciseDetailScreen from '@/screens/ExerciseDetailScreen';
 import AuthWrapper from '@/components/auth/AuthWrapper';
+import * as Sentry from '@sentry/react-native';
 
 export default function ExercisesTab() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -140,6 +142,7 @@ export default function ExercisesTab() {
           </ScrollView>
         </View>
 
+        <Button title='Try!' onPress={ () => { Sentry.captureException(new Error('First error')) }}/>     
         <ScrollView 
           style={styles.exercisesList} 
           showsVerticalScrollIndicator={false}
