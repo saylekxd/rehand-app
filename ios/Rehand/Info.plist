@@ -51,6 +51,14 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Aplikacja potrzebuje dostępu do sieci lokalnej, aby łączyć się z serwerem deweloperskim podczas tworzenia.</string>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_react-native-packager._tcp.</string>
+      <string>_react-native-packager._udp.</string>
+      <string>_expo._tcp.</string>
+    </array>
     <key>NSCameraUsageDescription</key>
     <string>Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym.</string>
     <key>NSFaceIDUsageDescription</key>
@@ -59,6 +67,8 @@
     <string>Potrzebujemy dostępu do mikrofonu podczas nagrywania wideo do analizy ruchu.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your photos</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Potrzebujemy możliwości zapisu do biblioteki zdjęć, aby zapisywać materiały treningowe.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
