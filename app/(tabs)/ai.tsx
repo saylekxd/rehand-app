@@ -5,7 +5,7 @@ import CameraSurface from '@/components/ai/CameraSurface';
 
 export default function AITab() {
   const [facing, setFacing] = React.useState<'front' | 'back'>('front');
-  const [isFullScreen, setIsFullScreen] = React.useState(false);
+  const [isFullScreen, setIsFullScreen] = React.useState(true);
 
   // Watchdog: restart native model if no events > 2s
   React.useEffect(() => {
@@ -53,10 +53,12 @@ export default function AITab() {
   return (
     <AuthWrapper>
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}> 
-          <Text style={styles.title}>AI Trener</Text>
-          <Text style={styles.subtitle}>Włącz kamerę, aby rozpocząć analizę ruchu</Text>
-        </View>
+        {!isFullScreen && (
+          <View style={styles.header}> 
+            <Text style={styles.title}>AI Trener</Text>
+            <Text style={styles.subtitle}>Włącz kamerę, aby rozpocząć analizę ruchu</Text>
+          </View>
+        )}
 
         <CameraSurface
           facing={facing}
@@ -64,7 +66,7 @@ export default function AITab() {
           isFullScreen={isFullScreen}
           onToggleFacing={() => setFacing((prev) => (prev === 'front' ? 'back' : 'front'))}
           onToggleFullScreen={() => setIsFullScreen((v) => !v)}
-          containerStyle={styles.camera}
+          containerStyle={isFullScreen ? undefined : styles.camera}
         />
       </SafeAreaView>
     </AuthWrapper>
