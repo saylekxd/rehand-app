@@ -15,7 +15,13 @@ export function poseProcessor(frame: Frame) {
   }
 
   try {
-    // Call the native frame processor plugin
+    // Throttle by frame count (process every 2nd frame ~30 FPS on 60 FPS camera)
+    // @ts-expect-error worklet global cache
+    globalThis.__pose_frame_counter = (globalThis.__pose_frame_counter ?? 0) + 1
+    // @ts-expect-error worklet global cache
+    const c = globalThis.__pose_frame_counter as number
+    if (c % 2 !== 0) return
+
     plugin.call(frame)
   } catch (error) {
     console.log('❌ [FrameProcessor] Błąd podczas wywoływania pluginu:', error)

@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		031589732E5FA30D001DC056 /* pose_landmarker_full.task in Resources */ = {isa = PBXBuildFile; fileRef = 031589722E5FA30C001DC056 /* pose_landmarker_full.task */; };
-		031589752E5FC445001DC056 /* PoseLandmarkerHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031589742E5FC445001DC056 /* PoseLandmarkerHolder.swift */; };
-		031589772E5FC45C001DC056 /* PoseLandmarks.m in Sources */ = {isa = PBXBuildFile; fileRef = 031589762E5FC45C001DC056 /* PoseLandmarks.m */; };
-		031589792E5FC46B001DC056 /* PoseLandmarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031589782E5FC46B001DC056 /* PoseLandmarks.swift */; };
+		031589752E5FC445001DC056 /* Rehand/PoseLandmarkerHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031589742E5FC445001DC056 /* Rehand/PoseLandmarkerHolder.swift */; };
+		031589772E5FC45C001DC056 /* Rehand/PoseLandmarks.m in Sources */ = {isa = PBXBuildFile; fileRef = 031589762E5FC45C001DC056 /* Rehand/PoseLandmarks.m */; };
+		031589792E5FC46B001DC056 /* Rehand/PoseLandmarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031589782E5FC46B001DC056 /* Rehand/PoseLandmarks.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		19E150812C17AC86BAB3C553 /* Pods_Rehand.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F7616D1F5827908E73A705 /* Pods_Rehand.framework */; };
 		29E91B5D8A7CDABADC385C57 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F85FEEED848E47F8F30D63C8 /* PrivacyInfo.xcprivacy */; };
@@ -24,9 +24,9 @@
 
 /* Begin PBXFileReference section */
 		031589722E5FA30C001DC056 /* pose_landmarker_full.task */ = {isa = PBXFileReference; lastKnownFileType = file; path = pose_landmarker_full.task; sourceTree = "<group>"; };
-		031589742E5FC445001DC056 /* PoseLandmarkerHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rehand/PoseLandmarkerHolder.swift; sourceTree = "<group>"; };
-		031589762E5FC45C001DC056 /* PoseLandmarks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Rehand/PoseLandmarks.m; sourceTree = "<group>"; };
-		031589782E5FC46B001DC056 /* PoseLandmarks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rehand/PoseLandmarks.swift; sourceTree = "<group>"; };
+		031589742E5FC445001DC056 /* Rehand/PoseLandmarkerHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rehand/PoseLandmarkerHolder.swift; sourceTree = "<group>"; };
+		031589762E5FC45C001DC056 /* Rehand/PoseLandmarks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Rehand/PoseLandmarks.m; sourceTree = "<group>"; };
+		031589782E5FC46B001DC056 /* Rehand/PoseLandmarks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rehand/PoseLandmarks.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Rehand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rehand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Rehand/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Rehand/Info.plist; sourceTree = "<group>"; };
@@ -74,9 +74,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				F85FEEED848E47F8F30D63C8 /* PrivacyInfo.xcprivacy */,
-				031589742E5FC445001DC056 /* PoseLandmarkerHolder.swift */,
-				031589762E5FC45C001DC056 /* PoseLandmarks.m */,
-				031589782E5FC46B001DC056 /* PoseLandmarks.swift */,
+				031589742E5FC445001DC056 /* Rehand/PoseLandmarkerHolder.swift */,
+				031589762E5FC45C001DC056 /* Rehand/PoseLandmarks.m */,
+				031589782E5FC46B001DC056 /* Rehand/PoseLandmarks.swift */,
 				501A6354A11F487C9E099992 /* PoseLandmarksFrameProcessor.m */,
 				F83FCB95248F4EDDA17EDD5F /* PoseLandmarksFrameProcessor.swift */,
 			);
@@ -269,6 +269,7 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNSVG/RNSVGFilters.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact/React-cxxreact_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Sentry/Sentry.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/TensorFlowLiteC/TensorFlowLiteC.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/boost/boost_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/expo-dev-launcher/EXDevLauncher.bundle",
@@ -285,6 +286,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RNSVGFilters.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-cxxreact_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Sentry.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TensorFlowLiteC.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/boost_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXDevLauncher.bundle",
@@ -345,11 +347,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				031589752E5FC445001DC056 /* PoseLandmarkerHolder.swift in Sources */,
-				031589772E5FC45C001DC056 /* PoseLandmarks.m in Sources */,
+				031589752E5FC445001DC056 /* Rehand/PoseLandmarkerHolder.swift in Sources */,
+				031589772E5FC45C001DC056 /* Rehand/PoseLandmarks.m in Sources */,
 				BF8570A177CA8BDA08BD96FA /* ExpoModulesProvider.swift in Sources */,
 				BB157F5EBCB74DC1856CB2EC /* PoseLandmarksFrameProcessor.m in Sources */,
-				031589792E5FC46B001DC056 /* PoseLandmarks.swift in Sources */,
+				031589792E5FC46B001DC056 /* Rehand/PoseLandmarks.swift in Sources */,
 				9631ACF7552940008E881A8D /* PoseLandmarksFrameProcessor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -491,10 +493,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -560,10 +559,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -581,7 +577,7 @@
 				13B07F951A680F5B00A75B9A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Rehand" */ = {
 			isa = XCConfigurationList;
@@ -590,7 +586,7 @@
 				83CBBA211A601CBA00E9B192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

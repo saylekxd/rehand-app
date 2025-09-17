@@ -1,11 +1,54 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, NativeModules, NativeEventEmitter } from 'react-native';
 import AuthWrapper from '@/components/auth/AuthWrapper';
 import CameraSurface from '@/components/ai/CameraSurface';
 
 export default function AITab() {
   const [facing, setFacing] = React.useState<'front' | 'back'>('front');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
+
+  // Watchdog: restart native model if no events > 2s
+  React.useEffect(() => {
+    const PoseLandmarks = (NativeModules as any)?.PoseLandmarks;
+    if (!PoseLandmarks) return;
+    const emitter = new NativeEventEmitter(PoseLandmarks);
+    const lastEventRef = { current: Date.now() };
+
+    const subStatus = emitter.addListener('onPoseLandmarksStatus', () => {
+      lastEventRef.current = Date.now();
+    });
+    const subError = emitter.addListener('onPoseLandmarksError', () => {
+      lastEventRef.current = Date.now();
+    });
+    const subDetected = emitter.addListener('onPoseLandmarksDetected', () => {
+      lastEventRef.current = Date.now();
+    });
+
+    // Attempt init (idempotent)
+    try { PoseLandmarks.initModel?.(); } catch {}
+
+    const intervalId = setInterval(() => {
+      const now = Date.now();
+      if (now - lastEventRef.current > 2000) {
+        try {
+          // eslint-disable-next-line no-console
+          console.warn('[Pose][Watchdog] No events >2s — resetting model');
+          PoseLandmarks.resetModel?.();
+          lastEventRef.current = now;
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.warn('[Pose][Watchdog] resetModel failed', err);
+        }
+      }
+    }, 1000);
+
+    return () => {
+      subStatus.remove();
+      subError.remove();
+      subDetected.remove();
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <AuthWrapper>

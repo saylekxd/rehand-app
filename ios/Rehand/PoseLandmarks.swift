@@ -52,7 +52,7 @@ class PoseLandmarks: RCTEventEmitter {
         print("   📋 Wszystkie punkty dla pozy \(poseIndex + 1):")
         for (idx, landmark) in landmarks.enumerated() {
             let name = idx < Self.landmarkNames.count ? Self.landmarkNames[idx] : "unknown_\(idx)"
-            let confidence = landmark.visibility ?? 0.0
+            let confidence = (landmark.visibility?.doubleValue) ?? 0.0
             let confidenceIcon = confidence > 0.7 ? "🟢" : confidence > 0.4 ? "🟡" : "🔴"
             print("     \(String(format: "%2d", idx)). \(confidenceIcon) \(name): (x: \(String(format: "%.3f", landmark.x)), y: \(String(format: "%.3f", landmark.y)), z: \(String(format: "%.3f", landmark.z))) conf: \(String(format: "%.2f", confidence))")
         }
@@ -67,7 +67,9 @@ class PoseLandmarks: RCTEventEmitter {
     func initModel() {
         #if canImport(MediaPipeTasksVision)
         if PoseLandmarkerHolder.shared.poseLandmarker != nil {
-            sendEvent(withName: "onPoseLandmarksStatus", body: ["status": "Model already initialized"]) 
+            DispatchQueue.main.async {
+                self.sendEvent(withName: "onPoseLandmarksStatus", body: ["status": "Model already initialized"]) 
+            }
             return
         }
         do {
@@ -77,18 +79,41 @@ class PoseLandmarks: RCTEventEmitter {
             }
             let baseOptions = BaseOptions()
             baseOptions.modelAssetPath = modelPath
+            #if !targetEnvironment(simulator)
+            baseOptions.delegate = .GPU
+            #endif
             var options = PoseLandmarkerOptions()
             options.baseOptions = baseOptions
             options.runningMode = RunningMode.liveStream
             options.numPoses = 1
             options.poseLandmarkerLiveStreamDelegate = self
             try PoseLandmarkerHolder.shared.initialize(with: options)
-            sendEvent(withName: "onPoseLandmarksStatus", body: ["status": "Model initialized successfully"]) 
+            DispatchQueue.main.async {
+                self.sendEvent(withName: "onPoseLandmarksStatus", body: ["status": "Model initialized successfully"]) 
+            }
         } catch {
-            sendEvent(withName: "onPoseLandmarksError", body: ["error": error.localizedDescription])
+            DispatchQueue.main.async {
+                self.sendEvent(withName: "onPoseLandmarksError", body: ["error": error.localizedDescription])
+            }
         }
         #else
-        sendEvent(withName: "onPoseLandmarksError", body: ["error": "MediaPipeTasksVision not available"]) 
+        DispatchQueue.main.async {
+            self.sendEvent(withName: "onPoseLandmarksError", body: ["error": "MediaPipeTasksVision not available"]) 
+        }
+        #endif
+    }
+
+    @objc
+    func resetModel() {
+        #if canImport(MediaPipeTasksVision)
+        // Clear existing instance
+        PoseLandmarkerHolder.shared.clear()
+        // Reinitialize
+        initModel()
+        #else
+        DispatchQueue.main.async {
+            self.sendEvent(withName: "onPoseLandmarksError", body: ["error": "MediaPipeTasksVision not available"]) 
+        }
         #endif
     }
 }
@@ -97,7 +122,9 @@ class PoseLandmarks: RCTEventEmitter {
 extension PoseLandmarks: PoseLandmarkerLiveStreamDelegate {
     func poseLandmarker(_ poseLandmarker: PoseLandmarker, didFinishDetection result: PoseLandmarkerResult?, timestampInMilliseconds: Int, error: Error?) {
         if let error {
-            sendEvent(withName: "onPoseLandmarksError", body: ["error": error.localizedDescription])
+            DispatchQueue.main.async {
+                self.sendEvent(withName: "onPoseLandmarksError", body: ["error": error.localizedDescription])
+            }
             return
         }
         guard let result else { return }
@@ -115,7 +142,7 @@ extension PoseLandmarks: PoseLandmarkerLiveStreamDelegate {
                     if landmarkIndex < landmarks.count {
                         let landmark = landmarks[landmarkIndex]
                         let name = landmarkIndex < Self.landmarkNames.count ? Self.landmarkNames[landmarkIndex] : "unknown_\(landmarkIndex)"
-                        let confidence = landmark.visibility ?? 0.0
+                        let confidence = (landmark.visibility?.doubleValue) ?? 0.0
                         let confidenceIcon = confidence > 0.7 ? "🟢" : confidence > 0.4 ? "🟡" : "🔴"
                         print("     \(confidenceIcon) \(name): (x: \(String(format: "%.3f", landmark.x)), y: \(String(format: "%.3f", landmark.y)), z: \(String(format: "%.3f", landmark.z))) conf: \(String(format: "%.2f", confidence))")
                     }
@@ -138,12 +165,14 @@ extension PoseLandmarks: PoseLandmarkerLiveStreamDelegate {
                     "x": lm.x,
                     "y": lm.y,
                     "z": lm.z,
-                    "visibility": lm.visibility ?? 0.0
+                    "visibility": (lm.visibility?.doubleValue) ?? 0.0
                 ])
             }
             poses.append(["landmarks": arr])
         }
-        sendEvent(withName: "onPoseLandmarksDetected", body: ["poses": poses])
+        DispatchQueue.main.async {
+            self.sendEvent(withName: "onPoseLandmarksDetected", body: ["poses": poses])
+        }
     }
 }
 #endif

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Canvas, Circle, Line, Text, useFont } from '@shopify/react-native-skia';
+import { Canvas, Path, Skia, type SkPath } from '@shopify/react-native-skia';
 import { ViewStyle } from 'react-native';
 
 // MediaPipe Pose Landmarks (33 keypoints) according to official documentation
@@ -29,6 +29,10 @@ interface PoseOverlayProps {
   videoAspectRatio?: number;
   // Optional rotation if source coordinates are landscape-relative
   rotate?: 'none' | 'cw' | 'ccw';
+  // Optional throttle to limit heavy path recomputation (ms)
+  throttleMs?: number;
+  // Visibility threshold (0..1) for drawing
+  visibilityThreshold?: number;
 }
 
 // Pose connections for drawing skeleton (based on MediaPipe documentation)
@@ -77,13 +81,11 @@ const PoseOverlay: React.FC<PoseOverlayProps> = ({
   isFrontCamera = false,
   videoAspectRatio = 3 / 4,
   rotate = 'none',
+  throttleMs = 0,
+  visibilityThreshold = 0.5,
 }) => {
-  // Use Inter font from expo-google-fonts - temporarily null for testing  
-  const font = null; // useFont(require('path/to/Inter-Regular.ttf'), 10);
-
-  if (!poses || poses.length === 0) {
-    return null;
-  }
+  // Early exit when no poses
+  if (!poses || poses.length === 0) return null;
 
   const containerStyle: ViewStyle = {
     position: 'absolute',
@@ -94,124 +96,98 @@ const PoseOverlay: React.FC<PoseOverlayProps> = ({
     pointerEvents: 'none',
   };
 
-  // Map normalized (x,y) in input-image space to preview space with "cover" scaling and optional mirroring
-  const mapPoint = React.useCallback(
-    (nx: number, ny: number) => {
-      // Guard against NaN
-      if (!isFinite(nx) || !isFinite(ny)) return { x: -1, y: -1 };
+  // Mapping function reused in draw callback
+  const mapPoint = React.useCallback((nx: number, ny: number) => {
+    if (!isFinite(nx) || !isFinite(ny)) return { x: -1, y: -1 };
 
-      // Optional 90° rotation in normalized space
-      let rx = nx;
-      let ry = ny;
-      if (rotate === 'cw') {
-        rx = 1 - ny;
-        ry = nx;
-      } else if (rotate === 'ccw') {
-        rx = ny;
-        ry = 1 - nx;
+    let rx = nx;
+    let ry = ny;
+    if (rotate === 'cw') {
+      rx = 1 - ny;
+      ry = nx;
+    } else if (rotate === 'ccw') {
+      rx = ny;
+      ry = 1 - nx;
+    }
+
+    const viewAR = frameWidth / frameHeight;
+    const videoAR = videoAspectRatio;
+
+    if (viewAR > videoAR) {
+      const scaledHeight = frameWidth / videoAR;
+      const offsetY = (scaledHeight - frameHeight) / 2;
+      return { x: rx * frameWidth, y: ry * scaledHeight - offsetY };
+    } else {
+      const scaledWidth = frameHeight * videoAR;
+      const offsetX = (scaledWidth - frameWidth) / 2;
+      return { x: rx * scaledWidth - offsetX, y: ry * frameHeight };
+    }
+  }, [frameWidth, frameHeight, videoAspectRatio, rotate]);
+
+  // Build paths once per frame to minimize React element count
+  const lastBuildRef = React.useRef<number>(0);
+  const cacheRef = React.useRef<null | { skeletonPath: SkPath; strokePath: SkPath; fillPathsByColor: Record<string, SkPath> }>(null);
+
+  const { skeletonPath, strokePath, fillPathsByColor } = React.useMemo(() => {
+    const now = Date.now();
+    if (throttleMs > 0 && cacheRef.current && (now - lastBuildRef.current) < throttleMs) {
+      return cacheRef.current;
+    }
+    const skeleton = Skia.Path.Make();
+    const stroke = Skia.Path.Make();
+    const fills: Record<string, SkPath> = {} as any;
+    const getFillPath = (color: string) => {
+      if (!fills[color]) fills[color] = Skia.Path.Make();
+      return fills[color];
+    };
+
+    if (showSkeleton) {
+      for (let p = 0; p < poses.length; p += 1) {
+        const lm = poses[p].landmarks;
+        for (let i = 0; i < POSE_CONNECTIONS.length; i += 1) {
+          const [sIdx, eIdx] = POSE_CONNECTIONS[i];
+          const sp = lm.find(l => l.keypoint === sIdx);
+          const ep = lm.find(l => l.keypoint === eIdx);
+          if (!sp || !ep) continue;
+          if (sp.visibility < visibilityThreshold || ep.visibility < visibilityThreshold) continue;
+          const p1 = mapPoint(sp.x, sp.y);
+          const p2 = mapPoint(ep.x, ep.y);
+          if (!isFinite(p1.x) || !isFinite(p1.y) || !isFinite(p2.x) || !isFinite(p2.y)) continue;
+          skeleton.moveTo(p1.x, p1.y);
+          skeleton.lineTo(p2.x, p2.y);
+        }
       }
+    }
 
-      const viewAR = frameWidth / frameHeight;
-      const videoAR = videoAspectRatio; // width/height in portrait
-
-      let x: number;
-      let y: number;
-
-      if (viewAR > videoAR) {
-        // View is wider than video -> match width, crop height (cover)
-        const scaledHeight = frameWidth / videoAR;
-        const offsetY = (scaledHeight - frameHeight) / 2;
-        x = rx * frameWidth;
-        y = ry * scaledHeight - offsetY;
-      } else {
-        // View is taller/narrower than video -> match height, crop width (cover)
-        const scaledWidth = frameHeight * videoAR;
-        const offsetX = (scaledWidth - frameWidth) / 2;
-        x = rx * scaledWidth - offsetX;
-        y = ry * frameHeight;
+    for (let p = 0; p < poses.length; p += 1) {
+      const lm = poses[p].landmarks;
+      for (let j = 0; j < lm.length; j += 1) {
+        const l = lm[j];
+        if (l.visibility < visibilityThreshold) continue;
+        const m = mapPoint(l.x, l.y);
+        if (!isFinite(m.x) || !isFinite(m.y)) continue;
+        // Fill path per color
+        getFillPath(getPointColor(l.keypoint)).addCircle(m.x, m.y, 5);
+        // Stroke path shared
+        stroke.addCircle(m.x, m.y, 5);
       }
+    }
 
-      // Do not flip here. Mirroring is applied at the container level so Camera and Overlay share the same transform.
-
-      return { x, y };
-    },
-    [frameWidth, frameHeight, videoAspectRatio, isFrontCamera, rotate]
-  );
+    const result = { skeletonPath: skeleton, strokePath: stroke, fillPathsByColor: fills };
+    cacheRef.current = result;
+    lastBuildRef.current = now;
+    return result;
+  }, [poses, mapPoint, showSkeleton, throttleMs, visibilityThreshold]);
 
   return (
     <Canvas style={containerStyle}>
-      {poses.map((pose, poseIndex) => (
-        <React.Fragment key={`pose-${poseIndex}`}>
-          {/* Draw skeleton connections */}
-          {showSkeleton && POSE_CONNECTIONS.map((connection, connectionIndex) => {
-            const [startIdx, endIdx] = connection;
-            const sp = pose.landmarks.find(l => l.keypoint === startIdx);
-            const ep = pose.landmarks.find(l => l.keypoint === endIdx);
-
-            if (!sp || !ep) return null;
-            if (sp.visibility <= 0.5 || ep.visibility <= 0.5) return null;
-
-            const p1 = mapPoint(sp.x, sp.y);
-            const p2 = mapPoint(ep.x, ep.y);
-
-            // Skip if off-screen (with small tolerance for out-of-bounds)
-            const onScreen = (p: { x: number; y: number }) => p.x >= -5 && p.x <= frameWidth + 5 && p.y >= -5 && p.y <= frameHeight + 5;
-            if (!onScreen(p1) || !onScreen(p2)) return null;
-
-            return (
-              <Line
-                key={`connection-${poseIndex}-${connectionIndex}`}
-                p1={p1}
-                p2={p2}
-                color="rgba(255, 255, 255, 0.6)"
-                strokeWidth={2}
-              />
-            );
-          })}
-          
-          {/* Draw pose landmarks */}
-          {pose.landmarks.map((landmark) => {
-            if (landmark.visibility < 0.5) return null; // Skip invisible landmarks
-            const { x, y } = mapPoint(landmark.x, landmark.y);
-            if (!isFinite(x) || !isFinite(y)) return null;
-            if (x < -5 || x > frameWidth + 5 || y < -5 || y > frameHeight + 5) return null;
-            const color = getPointColor(landmark.keypoint);
-            
-            return (
-              <React.Fragment key={`landmark-${poseIndex}-${landmark.keypoint}`}>
-                {/* Landmark circle */}
-                <Circle
-                  cx={x}
-                  cy={y}
-                  r={5}
-                  color={color}
-                />
-                
-                {/* Landmark border */}
-                <Circle
-                  cx={x}
-                  cy={y}
-                  r={5}
-                  color="rgba(0, 0, 0, 0.8)"
-                  strokeWidth={2}
-                  style="stroke"
-                />
-                
-                {/* Landmark label */}
-                {showLabels && font && (
-                  <Text
-                    x={x + 10}
-                    y={y - 10}
-                    text={`${landmark.keypoint}: ${landmark.name}`}
-                    font={font}
-                    color="white"
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </React.Fragment>
+      {showSkeleton && (
+        <Path path={skeletonPath} color="rgba(255, 255, 255, 0.6)" style="stroke" strokeWidth={2} />
+      )}
+      {Object.keys(fillPathsByColor).map((color) => (
+        <Path key={color} path={fillPathsByColor[color]} color={color} style="fill" />
       ))}
+      <Path path={strokePath} color="rgba(0, 0, 0, 0.8)" style="stroke" strokeWidth={2} />
     </Canvas>
   );
 };

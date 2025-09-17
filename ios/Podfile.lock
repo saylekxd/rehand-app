@@ -285,7 +285,7 @@ PODS:
     - ExpoModulesCore
   - ExpoHaptics (14.1.4):
     - ExpoModulesCore
-  - ExpoHead (5.1.5):
+  - ExpoHead (5.1.6):
     - ExpoModulesCore
   - ExpoImagePicker (16.1.4):
     - ExpoModulesCore
@@ -1693,7 +1693,7 @@ PODS:
     - Yoga
   - react-native-safe-area-context (5.4.0):
     - React-Core
-  - react-native-skia (2.2.4):
+  - react-native-skia (2.2.10):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2264,8 +2264,34 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNSentry (7.0.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Sentry/HybridSDK (= 8.53.2)
+    - Yoga
   - RNSVG (15.11.2):
     - React-Core
+  - Sentry/HybridSDK (8.53.2)
   - SocketRocket (0.7.1)
   - TensorFlowLiteC (2.17.0):
     - TensorFlowLiteC/Core (= 2.17.0)
@@ -2295,16 +2321,16 @@ PODS:
     - ReactCommon/turbomodule/core
     - VisionCamera
     - Yoga
-  - VisionCamera (4.7.1):
-    - VisionCamera/Core (= 4.7.1)
-    - VisionCamera/FrameProcessors (= 4.7.1)
-    - VisionCamera/React (= 4.7.1)
-  - VisionCamera/Core (4.7.1)
-  - VisionCamera/FrameProcessors (4.7.1):
+  - VisionCamera (4.7.2):
+    - VisionCamera/Core (= 4.7.2)
+    - VisionCamera/FrameProcessors (= 4.7.2)
+    - VisionCamera/React (= 4.7.2)
+  - VisionCamera/Core (4.7.2)
+  - VisionCamera/FrameProcessors (4.7.2):
     - React
     - React-callinvoker
     - react-native-worklets-core
-  - VisionCamera/React (4.7.1):
+  - VisionCamera/React (4.7.2):
     - React-Core
     - VisionCamera/FrameProcessors
   - Yoga (0.0.0)
@@ -2418,6 +2444,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
   - vision-camera-resize-plugin (from `../node_modules/vision-camera-resize-plugin`)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
@@ -2427,6 +2454,7 @@ SPEC REPOS:
   trunk:
     - MediaPipeTasksCommon
     - MediaPipeTasksVision
+    - Sentry
     - SocketRocket
     - TensorFlowLiteC
 
@@ -2642,6 +2670,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   vision-camera-resize-plugin:
@@ -2669,7 +2699,7 @@ SPEC CHECKSUMS:
   ExpoFileSystem: 9681caebda23fa1b38a12a9c68b2bade7072ce20
   ExpoFont: 091a47eeaa1b30b0b760aa1d0a2e7814e8bf6fe6
   ExpoHaptics: 68c215e070f660e0a29c45dcda4f60eeff08aefb
-  ExpoHead: 76d17284733254926d2e7127c1aef938f18188d1
+  ExpoHead: 5d6cc0ece4bd4c274a0e551cf5877c6d0433cec1
   ExpoImagePicker: d2fff488a0738343a3cc21e98544ee9feafaa0e6
   ExpoKeepAwake: e8dedc115d9f6f24b153ccd2d1d8efcdfd68a527
   ExpoLinearGradient: ce334cff9859da4635c1d8eff6e291b11b04ccbb
@@ -2721,7 +2751,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 964a2c1213bb39fa5cc8d5ee4f55846d67747f32
   react-native-fast-tflite: f47417d7c39045e38ad3e5732a07cb4322055236
   react-native-safe-area-context: 8870dc3e45c8d241336cd8ee3fa3fc76f3a040ac
-  react-native-skia: eee8f5b2560445bea34c27bb9f0b2dc7adb04e53
+  react-native-skia: 93ed77532c5711c8801c6bdabba93ee3e4dfb2d4
   react-native-webview: 94294e5a5d8cf4f53793aee7ef69ebd14c79e397
   react-native-worklets-core: 5c1f778fa9fd66bf3b92eb0b46f6f2db82401cb5
   React-NativeModulesApple: d2b9bd7d55dfd864e56c76592777ad32e8ab1f3d
@@ -2759,11 +2789,13 @@ SPEC CHECKSUMS:
   RNGestureHandler: eb5ad44465a546182d05aebae304e45c881d2f22
   RNReanimated: 6e95487fb4a862be4b8821d5fead7e15ba6586e5
   RNScreens: edd4795b025d94f879e20cc346b844176d938f0c
+  RNSentry: 8dc8ef1c7333388952cfd9b0d36fb0a99c90fffb
   RNSVG: 1d73f0c3199936c8e44f4d102d2744f3d258d2fc
+  Sentry: 59993bffde4a1ac297ba6d268dc4bbce068d7c1b
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   TensorFlowLiteC: eac6d689a8d391d1b202dc59e3d9165ba64aaf73
   vision-camera-resize-plugin: 33cd56c79c8f949e8072167f8641ab0932cd6f1c
-  VisionCamera: d785f2775f8b200d713f6e74b6ebdee2b8c8cb5c
+  VisionCamera: 02578a728d4a479d9c47f869efdf906c5680d50b
   Yoga: dbbb7c0d9e8c516c8669e6226afbb17e0fff1741
 
 PODFILE CHECKSUM: ad1ffa0210b79f093c2d3cb6090307de911acf00
