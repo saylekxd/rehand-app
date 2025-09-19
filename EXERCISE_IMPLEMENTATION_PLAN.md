@@ -11,12 +11,12 @@ References
 
 ---
 
-### 0) Migration: add steps_json
-- [ ] Add migration `004_add_steps_json.sql`:
+### 0) Migration: add steps_json (use MCP to check how to add it properly)
+- [x] Add migration `004_add_steps_json.sql`:
   - `ALTER TABLE public.exercises ADD COLUMN steps_json JSONB;`
   - (Optional) Backfill `steps_json` for seeded exercises.
-- [ ] Update `types/Exercise` to include `steps_json?: any`.
-- [ ] Update `ExercisesService.get*` SELECT to include `steps_json` (already selects `*`).
+- [x] Update `types/Exercise` to include `steps_json?: any`.
+- [x] Update `ExercisesService.get*` SELECT to include `steps_json` (already selects `*`).
 
 Acceptance: Exercises can carry a structured session plan.
 
@@ -155,20 +155,23 @@ Acceptance: Stable FPS on device; no watchdog resets during session.
 
 ---
 
-Prompts to drive implementation (copy and run per step)
-- Migration & types
-  - "Create migration `004_add_steps_json.sql` adding `steps_json JSONB` to `public.exercises`. Update types and seed for Rotacje ramion, Rozciąganie szyi, Mobilizacja kolan."
-- Create session hook and utilities
-  - "Create `hooks/useExerciseSession.ts` with API in Plan §2, plus `poseUtils.ts` for angles and distances. Export minimal evaluators for `holdPosture` and `timeWindow`."
-- Integrate in camera
-  - "Update `app/(tabs)/ai.tsx` to accept `exerciseId` and fetch via `useExercise`. Pass as `activeExercise` (use `steps_json`)."
-  - "Update `components/ai/CameraSurface.tsx` to wire `useExerciseSession` and `LiveFeedbackOverlay` at bottom."
-- Persist completion
-  - "On session finish call `ExercisesService.recordExerciseCompletion` with measured minutes."
-
 Done criteria
 - Start from index → camera full-screen.
 - Timed guidance displayed; steps advance per `steps_json`; session ends after `duration_minutes`.
 - Completion recorded in `user_exercises`.
+
+### 10) Debug mode (HUD / telemetry)
+- [ ] Włącznik debug: flaga w `CameraSurface` (prop `debug`), param w `ai.tsx` (`?debug=1`) lub hidden gesture.
+- [ ] HUD na overlay (górny-lewy róg):
+  - FPS pose/overlay, liczba kroków, index bieżącego kroku.
+  - Metryki per‑krok, np.: angle(shoulder–elbow–wrist), |y(wrist)−y(shoulder)|, avg wrist speed.
+  - Stan ewaluacji (spełnione/nie) dla każdego constraintu w aktualnym kroku.
+- [ ] Throttling HUD do 5–10 FPS, aby nie wpływać na wydajność.
+- [ ] Logi: grupowane wpisy przy przejściu kroku, rozpoczęciu/zakończeniu sesji.
+
+Acceptance: Po włączeniu debug widać wartości metryk i status constraintów; brak istotnego spadku FPS.
+
+Prompts
+- "Add `debug` prop to `CameraSurface` and thread from `ai.tsx` via query param. Render a small HUD with current step and metrics from `useExerciseSession`. Throttle to 5–10 FPS."
 
 

@@ -17,6 +17,7 @@ import { useExercises } from '@/hooks/useExercises';
 import { Exercise } from '@/types';
 import ExerciseDetailScreen from '@/screens/ExerciseDetailScreen';
 import AuthWrapper from '@/components/auth/AuthWrapper';
+ 
 
 export default function ExercisesTab() {
   const [searchQuery, setSearchQuery] = useState('');

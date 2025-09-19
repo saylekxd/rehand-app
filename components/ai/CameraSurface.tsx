@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
 import { poseProcessor } from '../../frameProcessors/poseProcessor';
 import PoseOverlay from './PoseOverlay';
+import type { Exercise } from '@/types';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -19,9 +20,10 @@ interface CameraSurfaceProps {
   cameraRef?: React.RefObject<Camera> | React.Ref<any>;
   containerStyle?: ViewStyle;
   children?: React.ReactNode;
+  activeExercise?: Exercise;
 }
 
-export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen }: CameraSurfaceProps) {
+export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, activeExercise }: CameraSurfaceProps) {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();

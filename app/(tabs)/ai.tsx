@@ -1,9 +1,13 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, NativeModules, NativeEventEmitter } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { useExercise } from '@/hooks/useExercises';
 import AuthWrapper from '@/components/auth/AuthWrapper';
 import CameraSurface from '@/components/ai/CameraSurface';
 
 export default function AITab() {
+  const { exerciseId } = useLocalSearchParams<{ exerciseId?: string }>();
+  const { exercise } = useExercise(exerciseId ?? null);
   const [facing, setFacing] = React.useState<'front' | 'back'>('front');
   const [isFullScreen, setIsFullScreen] = React.useState(true);
 
@@ -67,6 +71,9 @@ export default function AITab() {
           onToggleFacing={() => setFacing((prev) => (prev === 'front' ? 'back' : 'front'))}
           onToggleFullScreen={() => setIsFullScreen((v) => !v)}
           containerStyle={isFullScreen ? undefined : styles.camera}
+          // activeExercise is unused for now; wired for stage 4
+          // @ts-ignore
+          activeExercise={exercise || undefined}
         />
       </SafeAreaView>
     </AuthWrapper>

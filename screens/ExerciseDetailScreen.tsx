@@ -26,6 +26,7 @@ import { useExercise } from '@/hooks/useExercises';
 import { Exercise } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { ExercisesService } from '@/services/exercises';
+import { useRouter } from 'expo-router';
 
 interface ExerciseDetailScreenProps {
   exerciseId: string;
@@ -33,6 +34,7 @@ interface ExerciseDetailScreenProps {
 }
 
 export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDetailScreenProps) {
+  const router = useRouter();
   const { exercise, loading, error, refetch } = useExercise(exerciseId);
   const { user } = useAuth();
   const [isStarting, setIsStarting] = useState(false);
@@ -67,32 +69,11 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
   };
 
   const handleStartExercise = async () => {
-    if (!exercise || !user) return;
-
+    if (!exercise) return;
     try {
       setIsStarting(true);
-      
-      // TODO: Navigate to exercise player/timer screen
-      // For now, just record that user started the exercise
-      await ExercisesService.recordExerciseCompletion(
-        user.id,
-        exercise.id,
-        exercise.duration_minutes,
-        undefined, // difficulty rating will be collected after completion
-        'Ćwiczenie rozpoczęte'
-      );
-
-      Alert.alert(
-        'Ćwiczenie rozpoczęte!',
-        `Rozpocząłeś ćwiczenie "${exercise.title}". Powodzenia!`,
-        [
-          { text: 'OK', onPress: onClose }
-        ]
-      );
-
-    } catch (error) {
-      console.error('Error starting exercise:', error);
-      Alert.alert('Błąd', 'Nie udało się rozpocząć ćwiczenia');
+      router.push({ pathname: '/(tabs)/ai', params: { exerciseId: exercise.id } });
+      onClose();
     } finally {
       setIsStarting(false);
     }

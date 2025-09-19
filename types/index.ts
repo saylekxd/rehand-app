@@ -28,6 +28,7 @@ export interface Exercise {
   instructions?: string[];
   muscle_groups?: string[];
   equipment?: string[];
+  steps_json?: any;
   is_active: boolean;
   created_at: string;
   updated_at: string;
