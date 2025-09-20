@@ -1,15 +1,67 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet, NativeModules, NativeEventEmitter } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { SafeAreaView, View, Text, StyleSheet, NativeModules, NativeEventEmitter, Alert } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useExercise } from '@/hooks/useExercises';
+import { ExercisesService } from '@/services/exercises';
+import { useAuth } from '@/contexts/AuthContext';
 import AuthWrapper from '@/components/auth/AuthWrapper';
 import CameraSurface from '@/components/ai/CameraSurface';
 
 export default function AITab() {
   const { exerciseId } = useLocalSearchParams<{ exerciseId?: string }>();
   const { exercise } = useExercise(exerciseId ?? null);
+  const { user } = useAuth();
+  const router = useRouter();
   const [facing, setFacing] = React.useState<'front' | 'back'>('front');
   const [isFullScreen, setIsFullScreen] = React.useState(true);
+
+  // Debug exercise loading
+  React.useEffect(() => {
+    console.log('[Debug] ai.tsx exercise data:', {
+      exerciseId,
+      hasExercise: !!exercise,
+      exerciseTitle: exercise?.title,
+      hasSteps: !!exercise?.steps_json?.steps,
+      stepCount: exercise?.steps_json?.steps?.length
+    });
+  }, [exerciseId, exercise]);
+
+  // Handle exercise session completion
+  const handleSessionFinish = React.useCallback(async (completedSteps: number, totalTime: number) => {
+    if (!exercise || !user) return;
+
+    try {
+      // Record completion in database
+      const durationMinutes = Math.round(totalTime / (1000 * 60));
+      const { error } = await ExercisesService.recordExerciseCompletion(
+        user.id,
+        exercise.id,
+        durationMinutes
+      );
+
+      if (error) {
+        console.error('Error recording exercise completion:', error);
+      }
+
+      // Show completion summary
+      Alert.alert(
+        'Ćwiczenie zakończone! 🎉',
+        `Ukończono ${completedSteps}/${exercise.steps_json?.steps?.length || 0} kroków\nCzas: ${Math.round(totalTime / 1000)}s`,
+        [
+          {
+            text: 'Powrót',
+            onPress: () => router.back(),
+          },
+          {
+            text: 'OK',
+            style: 'default',
+          },
+        ]
+      );
+    } catch (error) {
+      console.error('Error in handleSessionFinish:', error);
+    }
+  }, [exercise, user, router]);
 
   // Watchdog: restart native model if no events > 2s
   React.useEffect(() => {
@@ -71,10 +123,11 @@ export default function AITab() {
           onToggleFacing={() => setFacing((prev) => (prev === 'front' ? 'back' : 'front'))}
           onToggleFullScreen={() => setIsFullScreen((v) => !v)}
           containerStyle={isFullScreen ? undefined : styles.camera}
-          // activeExercise is unused for now; wired for stage 4
-          // @ts-ignore
           activeExercise={exercise || undefined}
+          onSessionFinish={handleSessionFinish}
         />
+        
+        {/* Debug exercise data - moved to effect */}
       </SafeAreaView>
     </AuthWrapper>
   );

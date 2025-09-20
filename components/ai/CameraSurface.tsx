@@ -6,6 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
 import { poseProcessor } from '../../frameProcessors/poseProcessor';
 import PoseOverlay from './PoseOverlay';
+import LiveFeedbackOverlay from './LiveFeedbackOverlay';
+import { useExerciseSession } from '@/hooks/useExerciseSession';
 import type { Exercise } from '@/types';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -21,9 +23,10 @@ interface CameraSurfaceProps {
   containerStyle?: ViewStyle;
   children?: React.ReactNode;
   activeExercise?: Exercise;
+  onSessionFinish?: (completedSteps: number, totalTime: number) => void;
 }
 
-export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, activeExercise }: CameraSurfaceProps) {
+export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, activeExercise, onSessionFinish }: CameraSurfaceProps) {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();
@@ -34,6 +37,55 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   const [poses, setPoses] = React.useState<Pose[]>([]);
   const [previewSize, setPreviewSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const lastOverlayUpdateRef = React.useRef(0);
+  const lastExerciseValidationRef = React.useRef(0);
+  
+  // Use ref to ensure callback has access to current activeExercise
+  const activeExerciseRef = React.useRef(activeExercise);
+  
+  // Debug activeExercise prop
+  console.log('[Debug] CameraSurface activeExercise:', {
+    received: !!activeExercise,
+    title: activeExercise?.title,
+    hasSteps: !!activeExercise?.steps_json?.steps,
+    stepCount: activeExercise?.steps_json?.steps?.length,
+    fullExercise: activeExercise
+  });
+
+  // Exercise session integration
+  const exerciseSession = useExerciseSession({
+    steps: activeExercise?.steps_json?.steps || [],
+    durationMinutes: activeExercise?.duration_minutes || 5,
+    onFinish: onSessionFinish,
+    isFrontCamera: facing === 'front',
+  });
+  
+  const exerciseSessionRef = React.useRef(exerciseSession);
+  
+  // Update refs when props change
+  React.useEffect(() => {
+    activeExerciseRef.current = activeExercise;
+    exerciseSessionRef.current = exerciseSession;
+  }, [activeExercise, exerciseSession]);
+
+  // Auto-start session when exercise is loaded
+  React.useEffect(() => {
+    console.log('[Debug] Auto-start check:', {
+      hasExercise: !!activeExercise,
+      hasSteps: !!(activeExercise?.steps_json?.steps?.length),
+      isRunning: exerciseSession.state.isRunning,
+      stepCount: activeExercise?.steps_json?.steps?.length
+    });
+    
+    if (activeExercise?.steps_json?.steps && activeExercise.steps_json.steps.length > 0 && !exerciseSession.state.isRunning) {
+      console.log('[Debug] Starting exercise session...');
+      // Small delay to ensure camera is ready
+      const timer = setTimeout(() => {
+        exerciseSession.start();
+        console.log('[Debug] Exercise session started');
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeExercise?.id, exerciseSession]);
 
   // Frame processor with worklet function
   // IMPORTANT: Hooks must be called unconditionally in the same order on every render.
@@ -91,33 +143,48 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
       });
       const subDetected = emitter.addListener('onPoseLandmarksDetected', (e) => {
         // e.poses: [{ landmarks: [{ keypoint, name, x, y, z, visibility }, ...] }]
-        // eslint-disable-next-line no-console
-        console.log(`🏃‍♂️ [Pose][Detected] Wykryto ${Array.isArray(e?.poses) ? e.poses.length : 0} pozę(y)`);
-        
-        // Log key landmarks for first pose (if available)
-        if (e?.poses?.length > 0 && e.poses[0]?.landmarks) {
-          const keyLandmarks = [0, 11, 12, 23, 24, 15, 16, 25, 26]; // nose, shoulders, hips, wrists, knees
-          const landmarks = e.poses[0].landmarks;
-          
-          // eslint-disable-next-line no-console
-          console.log('   📍 Kluczowe punkty:');
-          keyLandmarks.forEach((idx) => {
-            const landmark = landmarks.find((lm: any) => lm.keypoint === idx);
-            if (landmark) {
-              const confidence = landmark.visibility || 0;
-              const confidenceIcon = confidence > 0.7 ? '🟢' : confidence > 0.4 ? '🟡' : '🔴';
-              // eslint-disable-next-line no-console
-              console.log(`     ${confidenceIcon} ${landmark.name || `point_${idx}`}: (${landmark.x.toFixed(3)}, ${landmark.y.toFixed(3)}) conf: ${confidence.toFixed(2)}`);
-            }
-          });
+        // Debug logging (only in dev and throttled)
+        if (__DEV__ && Math.random() < 0.01) { // 1% chance in dev mode
+          console.log(`🏃‍♂️ [Pose] Detected ${Array.isArray(e?.poses) ? e.poses.length : 0} pose(s)`);
         }
 
-        // Throttle overlay updates to ~10 FPS to avoid UI thrash
-        if (e?.poses && Array.isArray(e.poses)) {
+        // Throttle overlay updates and exercise validation
+        if (e?.poses && Array.isArray(e.poses) && e.poses.length > 0) {
           const now = Date.now();
+          
+          // Update poses for visual overlay more frequently (10 FPS)
           if (now - lastOverlayUpdateRef.current > 100) {
             lastOverlayUpdateRef.current = now;
             setPoses(e.poses as Pose[]);
+          }
+          
+          // Exercise validation with current poses (5 FPS)
+          const currentActiveExercise = activeExerciseRef.current;
+          const currentExerciseSession = exerciseSessionRef.current;
+          
+          if (currentActiveExercise && now - lastExerciseValidationRef.current > 200) {
+            lastExerciseValidationRef.current = now;
+            console.log('[Debug] Running exercise validation with', e.poses.length, 'poses');
+            
+            // Debug: log pose data when validating
+            if (e.poses[0]?.landmarks) {
+              const pose = e.poses[0];
+              const rightWrist = pose.landmarks.find((lm: any) => lm.keypoint === 16); // RIGHT_WRIST
+              const nose = pose.landmarks.find((lm: any) => lm.keypoint === 0); // NOSE
+              
+              if (rightWrist && nose) {
+                console.log('[Debug] Pose data before validation:', {
+                  rightWristY: rightWrist.y.toFixed(3),
+                  noseY: nose.y.toFixed(3),
+                  wristHigherThanNose: rightWrist.y < nose.y,
+                  rightWristVisibility: rightWrist.visibility.toFixed(2),
+                  noseVisibility: nose.visibility.toFixed(2)
+                });
+              }
+            }
+            
+            // Always pass current poses to session
+            currentExerciseSession.onPose(e.poses as Pose[]);
           }
         }
       });
@@ -225,6 +292,57 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
           ) : null}
         </View>
 
+        {/* Live feedback overlay for exercise guidance */}
+        {activeExercise && (
+          <>
+            {console.log('[Debug] LiveFeedbackOverlay render:', {
+              isRunning: exerciseSession.state.isRunning,
+              messagesCount: exerciseSession.messages.length,
+              messages: exerciseSession.messages.map(m => m.text)
+            })}
+            <LiveFeedbackOverlay
+              visible={exerciseSession.state.isRunning}
+              position="bottom"
+              messages={exerciseSession.messages}
+            />
+          </>
+        )}
+
+        {/* Session info overlay */}
+        {activeExercise && exerciseSession.state.isRunning && (
+          <View style={[styles.sessionInfo, { top: topOffset + 60 }]}>
+            <Text style={styles.sessionText}>
+              Krok {exerciseSession.state.currentStepIndex + 1}/{exerciseSession.state.totalSteps}
+            </Text>
+            <Text style={styles.sessionText}>
+              {Math.ceil(exerciseSession.state.remainingMs / 1000)}s
+            </Text>
+            {exerciseSession.state.currentStepProgress > 0 && (
+              <View style={styles.progressBar}>
+                <View 
+                  style={[
+                    styles.progressFill, 
+                    { width: `${exerciseSession.state.currentStepProgress * 100}%` }
+                  ]} 
+                />
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Manual start button (if auto-start fails) */}
+        {activeExercise && !exerciseSession.state.isRunning && activeExercise.steps_json?.steps && (
+          <TouchableOpacity 
+            style={styles.manualStartButton}
+            onPress={() => {
+              console.log('[Debug] Manual start triggered');
+              exerciseSession.start();
+            }}
+          >
+            <Text style={styles.manualStartText}>Rozpocznij ćwiczenie</Text>
+          </TouchableOpacity>
+        )}
+
         {children}
       </View>
     </View>
@@ -286,6 +404,50 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 10,
     borderRadius: 24,
+  },
+  sessionInfo: {
+    position: 'absolute',
+    left: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    alignItems: 'center',
+    gap: 4,
+  },
+  sessionText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontFamily: 'Inter-Medium',
+  },
+  progressBar: {
+    width: 60,
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#10B981',
+    borderRadius: 2,
+  },
+  manualStartButton: {
+    position: 'absolute',
+    bottom: 100,
+    alignSelf: 'center',
+    left: 20,
+    right: 20,
+    backgroundColor: 'rgba(37, 99, 235, 0.9)',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  manualStartText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
   },
 });
 
