@@ -1,9 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Book, Brain, User } from 'lucide-react-native';
 import { StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import AuthWrapper from '@/components/auth/AuthWrapper';
 
 export default function TabLayout() {
+  const { t } = useTranslation(['common']);
+  
   return (
     <AuthWrapper>
       <Tabs
@@ -17,7 +20,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Ćwiczenia',
+            title: t('common:tabs.exercises'),
             tabBarIcon: ({ size, color }) => (
               <Book size={size} color={color} strokeWidth={2} />
             ),
@@ -26,7 +29,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="ai"
           options={{
-            title: 'AI Trener',
+            title: t('common:tabs.aiTrainer'),
             tabBarIcon: ({ size, color }) => (
               <Brain size={size} color={color} strokeWidth={2} />
             ),
@@ -35,7 +38,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="profile"
           options={{
-            title: 'Profil',
+            title: t('common:tabs.profile'),
             tabBarIcon: ({ size, color }) => (
               <User size={size} color={color} strokeWidth={2} />
             ),

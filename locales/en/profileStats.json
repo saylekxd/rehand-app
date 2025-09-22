@@ -1,0 +1,14 @@
+{
+  "sectionTitle": "Your progress",
+  "loading": "Loading stats…",
+  "loadError": "Failed to load stats",
+  "retry": "Try again",
+  "completedExercises": "Completed\nexercises",
+  "streakDays": "Days in a row",
+  "exerciseTime": "Exercise\ntime",
+  "minuteShort": "min",
+  "weeklyGoal": "Weekly goal",
+  "weeklyProgress": "This week's progress",
+  "weeklyGoalTarget": "weekly goal",
+  "done": "done"
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, NativeModules, NativeEventEmitter, Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useExercise } from '@/hooks/useExercises';
 import { ExercisesService } from '@/services/exercises';
@@ -8,6 +9,7 @@ import AuthWrapper from '@/components/auth/AuthWrapper';
 import CameraSurface from '@/components/ai/CameraSurface';
 
 export default function AITab() {
+  const { t } = useTranslation(['ai']);
   const { exerciseId } = useLocalSearchParams<{ exerciseId?: string }>();
   const { exercise } = useExercise(exerciseId ?? null);
   const { user } = useAuth();
@@ -45,11 +47,11 @@ export default function AITab() {
 
       // Show completion summary
       Alert.alert(
-        'Ćwiczenie zakończone! 🎉',
+        t('ai:sessionDoneTitle'),
         `Ukończono ${completedSteps}/${exercise.steps_json?.steps?.length || 0} kroków\nCzas: ${Math.round(totalTime / 1000)}s`,
         [
           {
-            text: 'Powrót',
+            text: t('ai:sessionDoneBack'),
             onPress: () => router.back(),
           },
           {
@@ -111,8 +113,8 @@ export default function AITab() {
       <SafeAreaView style={styles.container}>
         {!isFullScreen && (
           <View style={styles.header}> 
-            <Text style={styles.title}>AI Trener</Text>
-            <Text style={styles.subtitle}>Włącz kamerę, aby rozpocząć analizę ruchu</Text>
+            <Text style={styles.title}>{t('ai:title')}</Text>
+            <Text style={styles.subtitle}>{t('ai:subtitle')}</Text>
           </View>
         )}
 

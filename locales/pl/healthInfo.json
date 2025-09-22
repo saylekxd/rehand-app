@@ -1,0 +1,10 @@
+{
+  "title": "Informacje zdrowotne",
+  "sensitive": "Dane wrażliwe",
+  "hidden": "Informacje zdrowotne są ukryte",
+  "tapToShow": "Dotknij ikonę oka aby je wyświetlić",
+  "notes": "Uwagi medyczne:",
+  "item": "pozycja",
+  "items": "pozycje",
+  "private": "Te informacje są prywatne i zabezpieczone"
+}

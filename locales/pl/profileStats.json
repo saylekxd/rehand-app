@@ -1,0 +1,14 @@
+{
+  "sectionTitle": "Twoje postępy",
+  "loading": "Ładowanie statystyk...",
+  "loadError": "Nie udało się załadować statystyk",
+  "retry": "Spróbuj ponownie",
+  "completedExercises": "Ukończone\nćwiczenia",
+  "streakDays": "Dni z rzędu",
+  "exerciseTime": "Czas\nćwiczeń",
+  "minuteShort": "min",
+  "weeklyGoal": "Tygodniowy cel",
+  "weeklyProgress": "Postęp tego tygodnia",
+  "weeklyGoalTarget": "cel tygodniowy",
+  "done": "wykonane"
+}

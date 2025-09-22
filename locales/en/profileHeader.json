@@ -1,0 +1,8 @@
+{
+  "userFallback": "User",
+  "levelBeginner": "Beginner level",
+  "levelIntermediate": "Intermediate level",
+  "levelAdvanced": "Advanced level",
+  "levelUnknown": "Level not set",
+  "goalsLabel": "Goals: "
+}

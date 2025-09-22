@@ -1,0 +1,10 @@
+{
+  "title": "Health information",
+  "sensitive": "Sensitive data",
+  "hidden": "Health information is hidden",
+  "tapToShow": "Tap the eye icon to show",
+  "notes": "Medical notes:",
+  "item": "item",
+  "items": "items",
+  "private": "This information is private and secured"
+}

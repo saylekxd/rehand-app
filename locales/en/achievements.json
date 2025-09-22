@@ -1,0 +1,6 @@
+{
+  "title": "Achievements",
+  "loading": "Loading achievements…",
+  "loadError": "Failed to load achievements",
+  "retry": "Try again"
+}

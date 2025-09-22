@@ -6,12 +6,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Shield, Eye, EyeOff, Lock } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface HealthInfoSectionProps {
   medicalConditions: string[];
 }
 
 export default function HealthInfoSection({ medicalConditions }: HealthInfoSectionProps) {
+  const { t } = useTranslation(['healthInfo']);
   const [isVisible, setIsVisible] = useState(false);
 
   if (!medicalConditions || medicalConditions.length === 0) {
@@ -22,10 +24,10 @@ export default function HealthInfoSection({ medicalConditions }: HealthInfoSecti
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.sectionTitle}>Informacje zdrowotne</Text>
+          <Text style={styles.sectionTitle}>{t('healthInfo:title')}</Text>
           <View style={styles.sensitiveLabel}>
             <Lock size={12} color="#EF4444" />
-            <Text style={styles.sensitiveLabelText}>Dane wrażliwe</Text>
+            <Text style={styles.sensitiveLabelText}>{t('healthInfo:sensitive')}</Text>
           </View>
         </View>
         <TouchableOpacity 
@@ -44,19 +46,15 @@ export default function HealthInfoSection({ medicalConditions }: HealthInfoSecti
         {!isVisible ? (
           <View style={styles.hiddenContent}>
             <Shield size={32} color="#D1D5DB" />
-            <Text style={styles.hiddenText}>
-              Informacje zdrowotne są ukryte
-            </Text>
-            <Text style={styles.hiddenSubtext}>
-              Dotknij ikonę oka aby je wyświetlić
-            </Text>
+            <Text style={styles.hiddenText}>{t('healthInfo:hidden')}</Text>
+            <Text style={styles.hiddenSubtext}>{t('healthInfo:tapToShow')}</Text>
           </View>
         ) : (
           <View style={styles.visibleContent}>
             <View style={styles.conditionsHeader}>
-              <Text style={styles.conditionsLabel}>Uwagi medyczne:</Text>
+              <Text style={styles.conditionsLabel}>{t('healthInfo:notes')}</Text>
               <Text style={styles.conditionsCount}>
-                {medicalConditions.length} {medicalConditions.length === 1 ? 'pozycja' : 'pozycje'}
+                {medicalConditions.length} {medicalConditions.length === 1 ? t('healthInfo:item') : t('healthInfo:items')}
               </Text>
             </View>
             
@@ -70,9 +68,7 @@ export default function HealthInfoSection({ medicalConditions }: HealthInfoSecti
 
             <View style={styles.privacyNotice}>
               <Shield size={14} color="#6B7280" />
-              <Text style={styles.privacyNoticeText}>
-                Te informacje są prywatne i zabezpieczone
-              </Text>
+              <Text style={styles.privacyNoticeText}>{t('healthInfo:private')}</Text>
             </View>
           </View>
         )}

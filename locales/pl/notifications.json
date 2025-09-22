@@ -1,0 +1,20 @@
+{
+  "title": "Powiadomienia",
+  "saved": "Ustawienia powiadomień zostały zapisane",
+  "exerciseReminders": "Przypomnienia o ćwiczeniach",
+  "dailyReminders": "Codzienne przypomnienia",
+  "dailyRemindersDesc": "Otrzymuj przypomnienia o ćwiczeniach",
+  "reminderTime": "Godzina przypomnienia",
+  "reminderDays": "Dni przypomnienia",
+  "progress": "Powiadomienia o postępach",
+  "dailyGoals": "Cele dzienne",
+  "dailyGoalsDesc": "Powiadomienia o osiągnięciu celów",
+  "weeklyProgress": "Postęp tygodniowy",
+  "weeklyProgressDesc": "Podsumowanie tygodnia",
+  "streaks": "Serie ćwiczeń",
+  "streaksDesc": "Przypomnienia o utrzymaniu serii",
+  "achievements": "Osiągnięcia",
+  "achievementsDesc": "Powiadomienia o odblokowanych osiągnięciach",
+  "save": "Zapisz",
+  "weekdaysShort": ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Nd"]
+}

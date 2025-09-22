@@ -10,6 +10,8 @@ import {
   Alert,
 } from 'react-native';
 import { X, Moon, Volume2, Globe, Database, Check } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
+import { setAppLanguage } from '@/lib/i18n';
 
 interface SettingsScreenProps {
   onClose: () => void;
@@ -24,6 +26,7 @@ interface AppSettings {
 }
 
 export default function SettingsScreen({ onClose }: SettingsScreenProps) {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<AppSettings>({
     darkMode: false,
     soundEnabled: true,
@@ -34,7 +37,7 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
 
   const handleSave = () => {
     // TODO: Save settings to storage/database
-    Alert.alert('Sukces', 'Ustawienia zostały zapisane');
+    Alert.alert(t('common:ok', 'OK'), t('settings.saved'));
   };
 
   const toggleSetting = (key: keyof AppSettings, value?: any) => {
@@ -45,13 +48,13 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
   };
 
   const languageOptions = [
-    { value: 'pl', label: 'Polski' },
-    { value: 'en', label: 'English' },
+    { value: 'pl', label: t('settings:polish') },
+    { value: 'en', label: t('settings:english') },
   ];
 
   const dataUsageOptions = [
-    { value: 'wifi', label: 'Tylko Wi-Fi' },
-    { value: 'all', label: 'Wi-Fi i dane mobilne' },
+    { value: 'wifi', label: t('settings:wifiOnly') },
+    { value: 'all', label: t('settings:wifiAndCellular') },
   ];
 
   return (
@@ -60,7 +63,7 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
         <TouchableOpacity style={styles.headerButton} onPress={onClose}>
           <X size={24} color="#6B7280" />
         </TouchableOpacity>
-        <Text style={styles.title}>Ustawienia</Text>
+        <Text style={styles.title}>{t('settings:title')}</Text>
         <TouchableOpacity style={[styles.headerButton, styles.saveButton]} onPress={handleSave}>
           <Check size={24} color="#FFFFFF" />
         </TouchableOpacity>
@@ -69,7 +72,7 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Appearance */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Wygląd</Text>
+          <Text style={styles.cardTitle}>{t('settings:appearance')}</Text>
           
           <View style={[styles.settingItem, styles.lastItem]}>
             <View style={styles.settingLeft}>
@@ -77,8 +80,8 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
                 <Moon size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Ciemny motyw</Text>
-                <Text style={styles.settingDescription}>Zmień na ciemny motyw aplikacji</Text>
+                <Text style={styles.settingTitle}>{t('settings:darkMode')}</Text>
+                <Text style={styles.settingDescription}>{t('settings:darkModeDesc')}</Text>
               </View>
             </View>
             <Switch
@@ -92,7 +95,7 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
 
         {/* Audio */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Dźwięk</Text>
+          <Text style={styles.cardTitle}>{t('settings:sound')}</Text>
           
           <View style={[styles.settingItem, styles.lastItem]}>
             <View style={styles.settingLeft}>
@@ -100,8 +103,8 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
                 <Volume2 size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Dźwięki aplikacji</Text>
-                <Text style={styles.settingDescription}>Włącz dźwięki interfejsu</Text>
+                <Text style={styles.settingTitle}>{t('settings:appSounds')}</Text>
+                <Text style={styles.settingDescription}>{t('settings:appSoundsDesc')}</Text>
               </View>
             </View>
             <Switch
@@ -115,7 +118,7 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
 
         {/* Language */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Język aplikacji</Text>
+          <Text style={styles.cardTitle}>{t('settings:language')}</Text>
           
           <View style={styles.optionsContainer}>
             {languageOptions.map((option, index) => (
@@ -126,7 +129,12 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
                   settings.language === option.value && styles.optionItemSelected,
                   index === languageOptions.length - 1 && styles.lastItem
                 ]}
-                onPress={() => toggleSetting('language', option.value)}
+                onPress={async () => {
+                  toggleSetting('language', option.value);
+                  if (option.value === 'pl' || option.value === 'en') {
+                    await setAppLanguage(option.value);
+                  }
+                }}
               >
                 <Text style={[
                   styles.optionText,
@@ -141,7 +149,7 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
 
         {/* Data & Sync */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Dane i synchronizacja</Text>
+          <Text style={styles.cardTitle}>{t('settings:dataSync')}</Text>
           
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
@@ -149,8 +157,8 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
                 <Database size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Automatyczna synchronizacja</Text>
-                <Text style={styles.settingDescription}>Synchronizuj dane w tle</Text>
+                <Text style={styles.settingTitle}>{t('settings:autoSync')}</Text>
+                <Text style={styles.settingDescription}>{t('settings:autoSyncDesc')}</Text>
               </View>
             </View>
             <Switch
@@ -162,7 +170,7 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
           </View>
 
           <View style={styles.subSection}>
-            <Text style={styles.subSectionTitle}>Użycie danych</Text>
+            <Text style={styles.subSectionTitle}>{t('settings:dataUsage')}</Text>
             <View style={styles.optionsContainer}>
               {dataUsageOptions.map((option, index) => (
                 <TouchableOpacity

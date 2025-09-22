@@ -8,6 +8,7 @@ import {
   Text,
 } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import AuthWrapper from '@/components/auth/AuthWrapper';
 import { useUserStats } from '@/hooks/useUserStats';
 import { useAchievements } from '@/hooks/useAchievements';
@@ -26,6 +27,7 @@ import {
 } from '@/components/profile';
 
 export default function ProfileTab() {
+  const { t } = useTranslation(['profile']);
   const { user, signOut } = useAuth();
   const { stats, loading: statsLoading, error: statsError, refetch } = useUserStats(user?.id || null);
   const { achievements, loading: achievementsLoading, error: achievementsError, refetch: refetchAchievements } = useAchievements(user?.id || null);
@@ -43,7 +45,7 @@ export default function ProfileTab() {
       <AuthWrapper>
         <SafeAreaView style={styles.container}>
           <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Ładowanie profilu...</Text>
+            <Text style={styles.loadingText}>{t('profile:loading')}</Text>
           </View>
         </SafeAreaView>
       </AuthWrapper>

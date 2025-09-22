@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Trophy, Flame, Target, Clock, Star } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface Achievement {
   id: string;
@@ -28,6 +29,7 @@ interface AchievementsSectionProps {
 }
 
 export default function AchievementsSection({ achievements, loading, error, onRetry }: AchievementsSectionProps) {
+  const { t } = useTranslation(['achievements']);
   // Achievement icon mapping function
   const getAchievementIcon = (icon: string, earned: boolean) => {
     const color = earned ? '#F59E0B' : '#D1D5DB';
@@ -67,17 +69,17 @@ export default function AchievementsSection({ achievements, loading, error, onRe
 
   return (
     <View style={styles.achievementsContainer}>
-      <Text style={styles.sectionTitle}>Osiągnięcia</Text>
+      <Text style={styles.sectionTitle}>{t('achievements:title')}</Text>
       {loading ? (
         <View style={styles.loadingAchievements}>
           <ActivityIndicator size="large" color="#2563EB" />
-          <Text style={styles.loadingText}>Ładowanie osiągnięć...</Text>
+          <Text style={styles.loadingText}>{t('achievements:loading')}</Text>
         </View>
       ) : error ? (
         <View style={styles.errorAchievements}>
-          <Text style={styles.errorText}>Błąd ładowania osiągnięć</Text>
+          <Text style={styles.errorText}>{t('achievements:loadError')}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-            <Text style={styles.retryButtonText}>Spróbuj ponownie</Text>
+            <Text style={styles.retryButtonText}>{t('achievements:retry')}</Text>
           </TouchableOpacity>
         </View>
       ) : (

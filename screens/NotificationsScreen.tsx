@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { X, Bell, Clock, Target, Trophy, Calendar, Check } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface NotificationsScreenProps {
   onClose: () => void;
@@ -26,6 +27,7 @@ interface NotificationSettings {
 }
 
 export default function NotificationsScreen({ onClose }: NotificationsScreenProps) {
+  const { t } = useTranslation(['notifications']);
   const [settings, setSettings] = useState<NotificationSettings>({
     exerciseReminders: true,
     dailyGoals: true,
@@ -38,7 +40,7 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
 
   const handleSave = () => {
     // TODO: Save notification settings
-    Alert.alert('Sukces', 'Ustawienia powiadomień zostały zapisane');
+    Alert.alert(t('common:ok', 'OK'), t('notifications:saved'));
   };
 
   const toggleSetting = (key: keyof NotificationSettings, value?: any) => {
@@ -58,13 +60,13 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
   };
 
   const weekDays = [
-    { value: 'monday', label: 'Pon' },
-    { value: 'tuesday', label: 'Wt' },
-    { value: 'wednesday', label: 'Śr' },
-    { value: 'thursday', label: 'Czw' },
-    { value: 'friday', label: 'Pt' },
-    { value: 'saturday', label: 'Sob' },
-    { value: 'sunday', label: 'Nd' },
+    { value: 'monday', label: t('notifications:weekdaysShort.0') },
+    { value: 'tuesday', label: t('notifications:weekdaysShort.1') },
+    { value: 'wednesday', label: t('notifications:weekdaysShort.2') },
+    { value: 'thursday', label: t('notifications:weekdaysShort.3') },
+    { value: 'friday', label: t('notifications:weekdaysShort.4') },
+    { value: 'saturday', label: t('notifications:weekdaysShort.5') },
+    { value: 'sunday', label: t('notifications:weekdaysShort.6') },
   ];
 
   const timeOptions = [
@@ -78,7 +80,7 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
         <TouchableOpacity style={styles.headerButton} onPress={onClose}>
           <X size={24} color="#6B7280" />
         </TouchableOpacity>
-        <Text style={styles.title}>Powiadomienia</Text>
+        <Text style={styles.title}>{t('notifications:title')}</Text>
         <TouchableOpacity style={[styles.headerButton, styles.saveButton]} onPress={handleSave}>
           <Check size={24} color="#FFFFFF" />
         </TouchableOpacity>
@@ -87,7 +89,7 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Exercise Reminders */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Przypomnienia o ćwiczeniach</Text>
+          <Text style={styles.cardTitle}>{t('notifications:exerciseReminders')}</Text>
           
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
@@ -95,8 +97,8 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
                 <Bell size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Codzienne przypomnienia</Text>
-                <Text style={styles.settingDescription}>Otrzymuj przypomnienia o ćwiczeniach</Text>
+                <Text style={styles.settingTitle}>{t('notifications:dailyReminders')}</Text>
+                <Text style={styles.settingDescription}>{t('notifications:dailyRemindersDesc')}</Text>
               </View>
             </View>
             <Switch
@@ -110,7 +112,7 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
           {settings.exerciseReminders && (
             <>
               <View style={styles.subSection}>
-                <Text style={styles.subSectionTitle}>Godzina przypomnienia</Text>
+                <Text style={styles.subSectionTitle}>{t('notifications:reminderTime')}</Text>
                 <View style={styles.optionsContainer}>
                   {timeOptions.map((time) => (
                     <TouchableOpacity
@@ -133,7 +135,7 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
               </View>
 
               <View style={styles.subSection}>
-                <Text style={styles.subSectionTitle}>Dni przypomnienia</Text>
+                <Text style={styles.subSectionTitle}>{t('notifications:reminderDays')}</Text>
                 <View style={styles.daysContainer}>
                   {weekDays.map((day) => (
                     <TouchableOpacity
@@ -160,7 +162,7 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
 
         {/* Progress Notifications */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Powiadomienia o postępach</Text>
+          <Text style={styles.cardTitle}>{t('notifications:progress')}</Text>
           
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
@@ -168,8 +170,8 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
                 <Target size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Cele dzienne</Text>
-                <Text style={styles.settingDescription}>Powiadomienia o osiągnięciu celów</Text>
+                <Text style={styles.settingTitle}>{t('notifications:dailyGoals')}</Text>
+                <Text style={styles.settingDescription}>{t('notifications:dailyGoalsDesc')}</Text>
               </View>
             </View>
             <Switch
@@ -186,8 +188,8 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
                 <Calendar size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Postęp tygodniowy</Text>
-                <Text style={styles.settingDescription}>Podsumowanie tygodnia</Text>
+                <Text style={styles.settingTitle}>{t('notifications:weeklyProgress')}</Text>
+                <Text style={styles.settingDescription}>{t('notifications:weeklyProgressDesc')}</Text>
               </View>
             </View>
             <Switch
@@ -204,8 +206,8 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
                 <Clock size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Serie ćwiczeń</Text>
-                <Text style={styles.settingDescription}>Przypomnienia o utrzymaniu serii</Text>
+                <Text style={styles.settingTitle}>{t('notifications:streaks')}</Text>
+                <Text style={styles.settingDescription}>{t('notifications:streaksDesc')}</Text>
               </View>
             </View>
             <Switch
@@ -219,7 +221,7 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
 
         {/* Achievement Notifications */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Osiągnięcia</Text>
+          <Text style={styles.cardTitle}>{t('notifications:achievements')}</Text>
           
           <View style={[styles.settingItem, styles.lastItem]}>
             <View style={styles.settingLeft}>
@@ -227,8 +229,8 @@ export default function NotificationsScreen({ onClose }: NotificationsScreenProp
                 <Trophy size={20} color="#2563EB" />
               </View>
               <View>
-                <Text style={styles.settingTitle}>Nowe osiągnięcia</Text>
-                <Text style={styles.settingDescription}>Powiadomienia o odblokowanych osiągnięciach</Text>
+                <Text style={styles.settingTitle}>{t('notifications:achievements')}</Text>
+                <Text style={styles.settingDescription}>{t('notifications:achievementsDesc')}</Text>
               </View>
             </View>
             <Switch

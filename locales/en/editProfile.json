@@ -1,0 +1,50 @@
+{
+  "title": "Edit profile",
+  "saveSuccess": "Profile updated",
+  "saveError": "Failed to update profile",
+  "unexpectedError": "Unexpected error occurred",
+  "requiredName": "First and last name are required",
+  "galleryAccessNeeded": "We need access to your photo library",
+  "basicInfo": "Basic information",
+  "firstNameLabel": "First name *",
+  "firstNamePlaceholder": "Enter first name",
+  "lastNameLabel": "Last name *",
+  "lastNamePlaceholder": "Enter last name",
+  "phoneLabel": "Phone",
+  "phonePlaceholder": "Enter phone number",
+  "dobLabel": "Date of birth",
+  "dobPlaceholder": "Select date",
+  "genderTitle": "Gender",
+  "levelTitle": "Fitness level",
+  "weeklyGoalLabel": "Weekly goal (minutes)",
+  "weeklyGoalPlaceholder": "120",
+  "goalsTitle": "Training goals",
+  "conditionsTitle": "Medical notes",
+  "genders": [
+    { "value": "male", "label": "Male" },
+    { "value": "female", "label": "Female" },
+    { "value": "other", "label": "Other" }
+  ],
+  "levels": [
+    { "value": "beginner", "label": "Beginner" },
+    { "value": "intermediate", "label": "Intermediate" },
+    { "value": "advanced", "label": "Advanced" }
+  ],
+  "commonGoals": [
+    "Pain reduction",
+    "Improve mobility",
+    "Strengthen muscles",
+    "Improve posture",
+    "Relaxation",
+    "Return to sport",
+    "General fitness"
+  ],
+  "commonConditions": [
+    "Back pain",
+    "Neck pain",
+    "Knee problems",
+    "Arthritis",
+    "Fibromyalgia",
+    "Scoliosis"
+  ]
+}

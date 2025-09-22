@@ -7,6 +7,7 @@ import {
   Image,
 } from 'react-native';
 import { User } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface User {
   id: string;
@@ -24,23 +25,24 @@ interface ProfileHeaderProps {
 }
 
 export default function ProfileHeader({ user, onEditPress }: ProfileHeaderProps) {
+  const { t } = useTranslation(['profileHeader']);
   const getDisplayName = () => {
     if (user?.first_name && user?.last_name) {
       return `${user.first_name} ${user.last_name}`;
     }
-    return user?.email?.split('@')[0] || 'Użytkownik';
+    return user?.email?.split('@')[0] || t('profileHeader:userFallback');
   };
 
   const getFitnessLevelDisplay = () => {
     switch (user?.fitness_level) {
       case 'beginner':
-        return 'Poziom początkujący';
+        return t('profileHeader:levelBeginner');
       case 'intermediate':
-        return 'Poziom średniozaawansowany';
+        return t('profileHeader:levelIntermediate');
       case 'advanced':
-        return 'Poziom zaawansowany';
+        return t('profileHeader:levelAdvanced');
       default:
-        return 'Poziom nie określony';
+        return t('profileHeader:levelUnknown');
     }
   };
 
@@ -60,7 +62,7 @@ export default function ProfileHeader({ user, onEditPress }: ProfileHeaderProps)
           <Text style={styles.userLevel}>{getFitnessLevelDisplay()}</Text>
           {user.goals && user.goals.length > 0 && (
             <View style={styles.goalsContainer}>
-              <Text style={styles.goalsLabel}>Cele: </Text>
+              <Text style={styles.goalsLabel}>{t('profileHeader:goalsLabel')}</Text>
               <Text style={styles.goalsText} numberOfLines={1}>
                 {user.goals.slice(0, 2).join(', ')}
                 {user.goals.length > 2 ? '...' : ''}

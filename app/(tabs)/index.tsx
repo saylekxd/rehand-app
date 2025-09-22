@@ -17,17 +17,19 @@ import { useExercises } from '@/hooks/useExercises';
 import { Exercise } from '@/types';
 import ExerciseDetailScreen from '@/screens/ExerciseDetailScreen';
 import AuthWrapper from '@/components/auth/AuthWrapper';
+import { useTranslation } from 'react-i18next';
  
 
 export default function ExercisesTab() {
+  const { t } = useTranslation(['exercises']);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Wszystkie');
+  const [selectedCategory, setSelectedCategory] = useState(t('exercises:all'));
   const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(null);
   const { exercises, categories, loading, error, refetch, applyFilters } = useExercises();
 
   // Helper functions
   const formatDuration = (minutes: number): string => {
-    if (minutes < 60) return `${minutes} min`;
+    if (minutes < 60) return `${minutes} ${t('exercises:minutes')}`;
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
@@ -35,9 +37,9 @@ export default function ExercisesTab() {
 
   const translateDifficulty = (difficulty: 'easy' | 'medium' | 'hard'): string => {
     switch (difficulty) {
-      case 'easy': return 'Łatwy';
-      case 'medium': return 'Średni';
-      case 'hard': return 'Trudny';
+      case 'easy': return t('exercises:easy');
+      case 'medium': return t('exercises:medium');
+      case 'hard': return t('exercises:hard');
       default: return difficulty;
     }
   };
@@ -58,7 +60,7 @@ export default function ExercisesTab() {
   // Apply filters when search or category changes
   const handleFilter = useCallback(async () => {
     await applyFilters({
-      category: selectedCategory !== 'Wszystkie' ? selectedCategory : undefined,
+      category: selectedCategory !== t('exercises:all') ? selectedCategory : undefined,
       searchQuery: searchQuery.trim() || undefined,
     });
   }, [searchQuery, selectedCategory, applyFilters]);
@@ -98,8 +100,8 @@ export default function ExercisesTab() {
     <AuthWrapper>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Biblioteka Ćwiczeń</Text>
-          <Text style={styles.subtitle}>Wybierz ćwiczenie dostosowane do Twoich potrzeb</Text>
+          <Text style={styles.title}>{t('exercises:library')}</Text>
+          <Text style={styles.subtitle}>{t('exercises:pick')}</Text>
         </View>
 
         <View style={styles.searchContainer}>
@@ -107,7 +109,7 @@ export default function ExercisesTab() {
             <Search size={20} color="#6B7280" />
             <TextInput
               style={styles.searchInput}
-              placeholder="Szukaj ćwiczeń..."
+              placeholder={t('exercises:searchPlaceholder')}
               value={searchQuery}
               onChangeText={setSearchQuery}
               placeholderTextColor="#9CA3AF"
@@ -156,16 +158,16 @@ export default function ExercisesTab() {
           {loading && exercises.length === 0 ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#2563EB" />
-              <Text style={styles.loadingText}>Ładowanie ćwiczeń...</Text>
+              <Text style={styles.loadingText}>{t('exercises:loading')}</Text>
             </View>
           ) : exercises.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Target size={48} color="#9CA3AF" />
-              <Text style={styles.emptyTitle}>Brak ćwiczeń</Text>
+              <Text style={styles.emptyTitle}>{t('exercises:emptyTitle')}</Text>
               <Text style={styles.emptyText}>
-                {searchQuery || selectedCategory !== 'Wszystkie' 
-                  ? 'Nie znaleziono ćwiczeń spełniających kryteria wyszukiwania'
-                  : 'Obecnie brak dostępnych ćwiczeń'
+                {searchQuery || selectedCategory !== t('exercises:all') 
+                  ? t('exercises:emptyMsg')
+                  : t('exercises:emptyMsg')
                 }
               </Text>
             </View>
@@ -208,7 +210,7 @@ export default function ExercisesTab() {
                       }}
                     >
                       <Play size={16} color="#FFFFFF" />
-                      <Text style={styles.playButtonText}>Zobacz</Text>
+                      <Text style={styles.playButtonText}>{t('exercises:see')}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

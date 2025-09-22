@@ -1,0 +1,15 @@
+{
+  "loading": "Loading profile…",
+  "settings": "Settings",
+  "settingsSubtitle": "Personalize the app",
+  "notifications": "Notifications",
+  "notificationsSubtitle": "Manage reminders",
+  "privacy": "Privacy",
+  "privacySubtitle": "Data security",
+  "help": "Help",
+  "helpSubtitle": "Support & FAQ",
+  "logout": "Log out",
+  "logoutSubtitle": "End session",
+  "logoutTitle": "Log out",
+  "logoutConfirm": "Are you sure you want to log out?"
+}

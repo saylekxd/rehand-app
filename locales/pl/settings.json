@@ -1,0 +1,20 @@
+{
+  "title": "Ustawienia",
+  "saved": "Ustawienia zostały zapisane",
+  "appearance": "Wygląd",
+  "darkMode": "Ciemny motyw",
+  "darkModeDesc": "Zmień na ciemny motyw aplikacji",
+  "sound": "Dźwięk",
+  "appSounds": "Dźwięki aplikacji",
+  "appSoundsDesc": "Włącz dźwięki interfejsu",
+  "language": "Język aplikacji",
+  "dataSync": "Dane i synchronizacja",
+  "autoSync": "Automatyczna synchronizacja",
+  "autoSyncDesc": "Synchronizuj dane w tle",
+  "dataUsage": "Użycie danych",
+  "wifiOnly": "Tylko Wi‑Fi",
+  "wifiAndCellular": "Wi‑Fi i dane mobilne",
+  "save": "Zapisz",
+  "polish": "Polski",
+  "english": "English"
+}

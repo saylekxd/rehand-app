@@ -1,0 +1,20 @@
+{
+  "title": "Notifications",
+  "saved": "Notification settings saved",
+  "exerciseReminders": "Exercise reminders",
+  "dailyReminders": "Daily reminders",
+  "dailyRemindersDesc": "Get exercise reminders",
+  "reminderTime": "Reminder time",
+  "reminderDays": "Reminder days",
+  "progress": "Progress notifications",
+  "dailyGoals": "Daily goals",
+  "dailyGoalsDesc": "Notify when you hit goals",
+  "weeklyProgress": "Weekly progress",
+  "weeklyProgressDesc": "Weekly summary",
+  "streaks": "Exercise streaks",
+  "streaksDesc": "Remind to keep your streak",
+  "achievements": "Achievements",
+  "achievementsDesc": "Notify about unlocked achievements",
+  "save": "Save",
+  "weekdaysShort": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+}

@@ -13,25 +13,14 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { OnboardingData } from '@/types';
 import { Calendar, User, Phone, Target, Activity, CheckCircle } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
-const medicalConditions = [
-  'Bóle pleców',
-  'Problemy z szyją',
-  'Bóle stawów',
-  'Kontuzje sportowe',
-  'Brak przeciwwskazań',
-];
+const medicalConditionsPL = ['Bóle pleców','Problemy z szyją','Bóle stawów','Kontuzje sportowe','Brak przeciwwskazań'];
 
-const fitnessGoals = [
-  'Zmniejszenie bólu',
-  'Poprawa mobilności',
-  'Wzmocnienie mięśni',
-  'Poprawa postawy',
-  'Profilaktyka kontuzji',
-  'Ogólna sprawność',
-];
+const fitnessGoalsPL = ['Zmniejszenie bólu','Poprawa mobilności','Wzmocnienie mięśni','Poprawa postawy','Profilaktyka kontuzji','Ogólna sprawność'];
 
 export default function OnboardingScreen() {
+  const { t } = useTranslation(['onboarding', 'common']);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const { completeOnboarding } = useAuth();
@@ -46,6 +35,10 @@ export default function OnboardingScreen() {
     fitness_level: 'beginner',
     goals: [],
   });
+
+  // i18n-driven lists (fallback to PL arrays if i18n not loaded yet)
+  const medicalConditionsList = (t('onboarding:issues', { returnObjects: true }) as unknown as string[]) || medicalConditionsPL;
+  const fitnessGoalsList = (t('onboarding:goalItems', { returnObjects: true }) as unknown as string[]) || fitnessGoalsPL;
 
   const handleInputChange = (field: keyof OnboardingData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -73,20 +66,20 @@ export default function OnboardingScreen() {
     const { error } = await completeOnboarding(formData);
     
     if (error) {
-      Alert.alert('Błąd', 'Wystąpił problem podczas zapisywania danych');
+      Alert.alert(t('common:error'), t('onboarding:error'));
     }
     setLoading(false);
   };
 
   const renderStep1 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Podstawowe informacje</Text>
+      <Text style={styles.stepTitle}>{t('onboarding:basicInfo')}</Text>
       
       <View style={styles.inputContainer}>
         <User size={20} color="#6B7280" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
-          placeholder="Imię"
+          placeholder={t('onboarding:firstName')}
           value={formData.first_name}
           onChangeText={(value) => handleInputChange('first_name', value)}
           autoCapitalize="words"
@@ -98,7 +91,7 @@ export default function OnboardingScreen() {
         <User size={20} color="#6B7280" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
-          placeholder="Nazwisko"
+          placeholder={t('onboarding:lastName')}
           value={formData.last_name}
           onChangeText={(value) => handleInputChange('last_name', value)}
           autoCapitalize="words"
@@ -110,7 +103,7 @@ export default function OnboardingScreen() {
         <Calendar size={20} color="#6B7280" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
-          placeholder="Data urodzenia (YYYY-MM-DD)"
+          placeholder={t('onboarding:dob')}
           value={formData.date_of_birth}
           onChangeText={(value) => handleInputChange('date_of_birth', value)}
           placeholderTextColor="#9CA3AF"
@@ -121,7 +114,7 @@ export default function OnboardingScreen() {
         <Phone size={20} color="#6B7280" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
-          placeholder="Numer telefonu (opcjonalnie)"
+          placeholder={t('onboarding:phone')}
           value={formData.phone}
           onChangeText={(value) => handleInputChange('phone', value)}
           keyboardType="phone-pad"
@@ -129,12 +122,12 @@ export default function OnboardingScreen() {
         />
       </View>
 
-      <Text style={styles.sectionTitle}>Płeć</Text>
+      <Text style={styles.sectionTitle}>{t('onboarding:gender')}</Text>
       <View style={styles.genderContainer}>
         {[
-          { key: 'male', label: 'Mężczyzna' },
-          { key: 'female', label: 'Kobieta' },
-          { key: 'other', label: 'Inne' },
+          { key: 'male', label: t('onboarding:male') },
+          { key: 'female', label: t('onboarding:female') },
+          { key: 'other', label: t('onboarding:other') },
         ].map((option) => (
           <TouchableOpacity
             key={option.key}
@@ -158,18 +151,16 @@ export default function OnboardingScreen() {
 
   const renderStep2 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Stan zdrowia</Text>
-      <Text style={styles.stepSubtitle}>Wybierz swoje problemy zdrowotne</Text>
+      <Text style={styles.stepTitle}>{t('onboarding:medical')}</Text>
+      <Text style={styles.stepSubtitle}>{t('onboarding:pickIssues')}</Text>
       
       {/* Medical Disclaimer */}
       <View style={styles.disclaimerBox}>
-        <Text style={styles.disclaimerTitle}>⚠️ Ważne ostrzeżenie medyczne</Text>
-        <Text style={styles.disclaimerText}>
-          Ta aplikacja nie zastępuje konsultacji lekarskiej. Przed rozpoczęciem jakichkolwiek ćwiczeń rehabilitacyjnych skonsultuj się z lekarzem lub fizjoterapeutą. W przypadku bólu lub dyskomfortu natychmiast przerwij ćwiczenia.
-        </Text>
+        <Text style={styles.disclaimerTitle}>⚠️ {t('onboarding:disclaimerTitle')}</Text>
+        <Text style={styles.disclaimerText}>{t('onboarding:disclaimerText')}</Text>
       </View>
       
-      {medicalConditions.map((condition) => (
+      {medicalConditionsList.map((condition) => (
         <TouchableOpacity
           key={condition}
           style={[
@@ -195,13 +186,13 @@ export default function OnboardingScreen() {
 
   const renderStep3 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Poziom aktywności</Text>
-      <Text style={styles.stepSubtitle}>Jaki jest Twój obecny poziom sprawności?</Text>
+      <Text style={styles.stepTitle}>{t('onboarding:activityLevel')}</Text>
+      <Text style={styles.stepSubtitle}>{t('onboarding:whatLevel')}</Text>
       
       {[
-        { key: 'beginner', label: 'Początkujący', desc: 'Rzadko ćwiczę lub dopiero zaczynam' },
-        { key: 'intermediate', label: 'Średniozaawansowany', desc: 'Ćwiczę regularnie, 2-3 razy w tygodniu' },
-        { key: 'advanced', label: 'Zaawansowany', desc: 'Ćwiczę intensywnie, ponad 4 razy w tygodniu' },
+        { key: 'beginner', label: t('onboarding:beginner'), desc: t('onboarding:beginnerDesc') },
+        { key: 'intermediate', label: t('onboarding:intermediate'), desc: t('onboarding:intermediateDesc') },
+        { key: 'advanced', label: t('onboarding:advanced'), desc: t('onboarding:advancedDesc') },
       ].map((level) => (
         <TouchableOpacity
           key={level.key}
@@ -231,10 +222,10 @@ export default function OnboardingScreen() {
 
   const renderStep4 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Twoje cele</Text>
-      <Text style={styles.stepSubtitle}>Co chcesz osiągnąć?</Text>
+      <Text style={styles.stepTitle}>{t('onboarding:goals')}</Text>
+      <Text style={styles.stepSubtitle}>{t('onboarding:whatGoals')}</Text>
       
-      {fitnessGoals.map((goal) => (
+      {fitnessGoalsList.map((goal) => (
         <TouchableOpacity
           key={goal}
           style={[
@@ -261,12 +252,12 @@ export default function OnboardingScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Konfiguracja profilu</Text>
+        <Text style={styles.title}>{t('onboarding:basicInfo')}</Text>
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: `${(step / 4) * 100}%` }]} />
           </View>
-          <Text style={styles.progressText}>{step} z 4</Text>
+          <Text style={styles.progressText}>{step} / 4</Text>
         </View>
       </View>
 
@@ -283,7 +274,7 @@ export default function OnboardingScreen() {
             style={styles.backButton}
             onPress={() => setStep(step - 1)}
           >
-            <Text style={styles.backButtonText}>Wstecz</Text>
+            <Text style={styles.backButtonText}>{t('onboarding:back')}</Text>
           </TouchableOpacity>
         )}
         
@@ -295,9 +286,7 @@ export default function OnboardingScreen() {
           {loading ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text style={styles.nextButtonText}>
-              {step === 4 ? 'Zakończ' : 'Dalej'}
-            </Text>
+            <Text style={styles.nextButtonText}>{step === 4 ? t('onboarding:finish') : t('onboarding:next')}</Text>
           )}
         </TouchableOpacity>
       </View>

@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react-native';
 
 interface RegisterScreenProps {
@@ -19,6 +20,7 @@ interface RegisterScreenProps {
 }
 
 export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps) {
+  const { t } = useTranslation(['auth']);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,17 +33,17 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      Alert.alert('Błąd', 'Proszę wypełnić wszystkie pola');
+      Alert.alert('Error', 'Please fill all fields');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Błąd', 'Hasła nie są identyczne');
+      Alert.alert('Error', t('auth:passwordsNotMatch'));
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Błąd', 'Hasło musi mieć co najmniej 6 znaków');
+      Alert.alert('Error', t('auth:passwordTooShort'));
       return;
     }
 
@@ -52,13 +54,9 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
     });
     
     if (error) {
-      Alert.alert('Błąd rejestracji', error.message);
+      Alert.alert('Registration error', error.message);
     } else {
-      Alert.alert(
-        'Sukces!',
-        'Konto zostało utworzone. Sprawdź email w celu weryfikacji.',
-        [{ text: 'OK', onPress: onSwitchToLogin }]
-      );
+      Alert.alert('Success!', t('auth:registrationSuccess'), [{ text: 'OK', onPress: onSwitchToLogin }]);
     }
     setLoading(false);
   };
@@ -71,8 +69,8 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
       >
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.title}>Utwórz konto</Text>
-            <Text style={styles.subtitle}>Rozpocznij swoją podróż do zdrowia</Text>
+            <Text style={styles.title}>{t('auth:createAccount')}</Text>
+            <Text style={styles.subtitle}>{t('auth:startJourney')}</Text>
           </View>
 
           <View style={styles.form}>
@@ -81,7 +79,7 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
                 <User size={20} color="#6B7280" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Imię"
+                  placeholder={t('auth:firstName')}
                   value={firstName}
                   onChangeText={setFirstName}
                   autoCapitalize="words"
@@ -93,7 +91,7 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
                 <User size={20} color="#6B7280" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Nazwisko"
+                  placeholder={t('auth:lastName')}
                   value={lastName}
                   onChangeText={setLastName}
                   autoCapitalize="words"
@@ -106,7 +104,7 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
               <Mail size={20} color="#6B7280" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                  placeholder={t('auth:email')}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -120,7 +118,7 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
               <Lock size={20} color="#6B7280" style={styles.inputIcon} />
               <TextInput
                 style={[styles.input, styles.passwordInput]}
-                placeholder="Hasło"
+                placeholder={t('auth:password')}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
@@ -144,7 +142,7 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
               <Lock size={20} color="#6B7280" style={styles.inputIcon} />
               <TextInput
                 style={[styles.input, styles.passwordInput]}
-                placeholder="Potwierdź hasło"
+                placeholder={t('auth:confirmPassword')}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry={!showConfirmPassword}
@@ -172,15 +170,15 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
               {loading ? (
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
-                <Text style={styles.registerButtonText}>Utwórz konto</Text>
+                <Text style={styles.registerButtonText}>{t('auth:createAccount')}</Text>
               )}
             </TouchableOpacity>
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Masz już konto?</Text>
+            <Text style={styles.footerText}>{t('auth:haveAccount')}</Text>
             <TouchableOpacity onPress={onSwitchToLogin}>
-              <Text style={styles.loginLink}>Zaloguj się</Text>
+              <Text style={styles.loginLink}>{t('auth:login')}</Text>
             </TouchableOpacity>
           </View>
         </View>

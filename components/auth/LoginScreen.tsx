@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 
 interface LoginScreenProps {
@@ -19,6 +20,7 @@ interface LoginScreenProps {
 }
 
 export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
+  const { t } = useTranslation(['auth']);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,7 +29,7 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Błąd', 'Proszę wypełnić wszystkie pola');
+      Alert.alert('Error', 'Please fill all fields');
       return;
     }
 
@@ -35,7 +37,7 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
     const { error } = await signIn(email, password);
     
     if (error) {
-      Alert.alert('Błąd logowania', error.message);
+      Alert.alert('Login error', error.message);
     }
     setLoading(false);
   };
@@ -48,8 +50,8 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
       >
         <View style={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.title}>Witaj ponownie!</Text>
-            <Text style={styles.subtitle}>Zaloguj się do swojego konta</Text>
+            <Text style={styles.title}>{t('auth:welcomeBack')}</Text>
+            <Text style={styles.subtitle}>{t('auth:signInSubtitle')}</Text>
           </View>
 
           <View style={styles.form}>
@@ -57,7 +59,7 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
               <Mail size={20} color="#6B7280" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+              placeholder={t('auth:email')}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -71,7 +73,7 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
               <Lock size={20} color="#6B7280" style={styles.inputIcon} />
               <TextInput
                 style={[styles.input, styles.passwordInput]}
-                placeholder="Hasło"
+              placeholder={t('auth:password')}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
@@ -99,19 +101,19 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
               {loading ? (
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
-                <Text style={styles.loginButtonText}>Zaloguj się</Text>
+                <Text style={styles.loginButtonText}>{t('auth:signIn')}</Text>
               )}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>Zapomniałeś hasła?</Text>
+              <Text style={styles.forgotPasswordText}>{t('auth:forgotPassword')}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Nie masz konta?</Text>
+            <Text style={styles.footerText}>{t('auth:noAccount')}</Text>
             <TouchableOpacity onPress={onSwitchToRegister}>
-              <Text style={styles.registerLink}>Zarejestruj się</Text>
+              <Text style={styles.registerLink}>{t('auth:register')}</Text>
             </TouchableOpacity>
           </View>
         </View>

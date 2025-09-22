@@ -7,6 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import { Settings, Bell, Shield, CircleHelp as HelpCircle, LogOut } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface MenuItem {
   id: string;
@@ -31,51 +32,52 @@ export default function MenuSection({
   onHelpPress,
   onLogout,
 }: MenuSectionProps) {
+  const { t } = useTranslation(['profile']);
   const menuItems: MenuItem[] = [
     { 
       id: '1', 
-      title: 'Ustawienia', 
+      title: t('profile:settings'), 
       icon: Settings, 
-      subtitle: 'Personalizacja aplikacji',
+      subtitle: t('profile:settingsSubtitle'),
       onPress: onSettingsPress
     },
     { 
       id: '2', 
-      title: 'Powiadomienia', 
+      title: t('profile:notifications'), 
       icon: Bell, 
-      subtitle: 'Zarządzaj przypomnieniami',
+      subtitle: t('profile:notificationsSubtitle'),
       onPress: onNotificationsPress
     },
     { 
       id: '3', 
-      title: 'Prywatność', 
+      title: t('profile:privacy'), 
       icon: Shield, 
-      subtitle: 'Bezpieczeństwo danych',
+      subtitle: t('profile:privacySubtitle'),
       onPress: onPrivacyPress
     },
     { 
       id: '4', 
-      title: 'Pomoc', 
+      title: t('profile:help'), 
       icon: HelpCircle, 
-      subtitle: 'Wsparcie i FAQ',
+      subtitle: t('profile:helpSubtitle'),
       onPress: onHelpPress
     },
   ];
 
   const handleLogout = () => {
     Alert.alert(
-      'Wylogowanie',
-      'Czy na pewno chcesz się wylogować?',
+      t('profile:logoutTitle'),
+      t('profile:logoutConfirm'),
       [
-        { text: 'Anuluj', style: 'cancel' },
-        { text: 'Wyloguj', style: 'destructive', onPress: onLogout },
+        { text: t('common:cancel'), style: 'cancel' },
+        { text: t('profile:logout'), style: 'destructive', onPress: onLogout },
       ]
     );
   };
 
   return (
     <View style={styles.menuContainer}>
-      <Text style={styles.sectionTitle}>Ustawienia</Text>
+      <Text style={styles.sectionTitle}>{t('profile:settings')}</Text>
       {menuItems.map((item) => (
         <TouchableOpacity key={item.id} style={styles.menuItem} onPress={item.onPress}>
           <View style={styles.menuItemLeft}>
@@ -98,8 +100,8 @@ export default function MenuSection({
             <LogOut size={20} color="#EF4444" />
           </View>
           <View style={styles.menuTextContainer}>
-            <Text style={[styles.menuItemTitle, styles.logoutText]}>Wyloguj się</Text>
-            <Text style={styles.menuItemSubtitle}>Zakończ sesję</Text>
+            <Text style={[styles.menuItemTitle, styles.logoutText]}>{t('profile:logout')}</Text>
+            <Text style={styles.menuItemSubtitle}>{t('profile:logoutSubtitle')}</Text>
           </View>
         </View>
         <Text style={styles.menuItemArrow}>›</Text>

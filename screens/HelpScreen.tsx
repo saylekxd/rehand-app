@@ -10,6 +10,7 @@ import {
   Linking,
 } from 'react-native';
 import { X, ChevronDown, ChevronRight, Mail, MessageCircle, Phone, ExternalLink } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface HelpScreenProps {
   onClose: () => void;
@@ -23,41 +24,42 @@ interface FAQItem {
 }
 
 export default function HelpScreen({ onClose }: HelpScreenProps) {
+  const { t } = useTranslation(['help']);
   const [faqItems, setFaqItems] = useState<FAQItem[]>([
     {
       id: '1',
-      question: 'Jak rozpocząć pierwsze ćwiczenie?',
-      answer: 'Przejdź do zakładki "Główna" i wybierz jedno z proponowanych ćwiczeń. Każde ćwiczenie zawiera szczegółowe instrukcje i ilustracje, które pomogą Ci wykonać je prawidłowo.',
+      question: t('help:q1'),
+      answer: t('help:a1'),
       expanded: false,
     },
     {
       id: '2',
-      question: 'Jak mogę zmienić swój tygodniowy cel?',
-      answer: 'Możesz zmienić swój tygodniowy cel w sekcji "Profil" > "Edytuj profil". Ustaw liczbę minut, którą chcesz ćwiczyć każdego tygodnia.',
+      question: t('help:q2'),
+      answer: t('help:a2'),
       expanded: false,
     },
     {
       id: '3',
-      question: 'Co to są osiągnięcia i jak je zdobyć?',
-      answer: 'Osiągnięcia to nagrody za regularność i postępy w ćwiczeniach. Możesz je zdobyć wykonując ćwiczenia, utrzymując serię dni z rzędu, lub osiągając cele czasowe. Sprawdź swoją listę osiągnięć w profilu.',
+      question: t('help:q3'),
+      answer: t('help:a3'),
       expanded: false,
     },
     {
       id: '4',
-      question: 'Czy mogę ćwiczyć z problemami zdrowotnymi?',
-      answer: 'Aplikacja oferuje ćwiczenia dostosowane do różnych poziomów zaawansowania i ograniczeń zdrowotnych. Zawsze skonsultuj się z lekarzem przed rozpoczęciem nowego programu ćwiczeń, szczególnie jeśli masz problemy zdrowotne.',
+      question: t('help:q4'),
+      answer: t('help:a4'),
       expanded: false,
     },
     {
       id: '5',
-      question: 'Jak długo powinno trwać każde ćwiczenie?',
-      answer: 'Czas trwania ćwiczeń różni się w zależności od typu i poziomu trudności. Większość ćwiczeń trwa od 3 do 15 minut. Wybierz ćwiczenia odpowiednie do ilości czasu, który masz dostępny.',
+      question: t('help:q5'),
+      answer: t('help:a5'),
       expanded: false,
     },
     {
       id: '6',
-      question: 'Jak skonfigurować przypomnienia?',
-      answer: 'Przejdź do "Profil" > "Ustawienia" > "Powiadomienia" aby skonfigurować przypomnienia o ćwiczeniach. Możesz wybrać godzinę i dni tygodnia, kiedy chcesz otrzymywać powiadomienia.',
+      question: t('help:q6'),
+      answer: t('help:a6'),
       expanded: false,
     },
   ]);
@@ -72,28 +74,28 @@ export default function HelpScreen({ onClose }: HelpScreenProps) {
     switch (method) {
       case 'email':
         Alert.alert(
-          'Kontakt email',
-          'Otworzysz aplikację email aby napisać do nas?',
+          t('help:contactEmailTitle'),
+          t('help:contactEmailText'),
           [
-            { text: 'Anuluj', style: 'cancel' },
+            { text: t('common:cancel'), style: 'cancel' },
             { 
-              text: 'Otwórz', 
+              text: t('help:open'), 
               onPress: () => Linking.openURL('mailto:support@rehandapp.com?subject=Pomoc%20-%20ReHand%20App')
             }
           ]
         );
         break;
       case 'chat':
-        Alert.alert('Chat online', 'Funkcja chatu będzie dostępna wkrótce!');
+        Alert.alert(t('help:chat'), t('help:chatSoon'));
         break;
       case 'phone':
         Alert.alert(
-          'Telefon',
-          'Zadzwonić na linię wsparcia?',
+          t('help:phone'),
+          t('help:callSupport'),
           [
-            { text: 'Anuluj', style: 'cancel' },
+            { text: t('common:cancel'), style: 'cancel' },
             { 
-              text: 'Zadzwoń', 
+              text: t('help:call'), 
               onPress: () => Linking.openURL('tel:+48123456789')
             }
           ]
@@ -112,14 +114,14 @@ export default function HelpScreen({ onClose }: HelpScreenProps) {
         <TouchableOpacity style={styles.headerButton} onPress={onClose}>
           <X size={24} color="#6B7280" />
         </TouchableOpacity>
-        <Text style={styles.title}>Pomoc</Text>
+        <Text style={styles.title}>{t('help:title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Contact Support */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Skontaktuj się z nami</Text>
+          <Text style={styles.cardTitle}>{t('help:contactUs')}</Text>
           
           <TouchableOpacity style={styles.contactItem} onPress={() => handleContact('email')}>
             <View style={styles.contactLeft}>
@@ -140,8 +142,8 @@ export default function HelpScreen({ onClose }: HelpScreenProps) {
                 <MessageCircle size={20} color="#10B981" />
               </View>
               <View>
-                <Text style={styles.contactTitle}>Chat online</Text>
-                <Text style={styles.contactDescription}>Szybka pomoc w czasie rzeczywistym</Text>
+                <Text style={styles.contactTitle}>{t('help:chat')}</Text>
+                <Text style={styles.contactDescription}>{t('help:chatDesc')}</Text>
               </View>
             </View>
             <ChevronRight size={20} color="#9CA3AF" />
@@ -153,7 +155,7 @@ export default function HelpScreen({ onClose }: HelpScreenProps) {
                 <Phone size={20} color="#F59E0B" />
               </View>
               <View>
-                <Text style={styles.contactTitle}>Telefon</Text>
+                <Text style={styles.contactTitle}>{t('help:phone')}</Text>
                 <Text style={styles.contactDescription}>+48 123 456 789</Text>
               </View>
             </View>
@@ -163,7 +165,7 @@ export default function HelpScreen({ onClose }: HelpScreenProps) {
 
         {/* FAQ Section */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Często zadawane pytania</Text>
+          <Text style={styles.cardTitle}>{t('help:faq')}</Text>
           
           {faqItems.map((item, index) => (
             <View key={item.id} style={[styles.faqItem, index === faqItems.length - 1 && styles.lastItem]}>
@@ -190,20 +192,20 @@ export default function HelpScreen({ onClose }: HelpScreenProps) {
 
         {/* App Information */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Informacje o aplikacji</Text>
+          <Text style={styles.cardTitle}>{t('help:appInfo')}</Text>
           
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Wersja aplikacji</Text>
+            <Text style={styles.infoLabel}>{t('help:appVersion')}</Text>
             <Text style={styles.infoValue}>1.0.0</Text>
           </View>
           
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Ostatnia aktualizacja</Text>
+            <Text style={styles.infoLabel}>{t('help:lastUpdate')}</Text>
             <Text style={styles.infoValue}>15 grudnia 2024</Text>
           </View>
           
           <TouchableOpacity style={[styles.infoItem, styles.lastItem]} onPress={handleOpenWebsite}>
-            <Text style={styles.infoLabel}>Strona internetowa</Text>
+            <Text style={styles.infoLabel}>{t('help:website')}</Text>
             <View style={styles.websiteLink}>
               <Text style={styles.linkText}>rehandapp.com</Text>
               <ExternalLink size={16} color="#2563EB" />
@@ -213,26 +215,26 @@ export default function HelpScreen({ onClose }: HelpScreenProps) {
 
         {/* Quick Tips */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Szybkie wskazówki</Text>
+          <Text style={styles.cardTitle}>{t('help:quickTips')}</Text>
           
           <View style={styles.tipItem}>
-            <Text style={styles.tipTitle}>💡 Regularne ćwiczenia</Text>
+            <Text style={styles.tipTitle}>💡 {t('help:tip1Title')}</Text>
             <Text style={styles.tipDescription}>
-              Lepiej ćwiczyć 10 minut dziennie niż godzinę raz w tygodniu. Regularne, krótkie sesje przynoszą lepsze rezultaty.
+              {t('help:tip1Desc')}
             </Text>
           </View>
 
           <View style={styles.tipItem}>
-            <Text style={styles.tipTitle}>🎯 Ustaw realistyczne cele</Text>
+            <Text style={styles.tipTitle}>🎯 {t('help:tip2Title')}</Text>
             <Text style={styles.tipDescription}>
-              Zacznij od małych celów i stopniowo je zwiększaj. To pomoże Ci utrzymać motywację i osiągnąć długoterminowy sukces.
+              {t('help:tip2Desc')}
             </Text>
           </View>
 
           <View style={[styles.tipItem, styles.lastItem]}>
-            <Text style={styles.tipTitle}>📱 Użyj powiadomień</Text>
+            <Text style={styles.tipTitle}>📱 {t('help:tip3Title')}</Text>
             <Text style={styles.tipDescription}>
-              Skonfiguruj przypomnienia o ćwiczeniach w dogodnych dla Ciebie godzinach. To pomoże Ci wypracować stały nawyk.
+              {t('help:tip3Desc')}
             </Text>
           </View>
         </View>

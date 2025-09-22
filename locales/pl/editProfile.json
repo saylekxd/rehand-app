@@ -1,0 +1,50 @@
+{
+  "title": "Edytuj profil",
+  "saveSuccess": "Profil został zaktualizowany",
+  "saveError": "Nie udało się zaktualizować profilu",
+  "unexpectedError": "Wystąpił nieoczekiwany błąd",
+  "requiredName": "Imię i nazwisko są wymagane",
+  "galleryAccessNeeded": "Potrzebujemy dostępu do galerii",
+  "basicInfo": "Podstawowe informacje",
+  "firstNameLabel": "Imię *",
+  "firstNamePlaceholder": "Wprowadź imię",
+  "lastNameLabel": "Nazwisko *",
+  "lastNamePlaceholder": "Wprowadź nazwisko",
+  "phoneLabel": "Telefon",
+  "phonePlaceholder": "Wprowadź numer telefonu",
+  "dobLabel": "Data urodzenia",
+  "dobPlaceholder": "Wybierz datę",
+  "genderTitle": "Płeć",
+  "levelTitle": "Poziom zaawansowania",
+  "weeklyGoalLabel": "Tygodniowy cel (minuty)",
+  "weeklyGoalPlaceholder": "120",
+  "goalsTitle": "Cele treningowe",
+  "conditionsTitle": "Uwagi medyczne",
+  "genders": [
+    { "value": "male", "label": "Mężczyzna" },
+    { "value": "female", "label": "Kobieta" },
+    { "value": "other", "label": "Inne" }
+  ],
+  "levels": [
+    { "value": "beginner", "label": "Początkujący" },
+    { "value": "intermediate", "label": "Średniozaawansowany" },
+    { "value": "advanced", "label": "Zaawansowany" }
+  ],
+  "commonGoals": [
+    "Redukcja bólu",
+    "Poprawa ruchomości",
+    "Wzmocnienie mięśni",
+    "Poprawa postawy",
+    "Relaks i odprężenie",
+    "Powrót do sportu",
+    "Ogólna kondycja"
+  ],
+  "commonConditions": [
+    "Ból pleców",
+    "Ból szyi",
+    "Problemy z kolanami",
+    "Artretyzm",
+    "Fibromialgia",
+    "Skolioza"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "loading": "Ładowanie profilu…",
+  "settings": "Ustawienia",
+  "settingsSubtitle": "Personalizacja aplikacji",
+  "notifications": "Powiadomienia",
+  "notificationsSubtitle": "Zarządzaj przypomnieniami",
+  "privacy": "Prywatność",
+  "privacySubtitle": "Bezpieczeństwo danych",
+  "help": "Pomoc",
+  "helpSubtitle": "Wsparcie i FAQ",
+  "logout": "Wyloguj się",
+  "logoutSubtitle": "Zakończ sesję",
+  "logoutTitle": "Wylogowanie",
+  "logoutConfirm": "Czy na pewno chcesz się wylogować?"
+}

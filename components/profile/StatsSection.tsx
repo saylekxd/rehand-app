@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Trophy, Calendar, TrendingUp, RefreshCw } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface UserStats {
   completedExercises?: number;
@@ -22,8 +23,9 @@ interface StatsSectionProps {
 }
 
 export default function StatsSection({ stats, loading, error, onRetry }: StatsSectionProps) {
+  const { t } = useTranslation(['profileStats']);
   const formatTime = (minutes: number) => {
-    if (minutes < 60) return `${minutes}min`;
+    if (minutes < 60) return `${minutes}${t('profileStats:minuteShort')}`;
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
@@ -31,19 +33,19 @@ export default function StatsSection({ stats, loading, error, onRetry }: StatsSe
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Twoje postępy</Text>
+      <Text style={styles.sectionTitle}>{t('profileStats:sectionTitle')}</Text>
       
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#2563EB" />
-          <Text style={styles.loadingText}>Ładowanie statystyk...</Text>
+          <Text style={styles.loadingText}>{t('profileStats:loading')}</Text>
         </View>
       ) : error ? (
         <View style={styles.errorContainer}>
           <RefreshCw size={32} color="#EF4444" />
-          <Text style={styles.errorText}>Nie udało się załadować statystyk</Text>
+          <Text style={styles.errorText}>{t('profileStats:loadError')}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-            <Text style={styles.retryButtonText}>Spróbuj ponownie</Text>
+            <Text style={styles.retryButtonText}>{t('profileStats:retry')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -53,7 +55,7 @@ export default function StatsSection({ stats, loading, error, onRetry }: StatsSe
               <Trophy size={20} color="#F59E0B" />
             </View>
             <Text style={styles.statValue}>{stats?.completedExercises || 0}</Text>
-            <Text style={styles.statLabel}>Ukończone{'\n'}ćwiczenia</Text>
+            <Text style={styles.statLabel}>{t('profileStats:completedExercises')}</Text>
           </View>
           
           <View style={[styles.statCard, styles.streakCard]}>
@@ -61,7 +63,7 @@ export default function StatsSection({ stats, loading, error, onRetry }: StatsSe
               <Calendar size={20} color="#10B981" />
             </View>
             <Text style={styles.statValue}>{stats?.streakDays || 0}</Text>
-            <Text style={styles.statLabel}>Dni z rzędu</Text>
+            <Text style={styles.statLabel}>{t('profileStats:streakDays')}</Text>
           </View>
           
           <View style={[styles.statCard, styles.timeCard]}>
@@ -69,9 +71,9 @@ export default function StatsSection({ stats, loading, error, onRetry }: StatsSe
               <TrendingUp size={20} color="#2563EB" />
             </View>
             <Text style={styles.statValue}>
-              {stats?.totalMinutes ? formatTime(stats.totalMinutes) : '0min'}
+              {stats?.totalMinutes ? formatTime(stats.totalMinutes) : `0${t('profileStats:minuteShort')}`}
             </Text>
-            <Text style={styles.statLabel}>Czas{'\n'}ćwiczeń</Text>
+            <Text style={styles.statLabel}>{t('profileStats:exerciseTime')}</Text>
           </View>
         </View>
       )}

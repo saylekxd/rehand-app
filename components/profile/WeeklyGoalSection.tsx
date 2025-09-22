@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Target, CheckCircle, Clock } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 interface WeeklyGoalSectionProps {
   weeklyGoal: number;
@@ -13,6 +14,7 @@ interface WeeklyGoalSectionProps {
 }
 
 export default function WeeklyGoalSection({ weeklyGoal, loading }: WeeklyGoalSectionProps) {
+  const { t } = useTranslation(['profileStats']);
   const progress = Math.min(weeklyGoal || 0, 100);
   const isCompleted = progress >= 100;
   const isNearCompletion = progress >= 80;
@@ -30,7 +32,7 @@ export default function WeeklyGoalSection({ weeklyGoal, loading }: WeeklyGoalSec
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Tygodniowy cel</Text>
+      <Text style={styles.sectionTitle}>{t('profileStats:weeklyGoal', 'Tygodniowy cel')}</Text>
       
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -41,7 +43,7 @@ export default function WeeklyGoalSection({ weeklyGoal, loading }: WeeklyGoalSec
           <View style={styles.goalHeader}>
             <View style={styles.goalTitleContainer}>
               {getProgressIcon()}
-              <Text style={styles.goalTitle}>Postęp tego tygodnia</Text>
+              <Text style={styles.goalTitle}>{t('profileStats:weeklyProgress', 'Postęp tego tygodnia')}</Text>
             </View>
             <View style={styles.percentageContainer}>
               <Text style={[styles.goalPercentage, { color: getProgressColor() }]}>
@@ -72,14 +74,14 @@ export default function WeeklyGoalSection({ weeklyGoal, loading }: WeeklyGoalSec
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Clock size={16} color="#6B7280" />
-              <Text style={styles.statText}>120 min</Text>
-              <Text style={styles.statSubtext}>cel tygodniowy</Text>
+              <Text style={styles.statText}>120 {t('profileStats:minuteShort')}</Text>
+              <Text style={styles.statSubtext}>{t('profileStats:weeklyGoalTarget', 'cel tygodniowy')}</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Target size={16} color="#6B7280" />
-              <Text style={styles.statText}>{Math.round((progress / 100) * 120)} min</Text>
-              <Text style={styles.statSubtext}>wykonane</Text>
+              <Text style={styles.statText}>{Math.round((progress / 100) * 120)} {t('profileStats:minuteShort')}</Text>
+              <Text style={styles.statSubtext}>{t('profileStats:done', 'wykonane')}</Text>
             </View>
           </View>
         </View>

@@ -27,6 +27,7 @@ import { Exercise } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { ExercisesService } from '@/services/exercises';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 interface ExerciseDetailScreenProps {
   exerciseId: string;
@@ -35,12 +36,13 @@ interface ExerciseDetailScreenProps {
 
 export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDetailScreenProps) {
   const router = useRouter();
+  const { t } = useTranslation(['exercises']);
   const { exercise, loading, error, refetch } = useExercise(exerciseId);
   const { user } = useAuth();
   const [isStarting, setIsStarting] = useState(false);
 
   const formatDuration = (minutes: number): string => {
-    if (minutes < 60) return `${minutes} min`;
+    if (minutes < 60) return `${minutes} ${t('exercises:minutes')}`;
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
@@ -86,12 +88,12 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
           <TouchableOpacity style={styles.headerButton} onPress={onClose}>
             <X size={24} color="#6B7280" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Szczegóły ćwiczenia</Text>
+      <Text style={styles.headerTitle}>{t('exercises:details', 'Szczegóły ćwiczenia')}</Text>
           <View style={styles.headerSpacer} />
         </View>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#2563EB" />
-          <Text style={styles.loadingText}>Ładowanie szczegółów ćwiczenia...</Text>
+          <Text style={styles.loadingText}>{t('exercises:loadingDetails', 'Ładowanie szczegółów ćwiczenia...')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -104,15 +106,13 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
           <TouchableOpacity style={styles.headerButton} onPress={onClose}>
             <X size={24} color="#6B7280" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Błąd</Text>
+          <Text style={styles.headerTitle}>{t('exercises:errorTitle', 'Błąd')}</Text>
           <View style={styles.headerSpacer} />
         </View>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>
-            {error || 'Nie udało się załadować szczegółów ćwiczenia'}
-          </Text>
+            <Text style={styles.errorText}>{error || t('exercises:loadError', 'Nie udało się załadować szczegółów ćwiczenia')}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={refetch}>
-            <Text style={styles.retryButtonText}>Spróbuj ponownie</Text>
+            <Text style={styles.retryButtonText}>{t('exercises:retry', 'Spróbuj ponownie')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -125,7 +125,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
         <TouchableOpacity style={styles.headerButton} onPress={onClose}>
           <X size={24} color="#6B7280" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Szczegóły ćwiczenia</Text>
+        <Text style={styles.headerTitle}>{t('exercises:details', 'Szczegóły ćwiczenia')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -158,7 +158,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
               <Clock size={20} color="#2563EB" />
             </View>
             <Text style={styles.statValue}>{formatDuration(exercise.duration_minutes)}</Text>
-            <Text style={styles.statLabel}>Czas trwania</Text>
+            <Text style={styles.statLabel}>{t('exercises:duration', 'Czas trwania')}</Text>
           </View>
 
           <View style={styles.statItem}>
@@ -166,7 +166,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
               <Target size={20} color="#10B981" />
             </View>
             <Text style={styles.statValue}>{exercise.category}</Text>
-            <Text style={styles.statLabel}>Kategoria</Text>
+            <Text style={styles.statLabel}>{t('exercises:category', 'Kategoria')}</Text>
           </View>
 
           <View style={styles.statItem}>
@@ -174,7 +174,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
               <Zap size={20} color="#F59E0B" />
             </View>
             <Text style={styles.statValue}>{translateDifficulty(exercise.difficulty)}</Text>
-            <Text style={styles.statLabel}>Trudność</Text>
+            <Text style={styles.statLabel}>{t('exercises:difficulty', 'Trudność')}</Text>
           </View>
         </View>
 
@@ -183,7 +183,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <CheckCircle size={20} color="#2563EB" />
-              <Text style={styles.cardTitle}>Instrukcje wykonania</Text>
+              <Text style={styles.cardTitle}>{t('exercises:instructions', 'Instrukcje wykonania')}</Text>
             </View>
             {exercise.instructions.map((instruction, index) => (
               <View key={index} style={styles.instructionItem}>
@@ -201,7 +201,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Heart size={20} color="#EF4444" />
-              <Text style={styles.cardTitle}>Zaangażowane mięśnie</Text>
+              <Text style={styles.cardTitle}>{t('exercises:muscles', 'Zaangażowane mięśnie')}</Text>
             </View>
             <View style={styles.tagsContainer}>
               {exercise.muscle_groups.map((muscle, index) => (
@@ -218,7 +218,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Dumbbell size={20} color="#6B7280" />
-              <Text style={styles.cardTitle}>Potrzebny sprzęt</Text>
+              <Text style={styles.cardTitle}>{t('exercises:equipment', 'Potrzebny sprzęt')}</Text>
             </View>
             <View style={styles.tagsContainer}>
               {exercise.equipment.map((item, index) => (
@@ -235,11 +235,11 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Dumbbell size={20} color="#10B981" />
-              <Text style={styles.cardTitle}>Sprzęt</Text>
+              <Text style={styles.cardTitle}>{t('exercises:equipment', 'Sprzęt')}</Text>
             </View>
             <View style={styles.noEquipmentContainer}>
               <CheckCircle size={24} color="#10B981" />
-              <Text style={styles.noEquipmentText}>Nie potrzebujesz żadnego sprzętu!</Text>
+              <Text style={styles.noEquipmentText}>{t('exercises:noEquipment', 'Nie potrzebujesz żadnego sprzętu!')}</Text>
             </View>
           </View>
         )}
@@ -259,7 +259,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
           ) : (
             <>
               <Play size={20} color="#FFFFFF" />
-              <Text style={styles.startButtonText}>Rozpocznij ćwiczenie</Text>
+              <Text style={styles.startButtonText}>{t('exercises:start', 'Rozpocznij ćwiczenie')}</Text>
               <ArrowRight size={20} color="#FFFFFF" />
             </>
           )}

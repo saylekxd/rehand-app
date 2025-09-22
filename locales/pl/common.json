@@ -1,0 +1,11 @@
+{
+  "appName": "ReHand",
+  "ok": "OK",
+  "cancel": "Anuluj",
+  "error": "Błąd",
+  "tabs": {
+    "exercises": "Ćwiczenia",
+    "aiTrainer": "AI Trener",
+    "profile": "Profil"
+  }
+}

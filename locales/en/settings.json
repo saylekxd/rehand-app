@@ -1,0 +1,20 @@
+{
+  "title": "Settings",
+  "saved": "Settings saved",
+  "appearance": "Appearance",
+  "darkMode": "Dark mode",
+  "darkModeDesc": "Switch to dark theme",
+  "sound": "Sound",
+  "appSounds": "App sounds",
+  "appSoundsDesc": "Enable interface sounds",
+  "language": "App language",
+  "dataSync": "Data & sync",
+  "autoSync": "Auto sync",
+  "autoSyncDesc": "Sync data in background",
+  "dataUsage": "Data usage",
+  "wifiOnly": "Wi‑Fi only",
+  "wifiAndCellular": "Wi‑Fi and cellular",
+  "save": "Save",
+  "polish": "Polish",
+  "english": "English"
+}
