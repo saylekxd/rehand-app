@@ -60,15 +60,7 @@
       <string>_expo._tcp.</string>
     </array>
     <key>NSCameraUsageDescription</key>
-    <string>Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym.</string>
-    <key>NSFaceIDUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Potrzebujemy dostępu do mikrofonu podczas nagrywania wideo do analizy ruchu.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your photos</string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Potrzebujemy możliwości zapisu do biblioteki zdjęć, aby zapisywać materiały treningowe.</string>
+    <string>Kamera służy wyłącznie do analizy ruchu w czasie ćwiczeń. Obraz nie jest nagrywany ani wysyłany poza urządzenie.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>

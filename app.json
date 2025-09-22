@@ -12,8 +12,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.saylekxd.rehand",
       "infoPlist": {
-        "NSCameraUsageDescription": "Potrzebujemy dostępu do kamery, aby analizować Twoje ćwiczenia w czasie rzeczywistym.",
-        "NSMicrophoneUsageDescription": "Potrzebujemy dostępu do mikrofonu podczas nagrywania wideo do analizy ruchu."
+        "NSCameraUsageDescription": "Kamera służy wyłącznie do analizy ruchu w czasie ćwiczeń. Obraz nie jest nagrywany ani wysyłany poza urządzenie."
       }
     },
     "web": {

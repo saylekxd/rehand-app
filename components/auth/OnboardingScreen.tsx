@@ -161,6 +161,14 @@ export default function OnboardingScreen() {
       <Text style={styles.stepTitle}>Stan zdrowia</Text>
       <Text style={styles.stepSubtitle}>Wybierz swoje problemy zdrowotne</Text>
       
+      {/* Medical Disclaimer */}
+      <View style={styles.disclaimerBox}>
+        <Text style={styles.disclaimerTitle}>⚠️ Ważne ostrzeżenie medyczne</Text>
+        <Text style={styles.disclaimerText}>
+          Ta aplikacja nie zastępuje konsultacji lekarskiej. Przed rozpoczęciem jakichkolwiek ćwiczeń rehabilitacyjnych skonsultuj się z lekarzem lub fizjoterapeutą. W przypadku bólu lub dyskomfortu natychmiast przerwij ćwiczenia.
+        </Text>
+      </View>
+      
       {medicalConditions.map((condition) => (
         <TouchableOpacity
           key={condition}
@@ -508,5 +516,25 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
+  },
+  disclaimerBox: {
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  disclaimerTitle: {
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    color: '#DC2626',
+    marginBottom: 8,
+  },
+  disclaimerText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    color: '#991B1B',
+    lineHeight: 20,
   },
 }); 
