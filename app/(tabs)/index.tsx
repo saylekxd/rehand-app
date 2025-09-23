@@ -100,7 +100,11 @@ export default function ExercisesTab() {
     <AuthWrapper>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>{t('exercises:library')}</Text>
+          <Image
+            source={require('@/assets/images/logotype-long.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>{t('exercises:pick')}</Text>
         </View>
 
@@ -247,6 +251,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: 24,
+  },
+  logo: {
+    width: 160,
+    height: 44,
+    marginBottom: 8,
+    marginLeft: -18,
   },
   title: {
     fontSize: 28,
