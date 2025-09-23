@@ -61,6 +61,8 @@
     </array>
     <key>NSCameraUsageDescription</key>
     <string>Kamera służy wyłącznie do analizy ruchu w czasie ćwiczeń. Obraz nie jest nagrywany ani wysyłany poza urządzenie.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app does not use your location. If prompted, you can deny; the app will still work.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
