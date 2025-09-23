@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +41,14 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
       Alert.alert('Login error', error.message);
     }
     setLoading(false);
+  };
+
+  const openPrivacyPolicy = () => {
+    Linking.openURL('https://rehand.org/privacy');
+  };
+
+  const openTermsOfUse = () => {
+    Linking.openURL('https://rehand.org/terms');
   };
 
   return (
@@ -115,6 +124,18 @@ export default function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
             <TouchableOpacity onPress={onSwitchToRegister}>
               <Text style={styles.registerLink}>{t('auth:register')}</Text>
             </TouchableOpacity>
+          </View>
+
+          <View style={styles.legalLinks}>
+            <View style={styles.legalLinksRow}>
+              <TouchableOpacity onPress={openPrivacyPolicy}>
+                <Text style={styles.legalLinkText}>Privacy Policy</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalSeparator}> • </Text>
+              <TouchableOpacity onPress={openTermsOfUse}>
+                <Text style={styles.legalLinkText}>Terms of Use</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -229,5 +250,24 @@ const styles = StyleSheet.create({
     color: '#2563EB',
     fontSize: 14,
     fontFamily: 'Inter-SemiBold',
+  },
+  legalLinks: {
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  legalLinksRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legalLinkText: {
+    color: '#9CA3AF',
+    fontSize: 12,
+    fontFamily: 'Inter-Regular',
+    textDecorationLine: 'underline',
+  },
+  legalSeparator: {
+    color: '#9CA3AF',
+    fontSize: 12,
+    fontFamily: 'Inter-Regular',
   },
 }); 
