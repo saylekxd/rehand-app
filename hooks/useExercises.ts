@@ -38,15 +38,15 @@ export function useExercises(): UseExercisesReturn {
 
       setExercises(exercisesResult.data || []);
       
-      // Add "Wszystkie" as first category, then unique categories from data
-      const allCategories = ['Wszystkie', ...(categoriesResult.data || [])];
+      // Add "All" as first category, then unique categories from data
+      const allCategories = ['All', ...(categoriesResult.data || [])];
       setCategories(allCategories);
 
     } catch (err) {
       console.error('Error in fetchExercises:', err);
       setError(err instanceof Error ? err.message : 'Wystąpił nieoczekiwany błąd');
       setExercises([]);
-      setCategories(['Wszystkie']);
+      setCategories(['All']);
     } finally {
       setLoading(false);
     }

@@ -50,9 +50,9 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
 
   const translateDifficulty = (difficulty: 'easy' | 'medium' | 'hard'): string => {
     switch (difficulty) {
-      case 'easy': return 'Łatwy';
-      case 'medium': return 'Średni';
-      case 'hard': return 'Trudny';
+      case 'easy': return t('exercises:easy');
+      case 'medium': return t('exercises:medium');
+      case 'hard': return t('exercises:hard');
       default: return difficulty;
     }
   };

@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 export default function ExercisesTab() {
   const { t } = useTranslation(['exercises']);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(t('exercises:all'));
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(null);
   const { exercises, categories, loading, error, refetch, applyFilters } = useExercises();
 
@@ -60,7 +60,7 @@ export default function ExercisesTab() {
   // Apply filters when search or category changes
   const handleFilter = useCallback(async () => {
     await applyFilters({
-      category: selectedCategory !== t('exercises:all') ? selectedCategory : undefined,
+      category: selectedCategory !== 'All' ? selectedCategory : undefined,
       searchQuery: searchQuery.trim() || undefined,
     });
   }, [searchQuery, selectedCategory, applyFilters]);
@@ -140,7 +140,7 @@ export default function ExercisesTab() {
                   styles.categoryText,
                   selectedCategory === category && styles.categoryTextActive
                 ]}>
-                  {category}
+                  {category === 'All' ? t('exercises:all') : category}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -169,7 +169,7 @@ export default function ExercisesTab() {
               <Target size={48} color="#9CA3AF" />
               <Text style={styles.emptyTitle}>{t('exercises:emptyTitle')}</Text>
               <Text style={styles.emptyText}>
-                {searchQuery || selectedCategory !== t('exercises:all') 
+                {searchQuery || selectedCategory !== 'All' 
                   ? t('exercises:emptyMsg')
                   : t('exercises:emptyMsg')
                 }
