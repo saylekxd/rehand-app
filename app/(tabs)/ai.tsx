@@ -138,7 +138,7 @@ export default function AITab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B1020',
+    backgroundColor: '#F8FAFC',
   },
   header: {
     paddingHorizontal: 24,
@@ -148,12 +148,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontFamily: 'Inter-SemiBold',
-    color: '#FFFFFF',
+    color: '#1F2937',
   },
   subtitle: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
-    color: '#9CA3AF',
+    color: '#6B7280',
     marginTop: 4,
   },
   camera: {
