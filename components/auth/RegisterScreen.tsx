@@ -11,6 +11,7 @@ import {
   Platform,
   ActivityIndicator,
   Linking,
+  Image,
 } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -77,6 +78,16 @@ export default function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps)
         style={styles.keyboardAvoidingView}
       >
         <View style={styles.content}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('@/assets/images/logotype-long.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+          
+          <View style={styles.separator} />
+          
           <View style={styles.header}>
             <Text style={styles.title}>{t('auth:createAccount')}</Text>
             <Text style={styles.subtitle}>{t('auth:startJourney')}</Text>
@@ -220,6 +231,20 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logo: {
+    width: 180,
+    height: 50,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#E5E7EB',
+    marginHorizontal: 60,
+    marginBottom: 24,
   },
   header: {
     alignItems: 'center',
