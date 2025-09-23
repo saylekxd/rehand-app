@@ -11,6 +11,7 @@ export const loadTranslations = (): Resource => {
   resources.en = {
     common: require('../locales/en/common.json'),
     auth: require('../locales/en/auth.json'),
+    intro: require('../locales/en/intro.json'),
     profile: require('../locales/en/profile.json'),
     exercises: require('../locales/en/exercises.json'),
     ai: require('../locales/en/ai.json'),
@@ -30,6 +31,7 @@ export const loadTranslations = (): Resource => {
   resources.pl = {
     common: require('../locales/pl/common.json'),
     auth: require('../locales/pl/auth.json'),
+    intro: require('../locales/pl/intro.json'),
     profile: require('../locales/pl/profile.json'),
     exercises: require('../locales/pl/exercises.json'),
     ai: require('../locales/pl/ai.json'),

@@ -1,0 +1,22 @@
+{
+  "slide1": {
+    "title": "Witaj w ReHand",
+    "subtitle": "Twój osobisty kompan rehabilitacji"
+  },
+  "slide2": {
+    "title": "Analiza napędzana AI",
+    "subtitle": "Analiza postawy i ruchu w czasie rzeczywistym"
+  },
+  "slide3": {
+    "title": "Spersonalizowane ćwiczenia",
+    "subtitle": "Programy rehabilitacyjne dostosowane do Ciebie"
+  },
+  "tagline1": "Twój cyfrowy trener",
+  "tagline2": "Śledź każdy ruch",
+  "tagline3": "Lecz się mądrzej",
+  "navigation": {
+    "previous": "Poprzedni",
+    "next": "Dalej",
+    "getStarted": "Rozpocznij"
+  }
+}

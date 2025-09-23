@@ -1,0 +1,22 @@
+{
+  "slide1": {
+    "title": "Welcome to ReHand",
+    "subtitle": "Your personal rehabilitation companion"
+  },
+  "slide2": {
+    "title": "AI-Powered Analysis",
+    "subtitle": "Real-time posture and movement analysis"
+  },
+  "slide3": {
+    "title": "Personalized Exercises",
+    "subtitle": "Tailored rehabilitation programs for you"
+  },
+  "tagline1": "Your digital coach",
+  "tagline2": "Track every movement",
+  "tagline3": "Train smarter, not harder",
+  "navigation": {
+    "previous": "Previous",
+    "next": "Next",
+    "getStarted": "Get Started"
+  }
+}
