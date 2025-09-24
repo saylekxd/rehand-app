@@ -27,79 +27,58 @@ interface CameraSurfaceProps {
 }
 
 export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, activeExercise, onSessionFinish }: CameraSurfaceProps) {
+  // All hooks must be called unconditionally and in the same order every render
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();
   
-  // Pose overlay state (throttled updates)
-  type PoseLandmark = { keypoint: number; name: string; x: number; y: number; z: number; visibility: number };
-  type Pose = { landmarks: PoseLandmark[] };
-  const [poses, setPoses] = React.useState<Pose[]>([]);
-  const [previewSize, setPreviewSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
-  const lastOverlayUpdateRef = React.useRef(0);
-  const lastExerciseValidationRef = React.useRef(0);
-  
-  // Use ref to ensure callback has access to current activeExercise
-  const activeExerciseRef = React.useRef(activeExercise);
-  
-  // Debug activeExercise prop
-  console.log('[Debug] CameraSurface activeExercise:', {
-    received: !!activeExercise,
-    title: activeExercise?.title,
-    hasSteps: !!activeExercise?.steps_json?.steps,
-    stepCount: activeExercise?.steps_json?.steps?.length,
-    fullExercise: activeExercise
-  });
-
-  // Exercise session integration
-  const exerciseSession = useExerciseSession({
-    steps: activeExercise?.steps_json?.steps || [],
-    durationMinutes: activeExercise?.duration_minutes || 5,
-    onFinish: onSessionFinish,
-    isFrontCamera: facing === 'front',
-  });
-  
-  const exerciseSessionRef = React.useRef(exerciseSession);
-  
-  // Update refs when props change
-  React.useEffect(() => {
-    activeExerciseRef.current = activeExercise;
-    exerciseSessionRef.current = exerciseSession;
-  }, [activeExercise, exerciseSession]);
-
-  // Auto-start session when exercise is loaded
-  React.useEffect(() => {
-    console.log('[Debug] Auto-start check:', {
-      hasExercise: !!activeExercise,
-      hasSteps: !!(activeExercise?.steps_json?.steps?.length),
-      isRunning: exerciseSession.state.isRunning,
-      stepCount: activeExercise?.steps_json?.steps?.length
-    });
-    
-    if (activeExercise?.steps_json?.steps && activeExercise.steps_json.steps.length > 0 && !exerciseSession.state.isRunning) {
-      console.log('[Debug] Starting exercise session...');
-      // Small delay to ensure camera is ready
-      const timer = setTimeout(() => {
-        exerciseSession.start();
-        console.log('[Debug] Exercise session started');
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [activeExercise?.id, exerciseSession]);
-
-  // Frame processor with worklet function
-  // IMPORTANT: Hooks must be called unconditionally in the same order on every render.
-  // This must be declared before any early returns to avoid "Rendered more hooks than during the previous render".
+  // Frame processor - declared early to ensure consistent hook order
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
     poseProcessor(frame);
   }, []);
+  
+  // Pose overlay state
+  type PoseLandmark = { keypoint: number; name: string; x: number; y: number; z: number; visibility: number };
+  type Pose = { landmarks: PoseLandmark[] };
+  const [poses, setPoses] = React.useState<Pose[]>([]);
+  const [previewSize, setPreviewSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  
+  // Exercise session - always call with basic values, no memoization
+  const exerciseSession = useExerciseSession({
+    steps: activeExercise?.steps_json?.steps || [],
+    durationMinutes: activeExercise?.duration_minutes || 5,
+    onFinish: onSessionFinish || (() => {}),
+    isFrontCamera: facing === 'front',
+  });
+  
+  // Refs
+  const activeExerciseRef = React.useRef(activeExercise);
+  const exerciseSessionRef = React.useRef(exerciseSession);
+  const lastOverlayUpdateRef = React.useRef(0);
+  const lastExerciseValidationRef = React.useRef(0);
+  
+  // Effects - in consistent order
+  React.useEffect(() => {
+    activeExerciseRef.current = activeExercise;
+    exerciseSessionRef.current = exerciseSession;
+  }, [activeExercise, exerciseSession]);
 
   React.useEffect(() => {
     if (!hasPermission) {
       requestPermission().catch(() => {});
     }
   }, [hasPermission, requestPermission]);
+
+  React.useEffect(() => {
+    const steps = activeExercise?.steps_json?.steps || [];
+    if (steps.length > 0 && !exerciseSession.state.isRunning) {
+      const timer = setTimeout(() => {
+        exerciseSession.start();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeExercise?.id, exerciseSession.state.isRunning, exerciseSession.start]);
 
   // Debug: log camera availability and permission changes
   React.useEffect(() => {
@@ -225,15 +204,10 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   const pixelFormat: CameraProps['pixelFormat'] = Platform.OS === 'ios' ? 'rgb' : 'yuv';
   
   // Compute video aspect-ratio from selected device format if available (portrait width/height)
-  const videoAspectRatio = React.useMemo(() => {
-    const format = device?.formats?.[0];
-    // Fallback to common 3:4 if not known
-    if (!format) return 3 / 4;
-    // VisionCamera numbers are landscape. Convert to portrait (swap if width > height)
-    const w = Math.min(format.videoWidth ?? 0, format.videoHeight ?? 0) || 720;
-    const h = Math.max(format.videoWidth ?? 0, format.videoHeight ?? 0) || 1280;
-    return w / h;
-  }, [device?.formats]);
+  const format = device?.formats?.[0];
+  const videoAspectRatio = !format ? 3 / 4 : 
+    (Math.min(format.videoWidth ?? 0, format.videoHeight ?? 0) || 720) / 
+    (Math.max(format.videoWidth ?? 0, format.videoHeight ?? 0) || 1280);
 
   return (
     <View
@@ -331,7 +305,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         )}
 
         {/* Manual start button (if auto-start fails) */}
-        {activeExercise && !exerciseSession.state.isRunning && activeExercise.steps_json?.steps && (
+        {activeExercise && !exerciseSession.state.isRunning && (activeExercise.steps_json?.steps?.length || 0) > 0 && (
           <TouchableOpacity 
             style={styles.manualStartButton}
             onPress={() => {

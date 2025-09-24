@@ -52,7 +52,7 @@
       <true/>
     </dict>
     <key>NSLocalNetworkUsageDescription</key>
-    <string>Aplikacja potrzebuje dostępu do sieci lokalnej, aby łączyć się z serwerem deweloperskim podczas tworzenia.</string>
+    <string>The app needs access to your local network to connect to the development server during development.</string>
     <key>NSBonjourServices</key>
     <array>
       <string>_react-native-packager._tcp.</string>
@@ -60,7 +60,9 @@
       <string>_expo._tcp.</string>
     </array>
     <key>NSCameraUsageDescription</key>
-    <string>Kamera służy wyłącznie do analizy ruchu w czasie ćwiczeń. Obraz nie jest nagrywany ani wysyłany poza urządzenie.</string>
+    <string>Camera is used only for real-time movement analysis during exercises. No image is recorded or sent off device.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library so you can choose a profile picture.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>This app does not use your location. If prompted, you can deny; the app will still work.</string>
     <key>NSUserActivityTypes</key>
