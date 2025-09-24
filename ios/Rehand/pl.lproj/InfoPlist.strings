@@ -1,0 +1,18 @@
+/* 
+  InfoPlist.strings (Polish)
+  Rehand
+  
+  Lokalizowane opisy uprawnień dla iOS
+*/
+
+/* Uprawnienie do kamery */
+"NSCameraUsageDescription" = "Kamera służy wyłącznie do analizy ruchu w czasie rzeczywistym podczas ćwiczeń. Obraz nie jest nagrywany ani wysyłany poza urządzenie.";
+
+/* Uprawnienie do biblioteki zdjęć */
+"NSPhotoLibraryUsageDescription" = "Potrzebujemy dostępu do biblioteki zdjęć, abyś mógł wybrać zdjęcie profilowe.";
+
+/* Uprawnienie do sieci lokalnej (rozwój) */
+"NSLocalNetworkUsageDescription" = "Aplikacja potrzebuje dostępu do sieci lokalnej, aby łączyć się z serwerem deweloperskim podczas tworzenia.";
+
+/* Uprawnienie do lokalizacji (nieaktywnie używane) */
+"NSLocationWhenInUseUsageDescription" = "Ta aplikacja nie używa lokalizacji. Możesz odrzucić to uprawnienie; aplikacja będzie działać normalnie.";

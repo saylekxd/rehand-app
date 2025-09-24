@@ -1,0 +1,18 @@
+/* 
+  InfoPlist.strings (English)
+  Rehand
+  
+  Localized permission descriptions for iOS
+*/
+
+/* Camera permission */
+"NSCameraUsageDescription" = "Camera is used only for real-time movement analysis during exercises. No image is recorded or sent off device.";
+
+/* Photo Library permission */
+"NSPhotoLibraryUsageDescription" = "We need access to your photo library so you can choose a profile picture.";
+
+/* Local Network permission (development) */
+"NSLocalNetworkUsageDescription" = "The app needs access to your local network to connect to the development server during development.";
+
+/* Location permission (not actively used) */
+"NSLocationWhenInUseUsageDescription" = "This app does not use your location. If prompted, you can deny; the app will still work.";
