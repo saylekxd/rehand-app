@@ -71,6 +71,8 @@ export function useExerciseSession({
   const stepStartTimeRef = useRef<number>(0);
   const stableFramesCountRef = useRef<number>(0);
   const messageIdCounterRef = useRef<number>(0);
+  // For timeWindow steps: start timestamp when constraints first satisfied
+  const timeWindowHoldStartRef = useRef<number | null>(null);
 
   // Add message to feedback overlay
   const addMessage = useCallback((text: string, level: LiveMessage['level'] = 'info') => {
@@ -121,14 +123,7 @@ export function useExerciseSession({
       addMessage(nextStep.hint, 'info');
       stepStartTimeRef.current = Date.now();
       stableFramesCountRef.current = 0;
-
-      // Set step timer for timeWindow steps
-      if (nextStep.type === 'timeWindow' && nextStep.durationMs) {
-        stepTimerRef.current = setTimeout(() => {
-          addMessage(nextStep.success, 'success');
-          moveToNextStep(); // Call the nextStep function
-        }, nextStep.durationMs) as any;
-      }
+      timeWindowHoldStartRef.current = null;
 
       return {
         ...prev,
@@ -196,12 +191,7 @@ export function useExerciseSession({
     }, 1000) as any;
 
     // Set step timer for first step if it's timeWindow
-    if (firstStep.type === 'timeWindow' && firstStep.durationMs) {
-      stepTimerRef.current = setTimeout(() => {
-        addMessage(firstStep.success, 'success');
-        moveToNextStep();
-      }, firstStep.durationMs) as any;
-    }
+    // Counting for timeWindow now happens only while constraints are satisfied (see onPose)
   }, [steps, durationMinutes, addMessage, moveToNextStep, onFinish, clearTimers]);
 
   // Stop session
@@ -326,21 +316,34 @@ export function useExerciseSession({
         }
       }
     } else if (currentStep.type === 'timeWindow') {
-      // For timeWindow, we just need to maintain constraints during the time period
-      // Progress is based on elapsed time
-      const elapsed = Date.now() - stepStartTimeRef.current;
       const duration = currentStep.durationMs || 30000;
-      const progress = Math.min(1, elapsed / duration);
-      
-      setState(prev => ({ ...prev, currentStepProgress: progress }));
+      const nowTs = Date.now();
 
-      // Provide feedback if constraints are not met (debounced)
-      if (!allConstraintsSatisfied) {
-        const now = Date.now();
+      if (allConstraintsSatisfied) {
+        if (timeWindowHoldStartRef.current == null) {
+          timeWindowHoldStartRef.current = nowTs;
+        }
+        const heldMs = nowTs - timeWindowHoldStartRef.current;
+        const progress = Math.min(1, heldMs / duration);
+        setState(prev => ({ ...prev, currentStepProgress: progress }));
+
+        if (heldMs >= duration) {
+          // Step completed when held continuously for the full duration
+          timeWindowHoldStartRef.current = null;
+          addMessage(currentStep.success, 'success');
+          setTimeout(() => moveToNextStep(), 500);
+        }
+      } else {
+        // Reset hold if constraints break
+        if (timeWindowHoldStartRef.current != null) {
+          timeWindowHoldStartRef.current = null;
+          setState(prev => ({ ...prev, currentStepProgress: 0 }));
+        }
+
+        // Provide debounced feedback
         const lastTimeWindowFeedback = (window as any).__lastTimeWindowFeedback || 0;
-        
-        if (now - lastTimeWindowFeedback > 3000) { // Max one feedback every 3 seconds for time windows
-          (window as any).__lastTimeWindowFeedback = now;
+        if (nowTs - lastTimeWindowFeedback > 3000) {
+          (window as any).__lastTimeWindowFeedback = nowTs;
           addMessage('Utrzymaj prawidłową pozycję', 'warning');
         }
       }
