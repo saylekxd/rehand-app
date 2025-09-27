@@ -110,9 +110,9 @@
 
 #### **Obie ręce:**
 ```json
-"wristsAtShoulderHeight": { "toleranceY": 0.1 }  // ręce na poziomie ramion
+"wristsAtShoulderHeight": { "toleranceX": 0.1 }  // ręce na wysokości barków (oś X)
 "elbowsExtended": { "minAngleDeg": 150 }          // wyprostowane ręce
-"armsRaised": { "minShoulderHeightY": 0.35 }     // oba ramiona w górę
+"armsRaised": { "minShoulderHeightX": 0.35 }     // oba ramiona wysoko (oś X)
 ```
 
 #### **Postawa:**

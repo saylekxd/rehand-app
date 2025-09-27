@@ -15,9 +15,11 @@ export function validateUprightTorso(pose: Pose, maxLeanDeg: number = 10): boole
   const shoulderCenterY = (leftShoulder!.y + rightShoulder!.y) / 2;
   const hipCenterX = (leftHip!.x + rightHip!.x) / 2;
   const hipCenterY = (leftHip!.y + rightHip!.y) / 2;
-  const deltaX = shoulderCenterX - hipCenterX;
-  const deltaY = shoulderCenterY - hipCenterY;
-  const leanAngle = Math.abs(Math.atan2(deltaX, Math.abs(deltaY)) * (180 / Math.PI));
+  // X = wysokość (vertical), Y = poziom (horizontal)
+  const deltaX = shoulderCenterX - hipCenterX; // vertical separation
+  const deltaY = shoulderCenterY - hipCenterY; // horizontal offset
+  // Kąt od pionu: atan2(|horizontal|, |vertical|)
+  const leanAngle = Math.abs(Math.atan2(Math.abs(deltaY), Math.abs(deltaX)) * (180 / Math.PI));
   return leanAngle <= maxLeanDeg;
 }
 

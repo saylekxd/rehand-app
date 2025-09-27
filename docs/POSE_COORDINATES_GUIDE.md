@@ -91,6 +91,27 @@ wrist.y < nose.y  // to sprawdza pozycję poziomą, nie wysokość!
 }
 ```
 
+### 5. **Ręce poniżej barków** (obie ręce):
+```json
+{
+  "wristsBelowShoulders": {
+    "minDeltaX": 0.05
+  }
+}
+```
+- Używa osi X (wysokość). Sprawdza, czy oba nadgarstki są wyraźnie niżej niż średnia wysokości barków (o co najmniej `minDeltaX`).
+- Rekomendowane do wykrywania pozycji „ręce w dół” — jest stabilniejsze niż proste progi absolutne dla nadgarstków.
+
+### 6. **Ustawienie stóp** (po poziomie, oś Y):
+```json
+{
+  "feetWide": { "minDeltaY": 0.22 },
+  "feetTogether": { "maxDeltaY": 0.16 }
+}
+```
+- Oś Y to pozycja pozioma, więc separację lewej/prawej kostki liczymy jako |left_ankle.y − right_ankle.y|.
+- `feetWide`/`feetTogether` stosuj do wariantów „pajacyków” w siadzie.
+
 ## 🔧 Funkcje walidacji
 
 ### Szablon funkcji:
@@ -314,9 +335,10 @@ console.log('[Debug] Validation:', {
 
 #### **Obie ręce:**
 ```json
-"wristsAtShoulderHeight": { "toleranceY": 0.1 }  // ręce na poziomie ramion
+"wristsAtShoulderHeight": { "toleranceX": 0.1 }  // ręce na wysokości barków (oś X)
 "elbowsExtended": { "minAngleDeg": 150 }          // wyprostowane ręce  
-"armsRaised": { "minShoulderHeightY": 0.35 }     // oba ramiona w górę
+"armsRaised": { "minShoulderHeightX": 0.35 }     // oba ramiona wysoko (oś X)
+"wristsBelowShoulders": { "minDeltaX": 0.05 }     // obie ręce wyraźnie poniżej barków (oś X)
 ```
 
 #### **Postawa:**
