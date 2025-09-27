@@ -73,13 +73,13 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
 
   React.useEffect(() => {
     const steps = activeExercise?.steps_json?.steps || [];
-    if (steps.length > 0 && !exerciseSession.state.isRunning) {
+    if (steps.length > 0 && !exerciseSession.state.isRunning && !exerciseSession.state.isCompleted) {
       const timer = setTimeout(() => {
         exerciseSession.start();
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [activeExercise?.id, exerciseSession.state.isRunning, exerciseSession.start]);
+  }, [activeExercise?.id, exerciseSession.state.isRunning, exerciseSession.state.isCompleted, exerciseSession.start]);
 
   // Debug: log camera availability and permission changes
   React.useEffect(() => {
