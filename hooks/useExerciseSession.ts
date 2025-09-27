@@ -16,6 +16,7 @@ export interface ExerciseStep {
 export interface ExerciseStepsJson {
   version: number;
   steps: ExerciseStep[];
+  rounds?: number; // number of times to repeat the full steps sequence
 }
 
 export interface ExerciseSessionState {
@@ -25,6 +26,8 @@ export interface ExerciseSessionState {
   isRunning: boolean;
   isCompleted: boolean;
   currentStepProgress: number; // 0-1 for current step
+  currentRound: number;
+  totalRounds: number;
 }
 
 export interface UseExerciseSessionProps {
@@ -32,6 +35,7 @@ export interface UseExerciseSessionProps {
   durationMinutes: number;
   onFinish?: (completedSteps: number, totalTime: number) => void;
   isFrontCamera?: boolean;
+  rounds?: number; // number of times to repeat the sequence (default 1)
 }
 
 export interface UseExerciseSessionReturn {
@@ -48,7 +52,8 @@ export function useExerciseSession({
   steps = [],
   durationMinutes,
   onFinish,
-  isFrontCamera = true
+  isFrontCamera = true,
+  rounds = 1,
 }: UseExerciseSessionProps): UseExerciseSessionReturn {
   
   // Session state
@@ -59,6 +64,8 @@ export function useExerciseSession({
     isRunning: false,
     isCompleted: false,
     currentStepProgress: 0,
+    currentRound: 1,
+    totalRounds: Math.max(1, rounds || 1),
   });
 
   // Messages for live feedback
@@ -73,6 +80,7 @@ export function useExerciseSession({
   const messageIdCounterRef = useRef<number>(0);
   // For timeWindow steps: start timestamp when constraints first satisfied
   const timeWindowHoldStartRef = useRef<number | null>(null);
+  const completionReportedRef = useRef<boolean>(false);
 
   // Add message to feedback overlay
   const addMessage = useCallback((text: string, level: LiveMessage['level'] = 'info') => {
@@ -107,15 +115,35 @@ export function useExerciseSession({
     setState(prev => {
       const nextIndex = prev.currentStepIndex + 1;
       
+      const totalRoundsLocal = prev.totalRounds ?? Math.max(1, rounds || 1);
+      const currentRoundLocal = prev.currentRound ?? 1;
+
       if (nextIndex >= steps.length) {
-        // All steps completed
-        addMessage('Wszystkie kroki ukończone! 🎉', 'success');
-        return {
-          ...prev,
-          isCompleted: true,
-          isRunning: false,
-          currentStepProgress: 1,
-        };
+        // Completed one sequence
+        if (currentRoundLocal < totalRoundsLocal) {
+          // Start next round
+          const nextRound = currentRoundLocal + 1;
+          addMessage(`Runda ${nextRound}/${totalRoundsLocal}`, 'info');
+          stepStartTimeRef.current = Date.now();
+          stableFramesCountRef.current = 0;
+          timeWindowHoldStartRef.current = null;
+          return {
+            ...prev,
+            currentStepIndex: 0,
+            currentStepProgress: 0,
+            currentRound: nextRound,
+            // keep totalRounds
+          };
+        } else {
+          // All rounds completed
+          addMessage('Wszystkie kroki ukończone! 🎉', 'success');
+          return {
+            ...prev,
+            isCompleted: true,
+            isRunning: false,
+            currentStepProgress: 1,
+          };
+        }
       }
 
       // Move to next step
@@ -146,6 +174,7 @@ export function useExerciseSession({
     startTimeRef.current = Date.now();
     stepStartTimeRef.current = Date.now();
     stableFramesCountRef.current = 0;
+    completionReportedRef.current = false;
 
     setState({
       currentStepIndex: 0,
@@ -154,6 +183,8 @@ export function useExerciseSession({
       isRunning: true,
       isCompleted: false,
       currentStepProgress: 0,
+      currentRound: 1,
+      totalRounds: Math.max(1, rounds || 1),
     });
 
     console.log('[Debug] Session state set, isRunning: true');
@@ -173,6 +204,7 @@ export function useExerciseSession({
           // Session time ended
           clearTimers();
           addMessage('Czas sesji upłynął', 'warning');
+          completionReportedRef.current = true;
           onFinish?.(prev.currentStepIndex, elapsed);
           
           return {
@@ -192,7 +224,7 @@ export function useExerciseSession({
 
     // Set step timer for first step if it's timeWindow
     // Counting for timeWindow now happens only while constraints are satisfied (see onPose)
-  }, [steps, durationMinutes, addMessage, moveToNextStep, onFinish, clearTimers]);
+  }, [steps, durationMinutes, rounds, addMessage, moveToNextStep, onFinish, clearTimers]);
 
   // Stop session
   const stop = useCallback(() => {
@@ -359,11 +391,12 @@ export function useExerciseSession({
 
   // Handle session completion
   useEffect(() => {
-    if (state.isCompleted && state.isRunning) {
+    if (state.isCompleted && !completionReportedRef.current) {
       const elapsed = Date.now() - startTimeRef.current;
+      completionReportedRef.current = true;
       onFinish?.(state.currentStepIndex, elapsed);
     }
-  }, [state.isCompleted, state.isRunning, state.currentStepIndex, onFinish]);
+  }, [state.isCompleted, state.currentStepIndex, onFinish]);
 
   return {
     state,

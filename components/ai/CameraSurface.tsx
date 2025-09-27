@@ -50,6 +50,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
     durationMinutes: activeExercise?.duration_minutes || 5,
     onFinish: onSessionFinish || (() => {}),
     isFrontCamera: facing === 'front',
+    rounds: Math.max(1, Number(activeExercise?.steps_json?.rounds || 1)),
   });
   
   // Refs
@@ -290,6 +291,9 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
             </Text>
             <Text style={styles.sessionText}>
               {Math.ceil(exerciseSession.state.remainingMs / 1000)}s
+            </Text>
+            <Text style={styles.sessionText}>
+              Runda {exerciseSession.state.currentRound}/{exerciseSession.state.totalRounds}
             </Text>
             {exerciseSession.state.currentStepProgress > 0 && (
               <View style={styles.progressBar}>
