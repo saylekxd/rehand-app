@@ -12,6 +12,7 @@ import LiveFeedbackOverlay from './LiveFeedbackOverlay';
 import CalibrationOverlay from './CalibrationOverlay';
 import { useExerciseSession } from '@/hooks/useExerciseSession';
 import type { Exercise } from '@/types';
+import { validateCorrectOrientation } from '@/utils/pose/validators/posture';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -161,10 +162,13 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         if (e?.poses && Array.isArray(e.poses) && e.poses.length > 0) {
           const now = Date.now();
           
+          // Filter out poses with incorrect orientation (upside down)
+          const validPoses = (e.poses as Pose[]).filter(pose => validateCorrectOrientation(pose, 0.5));
+          
           // Update poses for visual overlay more frequently (10 FPS)
           if (now - lastOverlayUpdateRef.current > 100) {
             lastOverlayUpdateRef.current = now;
-            setPoses(e.poses as Pose[]);
+            setPoses(validPoses);
           }
           
           // Exercise validation with current poses (5 FPS)
@@ -173,11 +177,11 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
           
           if (currentActiveExercise && now - lastExerciseValidationRef.current > 200) {
             lastExerciseValidationRef.current = now;
-            console.log('[Debug] Running exercise validation with', e.poses.length, 'poses');
+            console.log('[Debug] Running exercise validation with', validPoses.length, 'poses (', e.poses.length - validPoses.length, 'filtered out due to incorrect orientation)');
             
             // Debug: log pose data when validating
-            if (e.poses[0]?.landmarks) {
-              const pose = e.poses[0];
+            if (validPoses[0]?.landmarks) {
+              const pose = validPoses[0];
               const rightWrist = pose.landmarks.find((lm: any) => lm.keypoint === 16); // RIGHT_WRIST
               const nose = pose.landmarks.find((lm: any) => lm.keypoint === 0); // NOSE
               
@@ -193,7 +197,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
             }
             
             // Calibration gate: wait until all keypoints are visible steadily
-            const firstPose = (e.poses as Pose[])[0];
+            const firstPose = validPoses[0];
             const allVisible = (() => {
               if (!firstPose?.landmarks || !Array.isArray(firstPose.landmarks)) return false;
               const threshold = 0.6; // visibility threshold
@@ -219,8 +223,8 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
               }
             }
 
-            // Always pass current poses to session (session will start after calibration)
-            currentExerciseSession.onPose(e.poses as Pose[]);
+            // Always pass current valid poses to session (session will start after calibration)
+            currentExerciseSession.onPose(validPoses);
           }
         }
       });
