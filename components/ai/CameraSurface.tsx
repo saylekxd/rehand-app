@@ -10,6 +10,7 @@ const initialExercisePhoto = require('../../assets/images/initial-exercise-photo
 import PoseOverlay from './PoseOverlay';
 import LiveFeedbackOverlay from './LiveFeedbackOverlay';
 import CalibrationOverlay from './CalibrationOverlay';
+import SessionInfoOverlay from './SessionInfoOverlay';
 import { useExerciseSession } from '@/hooks/useExerciseSession';
 import type { Exercise } from '@/types';
 import { validateCorrectOrientation } from '@/utils/pose/validators/posture';
@@ -327,7 +328,8 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
           </View>
         ) : null}
 
-        <View style={[styles.topRightControls, { top: topOffset }]}>
+        {/* Camera controls - hidden for now */}
+        {/* <View style={[styles.topRightControls, { top: topOffset }]}>
           {onToggleFacing ? (
             <TouchableOpacity style={styles.iconButton} onPress={onToggleFacing} accessibilityRole="button" accessibilityLabel="Przełącz kamerę">
               <RotateCcw size={22} color="#FFFFFF" />
@@ -338,7 +340,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
               {isFullScreen ? <Minimize2 size={22} color="#FFFFFF" /> : <Maximize2 size={22} color="#FFFFFF" />}
             </TouchableOpacity>
           ) : null}
-        </View>
+        </View> */}
 
         {/* Live feedback overlay for exercise guidance */}
         {activeExercise && (
@@ -365,29 +367,16 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         )}
 
         {/* Session info overlay */}
-        {activeExercise && exerciseSession.state.isRunning && (
-          <View style={[styles.sessionInfo, { top: topOffset + 60 }]}>
-            <Text style={styles.sessionText}>
-              Krok {exerciseSession.state.currentStepIndex + 1}/{exerciseSession.state.totalSteps}
-            </Text>
-            <Text style={styles.sessionText}>
-              {Math.ceil(exerciseSession.state.remainingMs / 1000)}s
-            </Text>
-            <Text style={styles.sessionText}>
-              Runda {exerciseSession.state.currentRound}/{exerciseSession.state.totalRounds}
-            </Text>
-            {exerciseSession.state.currentStepProgress > 0 && (
-              <View style={styles.progressBar}>
-                <View 
-                  style={[
-                    styles.progressFill, 
-                    { width: `${exerciseSession.state.currentStepProgress * 100}%` }
-                  ]} 
-                />
-              </View>
-            )}
-          </View>
-        )}
+        <SessionInfoOverlay
+          visible={!!(activeExercise && exerciseSession.state.isRunning)}
+          currentStep={exerciseSession.state.currentStepIndex + 1}
+          totalSteps={exerciseSession.state.totalSteps}
+          remainingSeconds={Math.ceil(exerciseSession.state.remainingMs / 1000)}
+          currentRound={exerciseSession.state.currentRound}
+          totalRounds={exerciseSession.state.totalRounds}
+          progress={exerciseSession.state.currentStepProgress}
+          topOffset={topOffset}
+        />
 
         {/* Manual start button (if auto-start fails) */}
         {showManualStart && activeExercise && !exerciseSession.state.isRunning && (activeExercise.steps_json?.steps?.length || 0) > 0 && (
@@ -463,33 +452,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 10,
     borderRadius: 24,
-  },
-  sessionInfo: {
-    position: 'absolute',
-    left: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    alignItems: 'center',
-    gap: 4,
-  },
-  sessionText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontFamily: 'Inter-Medium',
-  },
-  progressBar: {
-    width: 60,
-    height: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#10B981',
-    borderRadius: 2,
   },
   manualStartButton: {
     position: 'absolute',

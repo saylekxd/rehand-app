@@ -14,7 +14,7 @@ export default function CalibrationOverlay({ visible, imageSource, instruction, 
   if (!visible) return null;
 
   return (
-    <View style={[styles.container, { paddingTop: topOffset + 54, paddingBottom: bottomReserved + 8 }]} pointerEvents="none">
+    <View style={[styles.container, { paddingTop: topOffset + 64, paddingBottom: bottomReserved + 8 }]} pointerEvents="none">
       <Image source={imageSource} style={styles.image} resizeMode="contain" />
 
       {instruction ? (

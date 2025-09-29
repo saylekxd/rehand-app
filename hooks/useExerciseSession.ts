@@ -81,6 +81,8 @@ export function useExerciseSession({
   // For timeWindow steps: start timestamp when constraints first satisfied
   const timeWindowHoldStartRef = useRef<number | null>(null);
   const completionReportedRef = useRef<boolean>(false);
+  // Counter for alternating between hint and specific feedback
+  const feedbackAlternateCounterRef = useRef<number>(0);
 
   // Add message to feedback overlay
   const addMessage = useCallback((text: string, level: LiveMessage['level'] = 'info') => {
@@ -331,19 +333,30 @@ export function useExerciseSession({
           if (now - lastFeedbackTime > 2000) { // Max one feedback every 2 seconds
             (window as any).__lastConstraintFeedback = now;
             
-            const constraintMessages: Record<string, string> = {
-              wristsAtShoulderHeight: 'Unieś ręce na wysokość ramion',
-              elbowsExtended: 'Wyprostuj ręce w łokciach',
-              armsRaised: 'Podnieś ręce wyżej',
-              rightArmRaised: 'Podnieś prawą rękę nad głowę',
-              leftArmRaised: 'Podnieś lewą rękę nad głowę',
-              rightArmLowered: 'Opuść prawą rękę w dół',
-              leftArmLowered: 'Opuść lewą rękę w dół',
-              uprightTorso: 'Wyprostuj plecy',
-            };
+            // Alternate between hint (what to do) and specific constraint feedback
+            feedbackAlternateCounterRef.current++;
+            const showHint = feedbackAlternateCounterRef.current % 2 === 1;
             
-            const message = constraintMessages[failedConstraints[0]] || 'Popraw pozycję';
-            addMessage(message, 'warning');
+            if (showHint) {
+              // Show the step hint (remind user what the exercise is)
+              addMessage(currentStep.hint, 'info');
+            } else {
+              // Show specific constraint feedback
+              const constraintMessages: Record<string, string> = {
+                wristsAtShoulderHeight: 'Unieś ręce na wysokość ramion',
+                elbowsExtended: 'Wyprostuj ręce w łokciach',
+                armsRaised: 'Podnieś ręce wyżej',
+                rightArmRaised: 'Podnieś prawą rękę nad głowę',
+                leftArmRaised: 'Podnieś lewą rękę nad głowę',
+                rightArmLowered: 'Opuść prawą rękę w dół',
+                leftArmLowered: 'Opuść lewą rękę w dół',
+                uprightTorso: 'Wyprostuj plecy',
+                wristsBelowShoulders: 'Opuść ręce poniżej ramion',
+              };
+              
+              const message = constraintMessages[failedConstraints[0]] || 'Popraw pozycję';
+              addMessage(message, 'warning');
+            }
           }
         }
       }
@@ -372,11 +385,22 @@ export function useExerciseSession({
           setState(prev => ({ ...prev, currentStepProgress: 0 }));
         }
 
-        // Provide debounced feedback
+        // Provide debounced feedback - alternate between hint and generic reminder
         const lastTimeWindowFeedback = (window as any).__lastTimeWindowFeedback || 0;
         if (nowTs - lastTimeWindowFeedback > 3000) {
           (window as any).__lastTimeWindowFeedback = nowTs;
-          addMessage('Utrzymaj prawidłową pozycję', 'warning');
+          
+          // Alternate between hint (what to do) and generic reminder
+          feedbackAlternateCounterRef.current++;
+          const showHint = feedbackAlternateCounterRef.current % 2 === 1;
+          
+          if (showHint) {
+            // Show the step hint (remind user what the exercise is)
+            addMessage(currentStep.hint, 'info');
+          } else {
+            // Show generic reminder
+            addMessage('Utrzymaj prawidłową pozycję', 'warning');
+          }
         }
       }
     }
