@@ -43,6 +43,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   type Pose = { landmarks: PoseLandmark[] };
   const [poses, setPoses] = React.useState<Pose[]>([]);
   const [previewSize, setPreviewSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const [activated, setActivated] = React.useState(false);
   
   // Exercise session - always call with basic values, no memoization
   const exerciseSession = useExerciseSession({
@@ -70,6 +71,15 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
       requestPermission().catch(() => {});
     }
   }, [hasPermission, requestPermission]);
+
+  // Gracefully activate camera a short moment after device becomes available to avoid black preview
+  React.useEffect(() => {
+    setActivated(false);
+    if (device && hasPermission) {
+      const timer = setTimeout(() => setActivated(true), 250);
+      return () => clearTimeout(timer);
+    }
+  }, [device?.id, hasPermission]);
 
   React.useEffect(() => {
     const steps = activeExercise?.steps_json?.steps || [];
@@ -223,9 +233,10 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
       }}
     >
       <Camera
+        key={`${device?.id}-${facing}-${pixelFormat}`}
         style={StyleSheet.absoluteFill}
         device={device}
-        isActive={isActive && hasPermission}
+        isActive={isActive && hasPermission && !!device && activated}
         ref={cameraRef as any}
         frameProcessor={frameProcessor}
         pixelFormat={pixelFormat}

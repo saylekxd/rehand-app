@@ -10,8 +10,10 @@ import CameraSurface from '@/components/ai/CameraSurface';
 
 export default function AITab() {
   const { t } = useTranslation(['ai']);
-  const { exerciseId } = useLocalSearchParams<{ exerciseId?: string }>();
-  const { exercise } = useExercise(exerciseId ?? null);
+  const params = useLocalSearchParams();
+  const exerciseIdParam = Array.isArray((params as any).exerciseId) ? (params as any).exerciseId[0] : (params as any).exerciseId;
+  const normalizedExerciseId = typeof exerciseIdParam === 'string' && exerciseIdParam.length > 0 ? exerciseIdParam : undefined;
+  const { exercise } = useExercise(normalizedExerciseId ?? null);
   const { user } = useAuth();
   const router = useRouter();
   const [facing, setFacing] = React.useState<'front' | 'back'>('front');
@@ -20,13 +22,13 @@ export default function AITab() {
   // Debug exercise loading
   React.useEffect(() => {
     console.log('[Debug] ai.tsx exercise data:', {
-      exerciseId,
+      exerciseId: normalizedExerciseId,
       hasExercise: !!exercise,
       exerciseTitle: exercise?.title,
       hasSteps: !!exercise?.steps_json?.steps,
       stepCount: exercise?.steps_json?.steps?.length
     });
-  }, [exerciseId, exercise]);
+  }, [normalizedExerciseId, exercise]);
 
   // Handle exercise session completion
   const handleSessionFinish = React.useCallback(async (completedSteps: number, totalTime: number) => {
@@ -119,6 +121,7 @@ export default function AITab() {
         )}
 
         <CameraSurface
+          key={exercise?.id || 'no-exercise'}
           facing={facing}
           isActive
           isFullScreen={isFullScreen}
