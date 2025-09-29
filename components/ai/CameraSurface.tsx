@@ -5,8 +5,11 @@ import { Camera, useCameraDevice, useCameraPermission, useFrameProcessor } from 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RotateCcw, Maximize2, Minimize2 } from 'lucide-react-native';
 import { poseProcessor } from '../../frameProcessors/poseProcessor';
+// Use require for image to avoid TS type issues
+const initialExercisePhoto = require('../../assets/images/initial-exercise-photo.png');
 import PoseOverlay from './PoseOverlay';
 import LiveFeedbackOverlay from './LiveFeedbackOverlay';
+import CalibrationOverlay from './CalibrationOverlay';
 import { useExerciseSession } from '@/hooks/useExerciseSession';
 import type { Exercise } from '@/types';
 
@@ -24,9 +27,12 @@ interface CameraSurfaceProps {
   children?: React.ReactNode;
   activeExercise?: Exercise;
   onSessionFinish?: (completedSteps: number, totalTime: number) => void;
+  showManualStart?: boolean;
+  feedbackPosition?: 'top' | 'bottom';
+  feedbackBottomOffset?: number;
 }
 
-export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, activeExercise, onSessionFinish }: CameraSurfaceProps) {
+export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, activeExercise, onSessionFinish, showManualStart = true, feedbackPosition = 'bottom', feedbackBottomOffset = 0 }: CameraSurfaceProps) {
   // All hooks must be called unconditionally and in the same order every render
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice(facing);
@@ -44,6 +50,8 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   const [poses, setPoses] = React.useState<Pose[]>([]);
   const [previewSize, setPreviewSize] = React.useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [activated, setActivated] = React.useState(false);
+  const [isCalibrated, setIsCalibrated] = React.useState(false);
+  const [showCalibrationToast, setShowCalibrationToast] = React.useState(false);
   
   // Exercise session - always call with basic values, no memoization
   const exerciseSession = useExerciseSession({
@@ -59,6 +67,9 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
   const exerciseSessionRef = React.useRef(exerciseSession);
   const lastOverlayUpdateRef = React.useRef(0);
   const lastExerciseValidationRef = React.useRef(0);
+  const calibrationStableFramesRef = React.useRef(0);
+  const sessionStartTriggeredRef = React.useRef(false);
+  const calibrationToastShownRef = React.useRef(false);
   
   // Effects - in consistent order
   React.useEffect(() => {
@@ -81,15 +92,23 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
     }
   }, [device?.id, hasPermission]);
 
+  // Autostart session only after calibration completes
   React.useEffect(() => {
     const steps = activeExercise?.steps_json?.steps || [];
-    if (steps.length > 0 && !exerciseSession.state.isRunning && !exerciseSession.state.isCompleted) {
+    if (
+      steps.length > 0 &&
+      !exerciseSession.state.isRunning &&
+      !exerciseSession.state.isCompleted &&
+      isCalibrated &&
+      !sessionStartTriggeredRef.current
+    ) {
+      sessionStartTriggeredRef.current = true;
       const timer = setTimeout(() => {
         exerciseSession.start();
-      }, 2000);
+      }, 400);
       return () => clearTimeout(timer);
     }
-  }, [activeExercise?.id, exerciseSession.state.isRunning, exerciseSession.state.isCompleted, exerciseSession.start]);
+  }, [activeExercise?.id, exerciseSession.state.isRunning, exerciseSession.state.isCompleted, exerciseSession.start, isCalibrated]);
 
   // Debug: log camera availability and permission changes
   React.useEffect(() => {
@@ -173,7 +192,34 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
               }
             }
             
-            // Always pass current poses to session
+            // Calibration gate: wait until all keypoints are visible steadily
+            const firstPose = (e.poses as Pose[])[0];
+            const allVisible = (() => {
+              if (!firstPose?.landmarks || !Array.isArray(firstPose.landmarks)) return false;
+              const threshold = 0.6; // visibility threshold
+              // require all reported landmarks to be above threshold
+              return firstPose.landmarks.every((lm: any) => typeof lm.visibility === 'number' && lm.visibility >= threshold);
+            })();
+
+            if (!isCalibrated) {
+              if (allVisible) {
+                calibrationStableFramesRef.current += 1;
+              } else {
+                calibrationStableFramesRef.current = Math.max(0, calibrationStableFramesRef.current - 1);
+              }
+
+              // Require ~12 consecutive validations (~2.4s at 5 FPS)
+              if (calibrationStableFramesRef.current >= 12) {
+                setIsCalibrated(true);
+                if (!calibrationToastShownRef.current) {
+                  calibrationToastShownRef.current = true;
+                  setShowCalibrationToast(true);
+                  setTimeout(() => setShowCalibrationToast(false), 1200);
+                }
+              }
+            }
+
+            // Always pass current poses to session (session will start after calibration)
             currentExerciseSession.onPose(e.poses as Pose[]);
           }
         }
@@ -244,6 +290,18 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
       />
 
       <View style={styles.overlay}>
+        {/* Calibration overlay */}
+        {!isCalibrated && (
+          <CalibrationOverlay
+            visible
+            imageSource={initialExercisePhoto as any}
+            instruction="Ustaw się jak na zdjęciu, a ćwiczenie zostanie rozpoczęte"
+            topOffset={topOffset}
+            bottomReserved={feedbackBottomOffset + 56}
+            calibrationProgress={Math.min(1, calibrationStableFramesRef.current / 12)}
+          />
+        )}
+
         {/* Skia overlay with pose points and skeleton */}
         {previewSize.width > 0 && previewSize.height > 0 && poses.length > 0 ? (
           <PoseOverlay
@@ -288,10 +346,18 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
             })}
             <LiveFeedbackOverlay
               visible={exerciseSession.state.isRunning}
-              position="bottom"
+              position={feedbackPosition}
+              bottomOffset={feedbackBottomOffset}
               messages={exerciseSession.messages}
             />
           </>
+        )}
+
+        {/* Calibration success toast */}
+        {showCalibrationToast && (
+          <View style={styles.calibrationToast} pointerEvents="none">
+            <Text style={styles.calibrationToastText}>Pozycja poprawna ✓</Text>
+          </View>
         )}
 
         {/* Session info overlay */}
@@ -320,7 +386,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         )}
 
         {/* Manual start button (if auto-start fails) */}
-        {activeExercise && !exerciseSession.state.isRunning && (activeExercise.steps_json?.steps?.length || 0) > 0 && (
+        {showManualStart && activeExercise && !exerciseSession.state.isRunning && (activeExercise.steps_json?.steps?.length || 0) > 0 && (
           <TouchableOpacity 
             style={styles.manualStartButton}
             onPress={() => {
@@ -436,6 +502,20 @@ const styles = StyleSheet.create({
   manualStartText: {
     color: '#FFFFFF',
     fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+  },
+  calibrationToast: {
+    position: 'absolute',
+    top: 50,
+    alignSelf: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.95)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  calibrationToastText: {
+    color: '#FFFFFF',
+    fontSize: 14,
     fontFamily: 'Inter-SemiBold',
   },
 });

@@ -74,7 +74,7 @@ export default function ExerciseDetailScreen({ exerciseId, onClose }: ExerciseDe
     if (!exercise) return;
     try {
       setIsStarting(true);
-      router.push({ pathname: '/(tabs)/ai', params: { exerciseId: exercise.id } });
+      router.push({ pathname: '/ai-session', params: { exerciseId: exercise.id } });
       onClose();
     } finally {
       setIsStarting(false);

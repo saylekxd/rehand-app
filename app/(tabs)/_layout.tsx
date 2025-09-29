@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Book, Brain, User } from 'lucide-react-native';
+import { Book, User } from 'lucide-react-native';
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import AuthWrapper from '@/components/auth/AuthWrapper';
@@ -26,15 +26,7 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Tabs.Screen
-          name="ai"
-          options={{
-            title: t('common:tabs.aiTrainer'),
-            tabBarIcon: ({ size, color }) => (
-              <Brain size={size} color={color} strokeWidth={2} />
-            ),
-          }}
-        />
+        {/** AI tab removed; sessions are launched via /ai-session full-screen screen */}
         <Tabs.Screen
           name="profile"
           options={{

@@ -7,15 +7,22 @@ interface LiveFeedbackOverlayProps {
   visible: boolean;
   position?: LiveFeedbackPosition;
   messages: LiveMessage[];
+  bottomOffset?: number;
 }
 
-export default function LiveFeedbackOverlay({ visible, position = 'bottom', messages }: LiveFeedbackOverlayProps) {
+export default function LiveFeedbackOverlay({ visible, position = 'bottom', messages, bottomOffset = 0 }: LiveFeedbackOverlayProps) {
   if (!visible) return null;
 
   const lastMessages = messages.slice(-3);
 
   return (
-    <View style={[styles.container, position === 'top' ? styles.top : styles.bottom]} pointerEvents="none">
+    <View
+      style={[
+        styles.container,
+        position === 'top' ? styles.top : [styles.bottom, { bottom: 20 + bottomOffset }],
+      ]}
+      pointerEvents="none"
+    >
       {lastMessages.map((m) => (
         <View key={m.id} style={styles.message}>
           <View style={[styles.iconWrap, getLevelStyle(m.level)]}>
