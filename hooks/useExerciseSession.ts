@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { validateConstraint, updateMotionTrails, type Pose } from '@/utils/poseUtils';
 import type { LiveMessage } from '@/components/ai/types';
+import { useTranslation } from 'react-i18next';
 
 export interface ExerciseStep {
   type: 'holdPosture' | 'timeWindow' | 'repCounter';
@@ -55,6 +56,7 @@ export function useExerciseSession({
   isFrontCamera = true,
   rounds = 1,
 }: UseExerciseSessionProps): UseExerciseSessionReturn {
+  const { t } = useTranslation(['exercises']);
   
   // Session state
   const [state, setState] = useState<ExerciseSessionState>({
@@ -125,7 +127,7 @@ export function useExerciseSession({
         if (currentRoundLocal < totalRoundsLocal) {
           // Start next round
           const nextRound = currentRoundLocal + 1;
-          addMessage(`Runda ${nextRound}/${totalRoundsLocal}`, 'info');
+          addMessage(t('exercises:session.round', { current: nextRound, total: totalRoundsLocal }), 'info');
           stepStartTimeRef.current = Date.now();
           stableFramesCountRef.current = 0;
           timeWindowHoldStartRef.current = null;
@@ -138,7 +140,7 @@ export function useExerciseSession({
           };
         } else {
           // All rounds completed
-          addMessage('Wszystkie kroki ukończone! 🎉', 'success');
+          addMessage(t('exercises:session.allStepsCompleted'), 'success');
           return {
             ...prev,
             isCompleted: true,
@@ -161,14 +163,14 @@ export function useExerciseSession({
         currentStepProgress: 0,
       };
     });
-  }, [steps, addMessage]);
+  }, [steps, addMessage, t, rounds]);
 
   // Start session
   const start = useCallback(() => {
     console.log('[Debug] Starting session with', steps.length, 'steps');
     if (steps.length === 0) {
       console.log('[Debug] No steps to execute');
-      addMessage('Brak kroków do wykonania', 'warning');
+      addMessage(t('exercises:session.noSteps'), 'warning');
       return;
     }
 
@@ -205,7 +207,7 @@ export function useExerciseSession({
         if (remaining <= 0) {
           // Session time ended
           clearTimers();
-          addMessage('Czas sesji upłynął', 'warning');
+          addMessage(t('exercises:session.timeEnded'), 'warning');
           completionReportedRef.current = true;
           onFinish?.(prev.currentStepIndex, elapsed);
           
@@ -226,7 +228,7 @@ export function useExerciseSession({
 
     // Set step timer for first step if it's timeWindow
     // Counting for timeWindow now happens only while constraints are satisfied (see onPose)
-  }, [steps, durationMinutes, rounds, addMessage, moveToNextStep, onFinish, clearTimers]);
+  }, [steps, durationMinutes, rounds, addMessage, moveToNextStep, onFinish, clearTimers, t]);
 
   // Stop session
   const stop = useCallback(() => {
@@ -239,28 +241,28 @@ export function useExerciseSession({
       isCompleted: true,
     }));
 
-    addMessage('Sesja zatrzymana', 'info');
+    addMessage(t('exercises:session.stopped'), 'info');
     onFinish?.(state.currentStepIndex, elapsed);
-  }, [clearTimers, onFinish, addMessage, state.currentStepIndex]);
+  }, [clearTimers, onFinish, addMessage, state.currentStepIndex, t]);
 
   // Pause session
   const pause = useCallback(() => {
     clearTimers();
     setState(prev => ({ ...prev, isRunning: false }));
-    addMessage('Sesja wstrzymana', 'info');
-  }, [clearTimers, addMessage]);
+    addMessage(t('exercises:session.paused'), 'info');
+  }, [clearTimers, addMessage, t]);
 
   // Resume session
   const resume = useCallback(() => {
     if (state.isCompleted) return;
     
     setState(prev => ({ ...prev, isRunning: true }));
-    addMessage('Sesja wznowiona', 'info');
+    addMessage(t('exercises:session.resumed'), 'info');
     
     // Restart timers with remaining time
     // Note: This is simplified - in real implementation you'd need to track pause time
     start();
-  }, [state.isCompleted, addMessage, start]);
+  }, [state.isCompleted, addMessage, start, t]);
 
   // Process pose landmarks
   const onPose = useCallback((poses: Pose[]) => {
@@ -342,19 +344,10 @@ export function useExerciseSession({
               addMessage(currentStep.hint, 'info');
             } else {
               // Show specific constraint feedback
-              const constraintMessages: Record<string, string> = {
-                wristsAtShoulderHeight: 'Unieś ręce na wysokość ramion',
-                elbowsExtended: 'Wyprostuj ręce w łokciach',
-                armsRaised: 'Podnieś ręce wyżej',
-                rightArmRaised: 'Podnieś prawą rękę nad głowę',
-                leftArmRaised: 'Podnieś lewą rękę nad głowę',
-                rightArmLowered: 'Opuść prawą rękę w dół',
-                leftArmLowered: 'Opuść lewą rękę w dół',
-                uprightTorso: 'Wyprostuj plecy',
-                wristsBelowShoulders: 'Opuść ręce poniżej ramion',
-              };
-              
-              const message = constraintMessages[failedConstraints[0]] || 'Popraw pozycję';
+              const constraintKey = `exercises:session.constraints.${failedConstraints[0]}`;
+              const message = t(constraintKey, { 
+                defaultValue: t('exercises:session.constraints.correctPosition') 
+              });
               addMessage(message, 'warning');
             }
           }
@@ -399,12 +392,12 @@ export function useExerciseSession({
             addMessage(currentStep.hint, 'info');
           } else {
             // Show generic reminder
-            addMessage('Utrzymaj prawidłową pozycję', 'warning');
+            addMessage(t('exercises:session.maintainPosition'), 'warning');
           }
         }
       }
     }
-  }, [state.isRunning, state.isCompleted, state.currentStepIndex, steps, addMessage, moveToNextStep]);
+  }, [state.isRunning, state.isCompleted, state.currentStepIndex, steps, addMessage, moveToNextStep, isFrontCamera, t]);
 
   // Cleanup on unmount
   useEffect(() => {

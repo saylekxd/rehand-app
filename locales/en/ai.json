@@ -2,5 +2,15 @@
   "title": "AI Trainer",
   "subtitle": "Turn on the camera to start motion analysis",
   "sessionDoneTitle": "Exercise finished! 🎉",
-  "sessionDoneBack": "Back"
+  "sessionDoneBack": "Back",
+  "sessionInfo": {
+    "step": "STEP",
+    "time": "TIME",
+    "round": "ROUND",
+    "seconds": "{{count}}s"
+  },
+  "calibration": {
+    "instruction": "Position yourself as shown in the photo, and the exercise will begin",
+    "positionCorrect": "Position correct ✓"
+  }
 }

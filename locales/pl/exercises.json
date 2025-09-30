@@ -23,5 +23,27 @@
   "muscles": "Zaangażowane mięśnie",
   "equipment": "Sprzęt",
   "noEquipment": "Nie potrzebujesz żadnego sprzętu!",
-  "start": "Rozpocznij ćwiczenie"
+  "start": "Rozpocznij ćwiczenie",
+  "session": {
+    "round": "Runda {{current}}/{{total}}",
+    "allStepsCompleted": "Wszystkie kroki ukończone! 🎉",
+    "noSteps": "Brak kroków do wykonania",
+    "timeEnded": "Czas sesji upłynął",
+    "stopped": "Sesja zatrzymana",
+    "paused": "Sesja wstrzymana",
+    "resumed": "Sesja wznowiona",
+    "maintainPosition": "Utrzymaj prawidłową pozycję",
+    "constraints": {
+      "wristsAtShoulderHeight": "Unieś ręce na wysokość ramion",
+      "elbowsExtended": "Wyprostuj ręce w łokciach",
+      "armsRaised": "Podnieś ręce wyżej",
+      "rightArmRaised": "Podnieś prawą rękę nad głowę",
+      "leftArmRaised": "Podnieś lewą rękę nad głowę",
+      "rightArmLowered": "Opuść prawą rękę w dół",
+      "leftArmLowered": "Opuść lewą rękę w dół",
+      "uprightTorso": "Wyprostuj plecy",
+      "wristsBelowShoulders": "Opuść ręce poniżej ramion",
+      "correctPosition": "Popraw pozycję"
+    }
+  }
 }

@@ -2,6 +2,7 @@
   "appName": "ReHand",
   "ok": "OK",
   "cancel": "Cancel",
+  "done": "Done",
   "error": "Error",
   "tabs": {
     "exercises": "Exercises",

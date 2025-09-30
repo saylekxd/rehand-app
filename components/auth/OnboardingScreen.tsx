@@ -9,7 +9,9 @@ import {
   Alert,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuth } from '@/contexts/AuthContext';
 import { OnboardingData } from '@/types';
 import { Calendar, User, Phone, Target, Activity, CheckCircle } from 'lucide-react-native';
@@ -24,6 +26,8 @@ export default function OnboardingScreen() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const { completeOnboarding } = useAuth();
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const [formData, setFormData] = useState<OnboardingData>({
     first_name: '',
@@ -42,6 +46,28 @@ export default function OnboardingScreen() {
 
   const handleInputChange = (field: keyof OnboardingData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleDateChange = (event: any, date?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+    
+    if (date) {
+      setSelectedDate(date);
+      const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+      handleInputChange('date_of_birth', formattedDate);
+    }
+  };
+
+  const formatDisplayDate = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pl-PL', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   const toggleArrayItem = (field: 'medical_conditions' | 'goals', item: string) => {
@@ -99,16 +125,38 @@ export default function OnboardingScreen() {
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <TouchableOpacity 
+        style={styles.inputContainer}
+        onPress={() => setShowDatePicker(true)}
+      >
         <Calendar size={20} color="#6B7280" style={styles.inputIcon} />
-        <TextInput
-          style={styles.input}
-          placeholder={t('onboarding:dob')}
-          value={formData.date_of_birth}
-          onChangeText={(value) => handleInputChange('date_of_birth', value)}
-          placeholderTextColor="#9CA3AF"
+        <Text style={[
+          styles.input,
+          !formData.date_of_birth && styles.placeholderText
+        ]}>
+          {formData.date_of_birth ? formatDisplayDate(formData.date_of_birth) : t('onboarding:dob')}
+        </Text>
+      </TouchableOpacity>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={selectedDate || new Date()}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleDateChange}
+          maximumDate={new Date()}
+          minimumDate={new Date(1920, 0, 1)}
         />
-      </View>
+      )}
+
+      {Platform.OS === 'ios' && showDatePicker && (
+        <TouchableOpacity 
+          style={styles.datePickerCloseButton}
+          onPress={() => setShowDatePicker(false)}
+        >
+          <Text style={styles.datePickerCloseButtonText}>{t('common:done')}</Text>
+        </TouchableOpacity>
+      )}
 
       <View style={styles.inputContainer}>
         <Phone size={20} color="#6B7280" style={styles.inputIcon} />
@@ -525,5 +573,21 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
     color: '#991B1B',
     lineHeight: 20,
+  },
+  placeholderText: {
+    color: '#9CA3AF',
+  },
+  datePickerCloseButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  datePickerCloseButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
   },
 }); 

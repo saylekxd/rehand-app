@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, ImageSourcePropType } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 interface CalibrationOverlayProps {
   visible: boolean;
@@ -11,6 +12,8 @@ interface CalibrationOverlayProps {
 }
 
 export default function CalibrationOverlay({ visible, imageSource, instruction, topOffset = 48, bottomReserved = 0, calibrationProgress = 0 }: CalibrationOverlayProps) {
+  const { t } = useTranslation(['ai']);
+  
   if (!visible) return null;
 
   return (
@@ -19,7 +22,7 @@ export default function CalibrationOverlay({ visible, imageSource, instruction, 
 
       {instruction ? (
         <View style={[styles.toast, { bottom: 100 }]}>
-          <Text style={styles.toastText}>{instruction}</Text>
+          <Text style={styles.toastText}>{instruction || t('ai:calibration.instruction')}</Text>
           {calibrationProgress > 0 && (
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: `${calibrationProgress * 100}%` }]} />

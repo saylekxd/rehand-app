@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 interface SessionInfoOverlayProps {
   visible: boolean;
@@ -22,6 +23,8 @@ export default function SessionInfoOverlay({
   progress,
   topOffset = 48,
 }: SessionInfoOverlayProps) {
+  const { t } = useTranslation(['ai']);
+  
   if (!visible) return null;
 
   return (
@@ -31,7 +34,7 @@ export default function SessionInfoOverlay({
         {/* Top row: Step and Timer */}
         <View style={styles.topRow}>
           <View style={styles.stepContainer}>
-            <Text style={styles.label}>KROK</Text>
+            <Text style={styles.label}>{t('ai:sessionInfo.step')}</Text>
             <Text style={styles.stepValue}>
               {currentStep}/{totalSteps}
             </Text>
@@ -40,8 +43,8 @@ export default function SessionInfoOverlay({
           <View style={styles.divider} />
           
           <View style={styles.timerContainer}>
-            <Text style={styles.label}>CZAS</Text>
-            <Text style={styles.timerValue}>{remainingSeconds}s</Text>
+            <Text style={styles.label}>{t('ai:sessionInfo.time')}</Text>
+            <Text style={styles.timerValue}>{t('ai:sessionInfo.seconds', { count: remainingSeconds })}</Text>
           </View>
 
           {totalRounds > 1 && (
@@ -49,7 +52,7 @@ export default function SessionInfoOverlay({
               <View style={styles.divider} />
               
               <View style={styles.roundContainer}>
-                <Text style={styles.label}>RUNDA</Text>
+                <Text style={styles.label}>{t('ai:sessionInfo.round')}</Text>
                 <Text style={styles.roundValue}>
                   {currentRound}/{totalRounds}
                 </Text>

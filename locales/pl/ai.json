@@ -2,5 +2,15 @@
   "title": "AI Trener",
   "subtitle": "Włącz kamerę, aby rozpocząć analizę ruchu",
   "sessionDoneTitle": "Ćwiczenie zakończone! 🎉",
-  "sessionDoneBack": "Powrót"
+  "sessionDoneBack": "Powrót",
+  "sessionInfo": {
+    "step": "KROK",
+    "time": "CZAS",
+    "round": "RUNDA",
+    "seconds": "{{count}}s"
+  },
+  "calibration": {
+    "instruction": "Ustaw się jak na zdjęciu, a ćwiczenie zostanie rozpoczęte",
+    "positionCorrect": "Pozycja poprawna ✓"
+  }
 }

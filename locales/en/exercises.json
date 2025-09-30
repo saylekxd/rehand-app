@@ -24,5 +24,27 @@
   "muscles": "Muscles",
   "equipment": "Equipment",
   "noEquipment": "No equipment required!",
-  "start": "Start exercise"
+  "start": "Start exercise",
+  "session": {
+    "round": "Round {{current}}/{{total}}",
+    "allStepsCompleted": "All steps completed! 🎉",
+    "noSteps": "No steps to execute",
+    "timeEnded": "Session time ended",
+    "stopped": "Session stopped",
+    "paused": "Session paused",
+    "resumed": "Session resumed",
+    "maintainPosition": "Maintain correct position",
+    "constraints": {
+      "wristsAtShoulderHeight": "Raise hands to shoulder height",
+      "elbowsExtended": "Straighten your arms",
+      "armsRaised": "Raise your arms higher",
+      "rightArmRaised": "Raise your right arm above head",
+      "leftArmRaised": "Raise your left arm above head",
+      "rightArmLowered": "Lower your right arm down",
+      "leftArmLowered": "Lower your left arm down",
+      "uprightTorso": "Straighten your back",
+      "wristsBelowShoulders": "Lower your hands below shoulders",
+      "correctPosition": "Correct your position"
+    }
+  }
 }

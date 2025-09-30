@@ -14,6 +14,7 @@ import SessionInfoOverlay from './SessionInfoOverlay';
 import { useExerciseSession } from '@/hooks/useExerciseSession';
 import type { Exercise } from '@/types';
 import { validateCorrectOrientation } from '@/utils/pose/validators/posture';
+import { useTranslation } from 'react-i18next';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -36,6 +37,7 @@ interface CameraSurfaceProps {
 
 export default function CameraSurface({ facing, isActive, cameraRef, containerStyle, children, onToggleFacing, isRecording, isFullScreen, onToggleFullScreen, activeExercise, onSessionFinish, showManualStart = true, feedbackPosition = 'bottom', feedbackBottomOffset = 0 }: CameraSurfaceProps) {
   // All hooks must be called unconditionally and in the same order every render
+  const { t } = useTranslation(['ai']);
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice(facing);
   const insets = useSafeAreaInsets();
@@ -300,7 +302,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
           <CalibrationOverlay
             visible
             imageSource={initialExercisePhoto as any}
-            instruction="Ustaw się jak na zdjęciu, a ćwiczenie zostanie rozpoczęte"
+            instruction={t('ai:calibration.instruction')}
             topOffset={topOffset}
             bottomReserved={feedbackBottomOffset + 56}
             calibrationProgress={Math.min(1, calibrationStableFramesRef.current / 12)}
@@ -362,7 +364,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         {/* Calibration success toast */}
         {showCalibrationToast && (
           <View style={styles.calibrationToast} pointerEvents="none">
-            <Text style={styles.calibrationToastText}>Pozycja poprawna ✓</Text>
+            <Text style={styles.calibrationToastText}>{t('ai:calibration.positionCorrect')}</Text>
           </View>
         )}
 
