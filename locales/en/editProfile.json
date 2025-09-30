@@ -1,5 +1,6 @@
 {
   "title": "Edit profile",
+  "done": "Done",
   "saveSuccess": "Profile updated",
   "saveError": "Failed to update profile",
   "unexpectedError": "Unexpected error occurred",

@@ -30,8 +30,8 @@ export class AchievementService {
     // Milestone Achievements
     {
       id: 'first_exercise',
-      title: 'Pierwszy krok',
-      description: 'Ukończyłeś pierwsze ćwiczenie',
+      title: 'First step',
+      description: 'Completed your first exercise',
       category: 'milestone',
       icon: 'trophy',
       rarity: 'bronze',
@@ -57,8 +57,8 @@ export class AchievementService {
     },
     {
       id: 'exercise_10',
-      title: 'Regularność',
-      description: '10 ukończonych ćwiczeń',
+      title: 'Consistency',
+      description: '10 completed exercises',
       category: 'milestone',
       icon: 'target',
       rarity: 'bronze',
@@ -83,8 +83,8 @@ export class AchievementService {
     },
     {
       id: 'exercise_25',
-      title: 'Determinacja',
-      description: '25 ukończonych ćwiczeń',
+      title: 'Determination',
+      description: '25 completed exercises',
       category: 'milestone',
       icon: 'target',
       rarity: 'silver',
@@ -109,8 +109,8 @@ export class AchievementService {
     },
     {
       id: 'exercise_50',
-      title: 'Mistrz',
-      description: '50 ukończonych ćwiczeń',
+      title: 'Master',
+      description: '50 completed exercises',
       category: 'milestone',
       icon: 'trophy',
       rarity: 'gold',
@@ -135,8 +135,8 @@ export class AchievementService {
     },
     {
       id: 'exercise_100',
-      title: 'Legenda',
-      description: '100 ukończonych ćwiczeń',
+      title: 'Legend',
+      description: '100 completed exercises',
       category: 'milestone',
       icon: 'trophy',
       rarity: 'platinum',
@@ -163,8 +163,8 @@ export class AchievementService {
     // Streak Achievements
     {
       id: 'streak_3',
-      title: 'Dobry start',
-      description: '3 dni z rzędu',
+      title: 'Good start',
+      description: '3 days in a row',
       category: 'streak',
       icon: 'fire',
       rarity: 'bronze',
@@ -180,8 +180,8 @@ export class AchievementService {
     },
     {
       id: 'streak_7',
-      title: 'Wytrwałość',
-      description: '7 dni z rzędu',
+      title: 'Perseverance',
+      description: '7 days in a row',
       category: 'streak',
       icon: 'fire',
       rarity: 'silver',
@@ -197,8 +197,8 @@ export class AchievementService {
     },
     {
       id: 'streak_14',
-      title: 'Nieustępliwy',
-      description: '14 dni z rzędu',
+      title: 'Unstoppable',
+      description: '14 days in a row',
       category: 'streak',
       icon: 'fire',
       rarity: 'gold',
@@ -214,8 +214,8 @@ export class AchievementService {
     },
     {
       id: 'streak_30',
-      title: 'Niezłomny',
-      description: '30 dni z rzędu',
+      title: 'Unbreakable',
+      description: '30 days in a row',
       category: 'streak',
       icon: 'fire',
       rarity: 'platinum',
@@ -233,8 +233,8 @@ export class AchievementService {
     // Time-based Achievements
     {
       id: 'time_60',
-      title: 'Godzina mocy',
-      description: '60 minut ćwiczeń',
+      title: 'Power hour',
+      description: '60 minutes of exercise',
       category: 'time',
       icon: 'clock',
       rarity: 'bronze',
@@ -250,8 +250,8 @@ export class AchievementService {
     },
     {
       id: 'time_300',
-      title: 'Maraton',
-      description: '5 godzin ćwiczeń',
+      title: 'Marathon',
+      description: '5 hours of exercise',
       category: 'time',
       icon: 'clock',
       rarity: 'silver',
@@ -267,8 +267,8 @@ export class AchievementService {
     },
     {
       id: 'time_600',
-      title: 'Ultramaraton',
-      description: '10 godzin ćwiczeń',
+      title: 'Ultramarathon',
+      description: '10 hours of exercise',
       category: 'time',
       icon: 'clock',
       rarity: 'gold',
@@ -286,8 +286,8 @@ export class AchievementService {
     // Consistency Achievements
     {
       id: 'weekly_goal_1',
-      title: 'Cel tygodnia',
-      description: 'Osiągnij tygodniowy cel',
+      title: 'Weekly goal',
+      description: 'Reach your weekly goal',
       category: 'consistency',
       icon: 'target',
       rarity: 'bronze',

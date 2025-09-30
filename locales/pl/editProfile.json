@@ -1,5 +1,6 @@
 {
   "title": "Edytuj profil",
+  "done": "Gotowe",
   "saveSuccess": "Profil został zaktualizowany",
   "saveError": "Nie udało się zaktualizować profilu",
   "unexpectedError": "Wystąpił nieoczekiwany błąd",

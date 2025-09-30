@@ -223,13 +223,25 @@ export default function EditProfileScreen({ onClose }: EditProfileScreenProps) {
           </View>
 
           {showDatePicker && (
-            <DateTimePicker
-              value={profile.date_of_birth ? new Date(profile.date_of_birth) : new Date()}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={onDateChange}
-              maximumDate={new Date()}
-            />
+            <View style={styles.datePickerContainer}>
+              <DateTimePicker
+                value={profile.date_of_birth ? new Date(profile.date_of_birth) : new Date()}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={onDateChange}
+                maximumDate={new Date()}
+                textColor="#1F2937"
+                themeVariant="light"
+              />
+              {Platform.OS === 'ios' && (
+                <TouchableOpacity 
+                  style={styles.datePickerCloseButton}
+                  onPress={() => setShowDatePicker(false)}
+                >
+                  <Text style={styles.datePickerCloseButtonText}>{t('editProfile:done')}</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           )}
         </View>
 
@@ -515,5 +527,29 @@ const styles = StyleSheet.create({
   },
   bottomSpacing: {
     height: 32,
+  },
+  datePickerContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  datePickerCloseButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  datePickerCloseButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
   },
 }); 

@@ -139,14 +139,18 @@ export default function OnboardingScreen() {
       </TouchableOpacity>
 
       {showDatePicker && (
-        <DateTimePicker
-          value={selectedDate || new Date()}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-          maximumDate={new Date()}
-          minimumDate={new Date(1920, 0, 1)}
-        />
+        <View style={styles.datePickerContainer}>
+          <DateTimePicker
+            value={selectedDate || new Date()}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={handleDateChange}
+            maximumDate={new Date()}
+            minimumDate={new Date(1920, 0, 1)}
+            textColor="#1F2937"
+            themeVariant="light"
+          />
+        </View>
       )}
 
       {Platform.OS === 'ios' && showDatePicker && (
@@ -576,6 +580,17 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     color: '#9CA3AF',
+  },
+  datePickerContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   datePickerCloseButton: {
     backgroundColor: '#2563EB',

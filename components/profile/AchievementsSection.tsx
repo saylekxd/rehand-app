@@ -69,17 +69,17 @@ export default function AchievementsSection({ achievements, loading, error, onRe
 
   return (
     <View style={styles.achievementsContainer}>
-      <Text style={styles.sectionTitle}>{t('achievements:title')}</Text>
+      <Text style={styles.sectionTitle}>{t('title')}</Text>
       {loading ? (
         <View style={styles.loadingAchievements}>
           <ActivityIndicator size="large" color="#2563EB" />
-          <Text style={styles.loadingText}>{t('achievements:loading')}</Text>
+          <Text style={styles.loadingText}>{t('loading')}</Text>
         </View>
       ) : error ? (
         <View style={styles.errorAchievements}>
-          <Text style={styles.errorText}>{t('achievements:loadError')}</Text>
+          <Text style={styles.errorText}>{t('loadError')}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-            <Text style={styles.retryButtonText}>{t('achievements:retry')}</Text>
+            <Text style={styles.retryButtonText}>{t('retry')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
