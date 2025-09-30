@@ -302,7 +302,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
           <CalibrationOverlay
             visible
             imageSource={initialExercisePhoto as any}
-            instruction={t('ai:calibration.instruction')}
+            instruction={t('calibration.instruction')}
             topOffset={topOffset}
             bottomReserved={feedbackBottomOffset + 56}
             calibrationProgress={Math.min(1, calibrationStableFramesRef.current / 12)}
@@ -364,7 +364,7 @@ export default function CameraSurface({ facing, isActive, cameraRef, containerSt
         {/* Calibration success toast */}
         {showCalibrationToast && (
           <View style={styles.calibrationToast} pointerEvents="none">
-            <Text style={styles.calibrationToastText}>{t('ai:calibration.positionCorrect')}</Text>
+            <Text style={styles.calibrationToastText}>{t('calibration.positionCorrect')}</Text>
           </View>
         )}
 

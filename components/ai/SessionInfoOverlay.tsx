@@ -34,7 +34,7 @@ export default function SessionInfoOverlay({
         {/* Top row: Step and Timer */}
         <View style={styles.topRow}>
           <View style={styles.stepContainer}>
-            <Text style={styles.label}>{t('ai:sessionInfo.step')}</Text>
+            <Text style={styles.label}>{t('sessionInfo.step')}</Text>
             <Text style={styles.stepValue}>
               {currentStep}/{totalSteps}
             </Text>
@@ -43,8 +43,8 @@ export default function SessionInfoOverlay({
           <View style={styles.divider} />
           
           <View style={styles.timerContainer}>
-            <Text style={styles.label}>{t('ai:sessionInfo.time')}</Text>
-            <Text style={styles.timerValue}>{t('ai:sessionInfo.seconds', { count: remainingSeconds })}</Text>
+            <Text style={styles.label}>{t('sessionInfo.time')}</Text>
+            <Text style={styles.timerValue}>{t('sessionInfo.seconds', { count: remainingSeconds })}</Text>
           </View>
 
           {totalRounds > 1 && (
@@ -52,7 +52,7 @@ export default function SessionInfoOverlay({
               <View style={styles.divider} />
               
               <View style={styles.roundContainer}>
-                <Text style={styles.label}>{t('ai:sessionInfo.round')}</Text>
+                <Text style={styles.label}>{t('sessionInfo.round')}</Text>
                 <Text style={styles.roundValue}>
                   {currentRound}/{totalRounds}
                 </Text>

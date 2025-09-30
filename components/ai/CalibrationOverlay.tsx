@@ -22,7 +22,7 @@ export default function CalibrationOverlay({ visible, imageSource, instruction, 
 
       {instruction ? (
         <View style={[styles.toast, { bottom: 100 }]}>
-          <Text style={styles.toastText}>{instruction || t('ai:calibration.instruction')}</Text>
+          <Text style={styles.toastText}>{instruction || t('calibration.instruction')}</Text>
           {calibrationProgress > 0 && (
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: `${calibrationProgress * 100}%` }]} />

@@ -34,11 +34,11 @@ export default function AISessionScreen() {
       }
 
       Alert.alert(
-        t('ai:sessionDoneTitle'),
-        `Ukończono ${completedSteps}/${exercise.steps_json?.steps?.length || 0} kroków\nCzas: ${Math.round(totalTime / 1000)}s`,
+        t('sessionDoneTitle'),
+        `${t('session.completedSteps', { completed: completedSteps, total: exercise.steps_json?.steps?.length || 0 })}\n${t('session.totalTime', { seconds: Math.round(totalTime / 1000) })}`,
         [
           {
-            text: t('ai:sessionDoneBack'),
+            text: t('sessionDoneBack'),
             onPress: () => router.back(),
           },
           {
@@ -70,7 +70,7 @@ export default function AISessionScreen() {
 
         <View style={[styles.bottomOverlay, { paddingBottom: Math.max(16, insets.bottom + 8) }]}>
           <TouchableOpacity style={styles.endButton} onPress={() => router.back()}>
-            <Text style={styles.endButtonText}>Zakończ ćwiczenie</Text>
+            <Text style={styles.endButtonText}>{t('session.endButton')}</Text>
           </TouchableOpacity>
         </View>
       </View>

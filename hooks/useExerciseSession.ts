@@ -127,7 +127,7 @@ export function useExerciseSession({
         if (currentRoundLocal < totalRoundsLocal) {
           // Start next round
           const nextRound = currentRoundLocal + 1;
-          addMessage(t('exercises:session.round', { current: nextRound, total: totalRoundsLocal }), 'info');
+          addMessage(t('session.round', { current: nextRound, total: totalRoundsLocal }), 'info');
           stepStartTimeRef.current = Date.now();
           stableFramesCountRef.current = 0;
           timeWindowHoldStartRef.current = null;
@@ -140,7 +140,7 @@ export function useExerciseSession({
           };
         } else {
           // All rounds completed
-          addMessage(t('exercises:session.allStepsCompleted'), 'success');
+          addMessage(t('session.allStepsCompleted'), 'success');
           return {
             ...prev,
             isCompleted: true,
@@ -170,7 +170,7 @@ export function useExerciseSession({
     console.log('[Debug] Starting session with', steps.length, 'steps');
     if (steps.length === 0) {
       console.log('[Debug] No steps to execute');
-      addMessage(t('exercises:session.noSteps'), 'warning');
+      addMessage(t('session.noSteps'), 'warning');
       return;
     }
 
@@ -207,7 +207,7 @@ export function useExerciseSession({
         if (remaining <= 0) {
           // Session time ended
           clearTimers();
-          addMessage(t('exercises:session.timeEnded'), 'warning');
+          addMessage(t('session.timeEnded'), 'warning');
           completionReportedRef.current = true;
           onFinish?.(prev.currentStepIndex, elapsed);
           
@@ -241,7 +241,7 @@ export function useExerciseSession({
       isCompleted: true,
     }));
 
-    addMessage(t('exercises:session.stopped'), 'info');
+    addMessage(t('session.stopped'), 'info');
     onFinish?.(state.currentStepIndex, elapsed);
   }, [clearTimers, onFinish, addMessage, state.currentStepIndex, t]);
 
@@ -249,7 +249,7 @@ export function useExerciseSession({
   const pause = useCallback(() => {
     clearTimers();
     setState(prev => ({ ...prev, isRunning: false }));
-    addMessage(t('exercises:session.paused'), 'info');
+    addMessage(t('session.paused'), 'info');
   }, [clearTimers, addMessage, t]);
 
   // Resume session
@@ -257,7 +257,7 @@ export function useExerciseSession({
     if (state.isCompleted) return;
     
     setState(prev => ({ ...prev, isRunning: true }));
-    addMessage(t('exercises:session.resumed'), 'info');
+    addMessage(t('session.resumed'), 'info');
     
     // Restart timers with remaining time
     // Note: This is simplified - in real implementation you'd need to track pause time
@@ -344,9 +344,9 @@ export function useExerciseSession({
               addMessage(currentStep.hint, 'info');
             } else {
               // Show specific constraint feedback
-              const constraintKey = `exercises:session.constraints.${failedConstraints[0]}`;
+              const constraintKey = `session.constraints.${failedConstraints[0]}`;
               const message = t(constraintKey, { 
-                defaultValue: t('exercises:session.constraints.correctPosition') 
+                defaultValue: t('session.constraints.correctPosition') 
               });
               addMessage(message, 'warning');
             }
@@ -392,7 +392,7 @@ export function useExerciseSession({
             addMessage(currentStep.hint, 'info');
           } else {
             // Show generic reminder
-            addMessage(t('exercises:session.maintainPosition'), 'warning');
+            addMessage(t('session.maintainPosition'), 'warning');
           }
         }
       }

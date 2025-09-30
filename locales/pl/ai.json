@@ -12,5 +12,10 @@
   "calibration": {
     "instruction": "Ustaw się jak na zdjęciu, a ćwiczenie zostanie rozpoczęte",
     "positionCorrect": "Pozycja poprawna ✓"
+  },
+  "session": {
+    "endButton": "Zakończ ćwiczenie",
+    "completedSteps": "Ukończono {{completed}}/{{total}} kroków",
+    "totalTime": "Czas: {{seconds}}s"
   }
 }
