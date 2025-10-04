@@ -1,6 +1,7 @@
 {
   "title": "Start your journey today",
   "subtitle": "Train with AI, track progress, and reach your goals faster.",
+  "benefits": "Unlock full workout library (instead of 2 trial exercises).",
   "socialProof": "Trusted by hundreds of users",
   "trialToggle": "Not sure yet? Enable free trial",
   "yearly": "Yearly",
@@ -15,6 +16,8 @@
   "restore": "Restore Purchases",
   "terms": "Terms",
   "privacy": "Privacy",
-  "eula": "EULA"
+  "eula": "EULA",
+  "activated": "Subscription activated",
+  "activatedDesc": "You now have full access to all workouts."
 }
 

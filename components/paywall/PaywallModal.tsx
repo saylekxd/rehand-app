@@ -16,10 +16,11 @@ interface PaywallModalProps {
   onPurchase: (product?: PurchasesStoreProduct) => void | Promise<void>;
   onRestore: () => void | Promise<void>;
   loading: boolean;
+  success?: boolean;
 }
 
 export default function PaywallModal(props: PaywallModalProps) {
-  const { visible, onClose, products, selectedProductId, onSelectProduct, onPurchase, onRestore, loading } = props;
+  const { visible, onClose, products, selectedProductId, onSelectProduct, onPurchase, onRestore, loading, success } = props;
   const { t } = useTranslation(['paywall']);
   const extra = (Constants.expoConfig?.extra as any) ?? {};
   const termsUrl: string | undefined = extra.termsUrl;
@@ -73,7 +74,16 @@ export default function PaywallModal(props: PaywallModalProps) {
             </View>
 
             <Text style={styles.title}>{t('paywall:title', 'Unlock full access')}</Text>
-            <Text style={styles.subtitle}>{t('paywall:subtitle', 'Train with AI, track progress, hit goals faster.')}</Text>
+            <Text style={styles.subtitle}>
+              {t('paywall:subtitle', 'Train with AI, track progress, and reach your goals faster.')} {t('paywall:benefits', 'Unlock full workout library (instead of 2 trial exercises).')}
+            </Text>
+
+            {success && (
+              <View style={styles.successBanner}>
+                <Text style={styles.successTitle}>{t('paywall:activated', 'Subscription activated')}</Text>
+                <Text style={styles.successText}>{t('paywall:activatedDesc', 'You now have full access to all workouts.')}</Text>
+              </View>
+            )}
 
             {/* Social proof */}
             <View style={styles.starsRow}>
@@ -258,6 +268,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 6,
   },
+  
   starsRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -373,6 +384,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
     marginTop: 12,
+  },
+  successBanner: {
+    marginHorizontal: 20,
+    marginTop: 12,
+    backgroundColor: '#ECFDF5',
+    borderColor: '#10B981',
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+  },
+  successTitle: {
+    color: '#065F46',
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 15,
+    marginBottom: 2,
+  },
+  successText: {
+    color: '#065F46',
+    fontFamily: 'Inter-Regular',
+    fontSize: 13,
   },
   link: {
     color: '#6B7280',

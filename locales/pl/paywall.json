@@ -1,6 +1,7 @@
 {
   "title": "Odblokuj pełen dostęp",
   "subtitle": "Ćwicz z asystentem AI, śledź postępy i realizuj cele szybciej.",
+  "benefits": "Odblokuj pełną bibliotekę ćwiczeń (zamiast 2 ćwiczeń trial).",
   "socialProof": "Zaufało setki użytkowników",
   "trialToggle": "Nie jesteś pewien? Włącz darmowy okres próbny",
   "yearly": "Roczny",
@@ -15,6 +16,8 @@
   "restore": "Przywróć zakupy",
   "terms": "Warunki",
   "privacy": "Prywatność",
-  "eula": "EULA"
+  "eula": "EULA",
+  "activated": "Subskrypcja aktywowana",
+  "activatedDesc": "Masz pełny dostęp do wszystkich ćwiczeń."
 }
 

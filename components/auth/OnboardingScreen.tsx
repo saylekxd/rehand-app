@@ -14,6 +14,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuth } from '@/contexts/AuthContext';
 import { OnboardingData } from '@/types';
+import { usePaywall } from '@/contexts/PaywallContext';
 import { Calendar, User, Phone, Target, Activity, CheckCircle } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +27,7 @@ export default function OnboardingScreen() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const { completeOnboarding } = useAuth();
+  const { open } = usePaywall();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -93,6 +95,9 @@ export default function OnboardingScreen() {
     
     if (error) {
       Alert.alert(t('common:error'), t('onboarding:error'));
+    } else {
+      // Show paywall right after successful onboarding
+      try { open(); } catch {}
     }
     setLoading(false);
   };
