@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Purchases, { LOG_LEVEL, PurchasesStoreProduct } from 'react-native-purchases';
+import { useAuth } from '@/contexts/AuthContext';
 import Constants from 'expo-constants';
 import PaywallModal from '@/components/paywall/PaywallModal';
 
@@ -23,10 +24,12 @@ const PaywallContext = createContext<PaywallContextType | undefined>(undefined);
 
 const STORAGE_KEY_SHOW_ON_LAUNCH = 'paywall_show_on_launch';
 const STORAGE_KEY_LAST_SHOWN_AT = 'paywall_last_shown_at';
+const PREMIUM_OVERRIDE_UNTIL = 'premium_override_until';
 
 const PRODUCT_IDS = ['rehand_weekly', 'rehand_monthly', 'rehand_yearly'];
 
 export function PaywallProvider({ children }: { children: React.ReactNode }) {
+  const { session } = useAuth();
   const [configured, setConfigured] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [showOnLaunch, setShowOnLaunchState] = useState(true);
@@ -66,6 +69,21 @@ export function PaywallProvider({ children }: { children: React.ReactNode }) {
     }
     configure();
   }, [apiKey]);
+
+  // Keep RevenueCat user in sync with Supabase user
+  useEffect(() => {
+    (async () => {
+      try {
+        if (session?.user?.id) {
+          await Purchases.logIn(session.user.id);
+        } else {
+          await Purchases.logOut();
+        }
+      } catch (e) {
+        console.warn('[Paywall] Failed to sync user with RevenueCat', e);
+      }
+    })();
+  }, [session?.user?.id]);
 
   // Load preference for showing on launch
   useEffect(() => {
@@ -140,7 +158,11 @@ export function PaywallProvider({ children }: { children: React.ReactNode }) {
       const productToBuy = productArg ?? products.find((p) => p.identifier === selectedProductId);
       if (!productToBuy) throw new Error('Product not selected');
       const { customerInfo } = await Purchases.purchaseStoreProduct(productToBuy);
-      // Close paywall after purchase succeeds
+      // Optimistic UI: grant premium for short window while webhook updates DB
+      try {
+        const until = Date.now() + 2 * 60 * 1000; // 2 minutes buffer
+        await AsyncStorage.setItem(PREMIUM_OVERRIDE_UNTIL, String(until));
+      } catch {}
       setIsVisible(false);
       return;
     } catch (e: any) {

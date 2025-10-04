@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Exercise } from '@/types';
 
 export interface ExerciseFilters {
@@ -12,6 +13,39 @@ export interface ExerciseFilters {
 }
 
 export class ExercisesService {
+  private static readonly PREMIUM_OVERRIDE_KEY = 'premium_override_until';
+
+  private static async getPremiumActive(): Promise<boolean> {
+    try {
+      // 1) Optimistic override window
+      try {
+        const untilStr = await AsyncStorage.getItem(this.PREMIUM_OVERRIDE_KEY);
+        const until = untilStr ? Number(untilStr) : 0;
+        if (Number.isFinite(until) && until > Date.now()) {
+          return true;
+        }
+      } catch {}
+
+      // 2) Source of truth from DB view
+      const { data: userRes } = await supabase.auth.getUser();
+      const userId = userRes.user?.id;
+      if (!userId) return false;
+      const { data } = await supabase
+        .from('v_user_entitlements')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      const premium = Boolean((data as any)?.premium_active);
+
+      // If DB confirms premium, clear any stale override
+      if (premium) {
+        try { await AsyncStorage.removeItem(this.PREMIUM_OVERRIDE_KEY); } catch {}
+      }
+      return premium;
+    } catch {
+      return false;
+    }
+  }
   /**
    * Fetch all active exercises from the database
    */
@@ -25,12 +59,16 @@ export class ExercisesService {
         .order('difficulty', { ascending: true })
         .order('duration_minutes', { ascending: true });
 
+      // Gate on entitlement (client-side safeguard; server-side should use RLS or view if desired)
+      const premium = await this.getPremiumActive();
+      const filtered = premium ? (data || []) : (data || []).filter((e: any) => e.is_trial === true);
+
       if (error) {
         console.error('Error fetching exercises:', error);
         return { data: null, error };
       }
 
-      return { data: data || [], error: null };
+      return { data: filtered, error: null };
     } catch (error) {
       console.error('Error in getAllExercises:', error);
       return { data: null, error };
@@ -76,13 +114,15 @@ export class ExercisesService {
                   .order('duration_minutes', { ascending: true });
 
       const { data, error } = await query;
+      const premium = await this.getPremiumActive();
+      const filtered = premium ? (data || []) : (data || []).filter((e: any) => e.is_trial === true);
 
       if (error) {
         console.error('Error fetching filtered exercises:', error);
         return { data: null, error };
       }
 
-      return { data: data || [], error: null };
+      return { data: filtered, error: null };
     } catch (error) {
       console.error('Error in getFilteredExercises:', error);
       return { data: null, error };
