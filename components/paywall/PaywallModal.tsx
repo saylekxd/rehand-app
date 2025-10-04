@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image, ScrollView, Switch } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image, ScrollView, LayoutChangeEvent, Pressable, Animated, Easing } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { X } from 'lucide-react-native';
 import { PurchasesStoreProduct } from 'react-native-purchases';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +25,16 @@ export default function PaywallModal(props: PaywallModalProps) {
   const termsUrl: string | undefined = extra.termsUrl;
   const privacyUrl: string | undefined = extra.privacyUrl;
   const eulaUrl: string = extra.eulaUrl ?? 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
-  const [trialEnabled, setTrialEnabled] = useState(false);
+  const [trialEnabled, setTrialEnabled] = useState<boolean>(true);
+  // Banner sizing to ensure bottom edge aligns to container bottom (cover with bottom gravity)
+  const bannerSource = require('@/assets/images/subscription-image.png');
+  const bannerAsset = Image.resolveAssetSource(bannerSource);
+  const [bannerWidth, setBannerWidth] = useState<number | null>(null);
+  const bannerHeight = 180;
+  const bannerScale = bannerWidth ? Math.max(bannerWidth / bannerAsset.width, bannerHeight / bannerAsset.height) : 1;
+  const bannerRenderWidth = bannerWidth ? bannerAsset.width * bannerScale : undefined;
+  const bannerRenderHeight = bannerWidth ? bannerAsset.height * bannerScale : bannerHeight;
+  const bannerLeft = bannerWidth && bannerRenderWidth ? (bannerWidth - bannerRenderWidth) / 2 : 0;
   const openUrl = async (url?: string) => {
     if (!url) return;
     try { await WebBrowser.openBrowserAsync(url, { presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET }); } catch {}
@@ -42,8 +52,25 @@ export default function PaywallModal(props: PaywallModalProps) {
           </TouchableOpacity>
 
           <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-            {/* Decorative banner matching our app vibe */}
-            <Image source={require('@/assets/images/intro-image1.png')} resizeMode="cover" style={styles.banner} />
+            {/* Decorative banner */}
+            <View
+              style={styles.bannerWrap}
+              onLayout={(e: LayoutChangeEvent) => setBannerWidth(e.nativeEvent.layout.width)}
+            >
+              <Image
+                source={bannerSource}
+                style={[
+                  styles.banner,
+                  {
+                    position: 'absolute',
+                    bottom: 0,
+                    left: bannerLeft,
+                    width: bannerRenderWidth ?? '100%',
+                    height: bannerRenderHeight,
+                  },
+                ]}
+              />
+            </View>
 
             <Text style={styles.title}>{t('paywall:title', 'Unlock full access')}</Text>
             <Text style={styles.subtitle}>{t('paywall:subtitle', 'Train with AI, track progress, hit goals faster.')}</Text>
@@ -57,7 +84,7 @@ export default function PaywallModal(props: PaywallModalProps) {
             {/* Trial toggle hint (visual only) */}
             <View style={styles.trialRow}>
               <Text style={styles.trialLabel}>{t('paywall:trialToggle', 'Not sure yet? Enable free trial')}</Text>
-              <Switch
+              <AnimatedSwitch
                 value={trialEnabled}
                 onValueChange={(value) => {
                   setTrialEnabled(value);
@@ -66,8 +93,6 @@ export default function PaywallModal(props: PaywallModalProps) {
                     if (weekly) onSelectProduct(weekly.identifier);
                   }
                 }}
-                trackColor={{ false: '#D1D5DB', true: '#2563EB' }}
-                thumbColor={trialEnabled ? '#FFFFFF' : '#F3F4F6'}
               />
             </View>
 
@@ -81,23 +106,40 @@ export default function PaywallModal(props: PaywallModalProps) {
                 products.map((p) => {
                   const isSelected = p.identifier === selectedProductId;
                   const isYearly = p.identifier.includes('year');
+                  const isMonthly = p.identifier.includes('month');
+                  const isWeekly = p.identifier.includes('week');
+                  // Small scale animation on press for nicer feedback
+                  const scale = new Animated.Value(1);
+                  const handlePressIn = () => Animated.timing(scale, { toValue: 0.98, duration: 100, useNativeDriver: true, easing: Easing.out(Easing.quad) }).start();
+                  const handlePressOut = () => Animated.timing(scale, { toValue: 1, duration: 120, useNativeDriver: true, easing: Easing.out(Easing.quad) }).start();
                   return (
-                    <TouchableOpacity
+                    <Pressable
                       key={p.identifier}
-                      style={[styles.planItem, isSelected && styles.planItemActive]}
-                      onPress={() => onSelectProduct(p.identifier)}
+                      onPressIn={handlePressIn}
+                      onPressOut={handlePressOut}
+                      style={({ pressed }) => [
+                        styles.planItem,
+                        isSelected && styles.planItemActive,
+                        { transform: [{ scale: isSelected ? 1 : 1 }] },
+                      ]}
+                      onPress={async () => {
+                        try { await Haptics.selectionAsync(); } catch {}
+                        onSelectProduct(p.identifier);
+                        // Auto-toggle trial: ON only for weekly, OFF otherwise
+                        if (isWeekly) setTrialEnabled(true); else setTrialEnabled(false);
+                      }}
                       accessibilityRole="button"
                     >
-                      <View style={styles.planLeft}>
+                      <Animated.View style={[styles.planLeft, { transform: [{ scale }] }]}>
                         <View style={[styles.radio, isSelected && styles.radioActive]} />
                         <Text style={styles.planTitle}>
-                          {isYearly ? t('paywall:yearly', 'Yearly') : p.identifier.includes('month') ? t('paywall:monthly', 'Monthly') : t('paywall:weekly', 'Weekly')}
+                          {isYearly ? t('paywall:yearly', 'Yearly') : isMonthly ? t('paywall:monthly', 'Monthly') : t('paywall:weekly', 'Weekly')}
                         </Text>
-                      </View>
+                      </Animated.View>
                       <View style={styles.planRight}>
                         <Text style={styles.planPriceSecondary}>{p.priceString}</Text>
                       </View>
-                    </TouchableOpacity>
+                    </Pressable>
                   );
                 })
               )}
@@ -141,6 +183,25 @@ export default function PaywallModal(props: PaywallModalProps) {
   );
 }
 
+// Simple animated switch styled like our UI
+function AnimatedSwitch({ value, onValueChange }: { value: boolean; onValueChange: (v: boolean) => void }) {
+  const anim = React.useRef(new Animated.Value(value ? 1 : 0)).current;
+  React.useEffect(() => {
+    Animated.timing(anim, { toValue: value ? 1 : 0, duration: 180, useNativeDriver: false, easing: Easing.out(Easing.quad) }).start();
+  }, [value]);
+
+  const bg = anim.interpolate({ inputRange: [0, 1], outputRange: ['#D1D5DB', '#2563EB'] });
+  const translateX = anim.interpolate({ inputRange: [0, 1], outputRange: [2, 22] });
+
+  return (
+    <Pressable onPress={async () => { try { await Haptics.selectionAsync(); } catch {}; onValueChange(!value); }} accessibilityRole="switch" accessibilityState={{ checked: value }}>
+      <Animated.View style={{ width: 46, height: 28, borderRadius: 14, backgroundColor: bg, paddingHorizontal: 2, justifyContent: 'center' }}>
+        <Animated.View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: '#FFFFFF', transform: [{ translateX }] }} />
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
@@ -173,9 +234,15 @@ const styles = StyleSheet.create({
   content: {
     paddingBottom: 20,
   },
+  bannerWrap: {
+    width: '100%',
+    height: 180,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+  },
   banner: {
     width: '100%',
-    height: 140,
+    height: 180,
   },
   title: {
     fontSize: 24,
@@ -274,6 +341,7 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   planRight: {},
+  // removed badge styles
   planPriceSecondary: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',

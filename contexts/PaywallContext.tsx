@@ -24,7 +24,7 @@ const PaywallContext = createContext<PaywallContextType | undefined>(undefined);
 const STORAGE_KEY_SHOW_ON_LAUNCH = 'paywall_show_on_launch';
 const STORAGE_KEY_LAST_SHOWN_AT = 'paywall_last_shown_at';
 
-const PRODUCT_IDS = ['rehand_yearly', 'rehand_monthly', 'rehand_weekly'];
+const PRODUCT_IDS = ['rehand_weekly', 'rehand_monthly', 'rehand_yearly'];
 
 export function PaywallProvider({ children }: { children: React.ReactNode }) {
   const [configured, setConfigured] = useState(false);
@@ -95,8 +95,8 @@ export function PaywallProvider({ children }: { children: React.ReactNode }) {
             return (order.get(a.identifier) ?? 999) - (order.get(b.identifier) ?? 999);
           });
           setProducts(sorted);
-          // Default selection to yearly if available
-          const defaultId = sorted.find((p) => p.identifier === 'rehand_yearly')?.identifier ?? sorted[0]?.identifier ?? null;
+          // Default selection to weekly (trial)
+          const defaultId = sorted.find((p) => p.identifier === 'rehand_weekly')?.identifier ?? sorted[0]?.identifier ?? null;
           setSelectedProductId(defaultId);
         }
       } catch (e) {
