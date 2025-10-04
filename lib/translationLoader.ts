@@ -25,6 +25,7 @@ export const loadTranslations = (): Resource => {
     notifications: require('../locales/en/notifications.json'),
     editProfile: require('../locales/en/editProfile.json'),
     onboarding: require('../locales/en/onboarding.json'),
+    paywall: require('../locales/en/paywall.json'),
   };
 
   // Polish translations
@@ -45,6 +46,7 @@ export const loadTranslations = (): Resource => {
     notifications: require('../locales/pl/notifications.json'),
     editProfile: require('../locales/pl/editProfile.json'),
     onboarding: require('../locales/pl/onboarding.json'),
+    paywall: require('../locales/pl/paywall.json'),
   };
 
   return resources;

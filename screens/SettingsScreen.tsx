@@ -9,9 +9,10 @@ import {
   Switch,
   Alert,
 } from 'react-native';
-import { X, Moon, Volume2, Globe, Database, Check } from 'lucide-react-native';
+import { X, Moon, Volume2, Globe, Database, Check, BadgeDollarSign } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { setAppLanguage } from '@/lib/i18n';
+import { usePaywall } from '@/contexts/PaywallContext';
 
 interface SettingsScreenProps {
   onClose: () => void;
@@ -27,6 +28,7 @@ interface AppSettings {
 
 export default function SettingsScreen({ onClose }: SettingsScreenProps) {
   const { t } = useTranslation();
+  const { showOnLaunch, setShowOnLaunch, open } = usePaywall();
   const [settings, setSettings] = useState<AppSettings>({
     darkMode: false,
     soundEnabled: true,
@@ -70,6 +72,41 @@ export default function SettingsScreen({ onClose }: SettingsScreenProps) {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Paywall */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Subskrypcja</Text>
+          <View style={styles.settingItem}>
+            <View style={styles.settingLeft}>
+              <View style={styles.iconContainer}>
+                <BadgeDollarSign size={20} color="#2563EB" />
+              </View>
+              <View>
+                <Text style={styles.settingTitle}>Pokazuj paywall przy starcie</Text>
+                <Text style={styles.settingDescription}>Miękki paywall — możesz go zamknąć</Text>
+              </View>
+            </View>
+            <Switch
+              value={showOnLaunch}
+              onValueChange={(value) => setShowOnLaunch(value)}
+              trackColor={{ false: '#D1D5DB', true: '#2563EB' }}
+              thumbColor={showOnLaunch ? '#FFFFFF' : '#F3F4F6'}
+            />
+          </View>
+          <View style={[styles.settingItem, styles.lastItem]}>
+            <View style={styles.settingLeft}>
+              <View style={styles.iconContainer}>
+                <BadgeDollarSign size={20} color="#2563EB" />
+              </View>
+              <View>
+                <Text style={styles.settingTitle}>Otwórz paywall teraz</Text>
+                <Text style={styles.settingDescription}>Sprawdź plany i ceny</Text>
+              </View>
+            </View>
+            <TouchableOpacity onPress={open} style={[styles.headerButton, styles.saveButton]}>
+              <Text style={{ color: '#FFFFFF', fontFamily: 'Inter-Medium' }}>Otwórz</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         {/* Appearance */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{t('settings:appearance')}</Text>
