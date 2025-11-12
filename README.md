@@ -1,4 +1,4 @@
-# ReHand App - Rehabilitation Exercise App
+# Rehand App - Rehabilitation Exercise App
 
 A React Native app built with Expo for rehabilitation exercises, featuring Supabase authentication and user onboarding.
 
